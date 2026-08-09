@@ -1,0 +1,22 @@
+[env]
+MISE_DARWIN_PROFILE = "home-server"
+HOME_SERVER_DATA_ROOT = "/Volumes/Data"
+HOME_SERVER_BACKUP_ROOT = "/Volumes/Backup"
+HOME_SERVER_SERVICE_ROOT = "{{ env.HOME }}/home-server"
+
+[bootstrap.packages]
+"brew:colima" = "latest"
+"brew:container" = "latest"
+"brew:podman" = "latest"
+"brew:podman-compose" = "latest"
+"brew:docker" = "latest"
+"brew:docker-compose" = "latest"
+"brew:caddy" = "latest"
+"brew:ffmpeg" = "latest"
+"brew:filebrowser" = "latest"
+"brew:rclone" = "latest"
+"brew:restic" = "latest"
+"brew:rsync" = "latest"
+"brew:smartmontools" = "latest"
+"brew:herdr" = "latest"
+"mas:1475387142" = "latest" # Tailscale
