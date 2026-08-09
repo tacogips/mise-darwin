@@ -12,6 +12,7 @@ mise.desktop.toml            taco-mac の GUI アプリ・MAS アプリ
 mise.home-server.toml        darwin-mac-home-server のサービス依存
 dotfiles/.config/nvim/       通常の Lua + lazy.nvim 構成
 dotfiles/.agents/skills/     Apple Gateway の user skill 群
+agent-user-scope/            Claude・Codex・Cursor・Riela の user-scope資産
 home-server/                 /etc に収束させるサーバーテンプレート
 scripts/                     冪等な補助処理・検証・Nix アンインストール
 Brewfile.*                   Cask と third-party tap の差分
@@ -74,6 +75,23 @@ Yazi の Git plugin と Gruvbox flavor は `package.toml` で固定し、bootstr
 ANSI/Kana 記号変換を含む完全な JSON を管理します。Apple Gateway user skills は
 他の user skill を巻き込まないよう、skill directory ごとに symlink します。
 
+## AI agent user scopeとRiela
+
+旧Home Managerが管理していたClaude user commands、Claude/Codex共通skills、
+Cursor CLI設定、Peekaboo MCP設定は`agent-user-scope/`に固定しています。
+bootstrapは既知のskill directoryだけを冪等に同期するため、Rielaや他の
+インストーラーが管理するskillを削除しません。`envrc-generate`だけはdirenv廃止
+方針により移植対象外です。
+
+デスクトップではRiela caskの導入後、`agent-user-scope/riela-packages.txt`の
+workflow/skill packageをuser scopeへインストールします。初回構築時に
+`~/gits/tacogips/riela-packages`がなければ公開GitHub repositoryからcloneします。
+
+GitHub HTTPS認証は`GITHUB_TOKEN` credential helperを使います。Fishには
+`gh-token-export`、`gh-token-save-shared`、`gh-token-refresh`、`gh-token-reset`、
+`gh-clone`を移植しています。commit/push前のcredential検査は、Claude/Codexの
+`git-precommit-safety-check` user skillとして利用できます。
+
 ## 検証と Nix の削除
 
 まず新しい shell で検証します。
@@ -82,16 +100,29 @@ ANSI/Kana 記号変換を含む完全な JSON を管理します。Apple Gateway
 mise -E macos-arm64 -E desktop run verify
 ```
 
-問題がないことを確認してから、Nix を削除します。自動削除は Determinate
-installer の uninstall receipt がある場合だけ実行し、legacy installer は安全の
-ため停止して元の installer に対応する手順を要求します。
+問題がないことを確認してから、Nix を削除します。taskは最初にnix-darwinを
+解除し、Determinate Installerがあればそのuninstallerを使います。それ以外は
+公式のlegacy multi-user手順を安全確認付きで実行します。
 
 ```sh
 mise run nix:uninstall -- --confirm
 ```
 
-Nix の削除は不可逆です。`tacogips/nix` は移行完了まで参照用に残し、この
-リポジトリの検証が通ってから削除してください。
+Nix の削除は不可逆です。taskはDeterminate Installerに加えて、公式Nixの
+macOS legacy multi-user手順にも対応します。legacy経路ではAPFS `/nix` volume、
+login shell、user-scopeのNix Store symlinkを事前検証し、変更するsystem fileを
+`/var/backups/mise-darwin-nix-uninstall-*`へ退避してから削除します。実行内容だけを
+確認する場合は次を使用します。
+
+削除対象と順序は[Nix公式のmacOS multi-user uninstall手順](https://nix.dev/manual/nix/stable/installation/uninstall#macos)
+に合わせています。
+
+```sh
+mise run nix:uninstall -- --confirm --dry-run
+```
+
+`tacogips/nix` は移行完了まで参照用に残し、このリポジトリの検証が通ってから
+削除してください。
 
 ## 現時点の境界
 

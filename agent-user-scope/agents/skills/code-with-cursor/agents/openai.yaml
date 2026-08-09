@@ -1,0 +1,7 @@
+interface:
+  display_name: "Code With Cursor"
+  short_description: "Delegate implementation to Cursor Agent"
+  default_prompt: "Use $code-with-cursor to delegate a single concrete implementation slice to Cursor Agent. Preserve the original request verbatim in an `Original prompt:` section. For generic impl-plan requests, read `impl-plans/PROGRESS.json` first, select one active task slice, do not enumerate the whole impl-plans tree, and prefer the bundled monitor helper when the parent run needs visible progress. This skill is for explicit Cursor delegation only; if the user did not explicitly request $code-with-cursor, Cursor Agent, or composer-2 implementation, stay local instead of delegating. If the resolved branch is implementation, the implementation must be performed by a real cursor-agent run rather than local write/edit tools; if no executable implementation slice exists, explicitly resolve to review mode instead of faking delegation."
+
+policy:
+  allow_implicit_invocation: false

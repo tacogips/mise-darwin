@@ -17,11 +17,14 @@ Source: `tacogips/nix/nixos/darwin` and its shared Home Manager modules.
 - Hierarchical Neovim Lua configuration with lazy.nvim, LSP, completion, formatting, Telescope, Yazi, and filetype modules
 - Pinned Yazi Git plugin, Gruvbox flavor, git-diff tree, enter-directory behavior, and custom keymap
 - Apple Gateway, Calendar, Clock, Mail, Notes, Notifications, Reminders, and Schedule user skills
+- Claude user commands, Claude/Codex shared user skills, Cursor CLI/MCP settings, and the Peekaboo Cursor skill
+- Riela desktop CLI/App and all declared user-scope development workflow/skill packages
+- GitHub token lifecycle Fish functions and the commit/push credential safety skill
 - Profile dry-runs, verification task, lockfile, and guarded Nix uninstall task
+- Determinate and official legacy macOS multi-user Nix uninstall paths with APFS and symlink preflight checks
 
 ## Follow-up before deleting `tacogips/nix`
 
-- Compare the new Fish aliases/functions with any personal commands still used from shared Home Manager.
 - Run Neovim once, review the generated `lazy-lock.json`, and commit it.
 - Apply and verify both physical hosts. Only then run `mise run nix:uninstall -- --confirm` on each host.
 

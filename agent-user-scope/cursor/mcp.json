@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "peekaboo": {
+      "command": "peekaboo",
+      "args": [
+        "mcp",
+        "serve",
+        "--transport",
+        "stdio"
+      ],
+      "env": {}
+    }
+  }
+}

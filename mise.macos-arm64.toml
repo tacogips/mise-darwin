@@ -24,6 +24,7 @@
 "brew:tokei" = "latest"
 "brew:dust" = "latest"
 "brew:coreutils" = "latest"
+"brew:gawk" = "latest"
 "brew:mas" = "latest"
 "brew:bat" = "latest"
 "brew:bottom" = "latest"

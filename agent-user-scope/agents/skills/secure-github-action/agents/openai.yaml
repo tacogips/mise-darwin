@@ -1,0 +1,7 @@
+interface:
+  display_name: "Secure GitHub Action"
+  short_description: "Harden GitHub Actions workflow files"
+  default_prompt: "Use $secure-github-action to create or review a GitHub Actions workflow with pinned SHAs, minimal permissions, and shell-injection-safe patterns."
+
+policy:
+  allow_implicit_invocation: true
