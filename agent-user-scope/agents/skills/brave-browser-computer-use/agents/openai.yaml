@@ -1,0 +1,4 @@
+interface:
+  display_name: "Brave Browser Computer Use"
+  short_description: "Operate Brave with Computer Use MCP"
+  default_prompt: "Use $brave-browser-computer-use to operate Brave Browser through Computer Use MCP."

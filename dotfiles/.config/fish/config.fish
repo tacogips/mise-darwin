@@ -32,6 +32,10 @@ alias brewup='brew update && brew upgrade'
 alias o='open'
 alias ll='eza --all --long --git --icons=auto'
 alias cat='bat'
+alias gs='git status'
+alias gps='git push origin'
+alias gpl='git pull origin'
+alias ghb='gh browse'
 
 bind -M insert ctrl-h backward-delete-char
 bind -M insert ctrl-a beginning-of-line

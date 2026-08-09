@@ -21,6 +21,9 @@ if [[ -f "$brewfile" ]]; then
   brew bundle check --file "$brewfile" >/dev/null 2>&1 || brew bundle --file "$brewfile" --no-lock
 fi
 
+"$repo_dir/scripts/install-agent-user-scope.sh"
+"$repo_dir/scripts/install-riela-user-packages.sh"
+
 
 # Retire links left by older standalone installers and Home Manager.
 rm -f "$HOME/.local/bin/codex" "$HOME/.local/bin/codex-code-mode-host"
