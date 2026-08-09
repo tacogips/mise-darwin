@@ -1,0 +1,51 @@
+min_version = "2026.8.3"
+
+[settings]
+experimental = true
+auto_env = true
+lockfile = true
+dotfiles.root = "~/gits/tacogips/mise-darwin/dotfiles"
+
+[env]
+EDITOR = "nvim"
+LANG = "en_US.UTF-8"
+LC_ALL = "en_US.UTF-8"
+XDG_CACHE_HOME = "{{ env.HOME }}/.cache"
+XDG_CONFIG_HOME = "{{ env.HOME }}/.config"
+XDG_DATA_HOME = "{{ env.HOME }}/.local/share"
+XDG_BIN_HOME = "{{ env.HOME }}/.local/bin"
+DEVELOPER_DIR = "/Applications/Xcode.app/Contents/Developer"
+SDKROOT = "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk"
+TOOLCHAINS = "com.apple.dt.toolchain.XcodeDefault"
+_.path = [
+  "{{ env.HOME }}/.local/bin",
+  "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin",
+  "/opt/homebrew/bin",
+  "/usr/local/bin",
+]
+
+[tools]
+go = "latest"
+rust = "latest"
+python = "3.13"
+node = "24"
+bun = "latest"
+zig = "latest"
+java = "temurin-21"
+julia = "latest"
+
+[tasks.bootstrap]
+description = "Run idempotent post-bootstrap configuration"
+run = "./scripts/post-bootstrap.sh"
+
+[tasks.verify]
+description = "Verify config, dotfiles, tools, and macOS integration"
+run = "./scripts/verify.sh"
+
+[tasks."nix:uninstall"]
+description = "Remove Nix after migration verification (requires explicit confirmation)"
+run = "./scripts/uninstall-nix.sh"
+
+[tasks."home-server:apply"]
+description = "Converge privileged home-server files and runtime directories"
+run = "./scripts/home-server-apply.sh"

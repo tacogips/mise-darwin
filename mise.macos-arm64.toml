@@ -1,0 +1,93 @@
+[bootstrap.brew.taps]
+"tacogips/tap" = "https://github.com/tacogips/homebrew-tap.git"
+"tonyxiao/tap" = "https://github.com/tonyxiao/homebrew-tap.git"
+"steipete/tap" = "https://github.com/steipete/homebrew-tap.git"
+"slp/krunkit" = "https://github.com/slp/homebrew-krunkit.git"
+"nikitabobko/tap" = "https://github.com/nikitabobko/homebrew-tap.git"
+
+[bootstrap.packages]
+"brew:fish" = "latest"
+"brew:git" = "latest"
+"brew:gh" = "latest"
+"brew:vim" = "latest"
+"brew:neovim" = "latest"
+"brew:curl" = "latest"
+"brew:wget" = "latest"
+"brew:jq" = "latest"
+"brew:yq" = "latest"
+"brew:ripgrep" = "latest"
+"brew:fd" = "latest"
+"brew:shellcheck" = "latest"
+"brew:shfmt" = "latest"
+"brew:make" = "latest"
+"brew:go-task" = "latest"
+"brew:tokei" = "latest"
+"brew:dust" = "latest"
+"brew:coreutils" = "latest"
+"brew:mas" = "latest"
+"brew:bat" = "latest"
+"brew:bottom" = "latest"
+"brew:eza" = "latest"
+"brew:fzf" = "latest"
+"brew:git-delta" = "latest"
+"brew:jj" = "latest"
+"brew:lazygit" = "latest"
+"brew:lazydocker" = "latest"
+"brew:yazi" = "latest"
+"brew:zoxide" = "latest"
+"brew:direnv" = "latest"
+"brew:sqlite" = "latest"
+"brew:file-formula" = "latest"
+"brew:ccls" = "latest"
+"brew:gopls" = "latest"
+"brew:jdtls" = "latest"
+"brew:lua-language-server" = "latest"
+"brew:basedpyright" = "latest"
+"brew:rust-analyzer" = "latest"
+"brew:stylua" = "latest"
+"brew:taplo" = "latest"
+"brew:zls" = "latest"
+"brew:prettier" = "latest"
+"brew:typescript-language-server" = "latest"
+
+[bootstrap.macos.keyboard]
+key_repeat = 2
+initial_key_repeat = 15
+
+[bootstrap.macos.trackpad]
+tap_to_click = true
+
+[bootstrap.macos.finder]
+show_pathbar = true
+
+[bootstrap.macos.dock]
+autohide = true
+show_recents = false
+tilesize = 48
+
+[bootstrap.macos.defaults]
+"NSGlobalDomain" = { AppleKeyboardUIMode = 3, ApplePressAndHoldEnabled = false, NSAutomaticCapitalizationEnabled = false, NSAutomaticDashSubstitutionEnabled = false, NSAutomaticPeriodSubstitutionEnabled = false, NSAutomaticQuoteSubstitutionEnabled = false, NSAutomaticSpellingCorrectionEnabled = false, AppleShowScrollBars = "Always", _HIHideMenuBar = false }
+"com.apple.controlcenter" = { BatteryShowPercentage = true }
+"com.apple.finder" = { AppleShowAllExtensions = true, ShowPathbar = true, ShowStatusBar = true, FXEnableExtensionChangeWarning = false, _FXShowPosixPathInTitle = true, FXPreferredViewStyle = "clmv" }
+"com.apple.dock" = { autohide = true, show-recents = false, tilesize = 48, minimize-to-application = true }
+"com.apple.Safari" = { ShowFullURLInSmartSearchField = true, ShowStatusBar = true, AutoFillPasswords = false, AutoOpenSafeDownloads = false }
+
+[bootstrap.user]
+login_shell = "/opt/homebrew/bin/fish"
+
+[bootstrap.hooks.pre-packages]
+run = "./scripts/pre-packages.sh"
+
+[bootstrap.hooks.post-defaults]
+run = "killall Dock Finder 2>/dev/null || true"
+
+[dotfiles]
+"~/.config/fish" = { mode = "symlink" }
+"~/.config/ghostty" = { mode = "symlink" }
+"~/.config/herdr" = { mode = "symlink" }
+"~/.config/aerospace" = { mode = "symlink" }
+"~/.config/karabiner" = { mode = "symlink" }
+"~/.config/nvim" = { mode = "symlink" }
+"~/.config/lazygit" = { mode = "symlink" }
+"~/.config/yazi" = { mode = "symlink" }
+"~/.gitconfig" = { mode = "symlink" }

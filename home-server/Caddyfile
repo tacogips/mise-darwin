@@ -1,0 +1,15 @@
+{
+  auto_https off
+}
+
+http://localhost:8080 {
+  respond "darwin-mac-home-server is installed"
+}
+
+http://localhost:9081 {
+  reverse_proxy 127.0.0.1:8096
+}
+
+http://localhost:9082 {
+  reverse_proxy 127.0.0.1:8082
+}

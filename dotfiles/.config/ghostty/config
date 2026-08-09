@@ -1,0 +1,9 @@
+font-family = Noto Sans Mono CJK JP
+font-size = 15
+theme = Gruvbox Dark Hard
+macos-titlebar-style = hidden
+macos-option-as-alt = true
+shell-integration = fish
+command = /bin/sh -lc 'if command -v herdr >/dev/null 2>&1; then exec herdr; elif command -v fish >/dev/null 2>&1; then exec fish -l; else exec /bin/zsh -l; fi'
+keybind = cmd+d=ignore
+keybind = cmd+n=ignore

@@ -1,0 +1,21 @@
+[env]
+MISE_DARWIN_PROFILE = "desktop"
+
+[bootstrap.packages]
+"brew:ccusage" = "latest"
+"brew:cline" = "latest"
+"brew:colima" = "latest"
+"brew:container" = "latest"
+"brew:podman" = "latest"
+"brew:podman-compose" = "latest"
+"brew:docker" = "latest"
+"brew:docker-compose" = "latest"
+"brew:herdr" = "latest"
+"mas:1440147259" = "latest" # AdGuard for Safari
+"mas:937984704" = "latest"  # Amphetamine
+"mas:640199958" = "latest"  # Apple Developer
+"mas:1352778147" = "latest" # Bitwarden
+"mas:1033342465" = "latest" # Just Press Record
+"mas:302584613" = "latest"  # Amazon Kindle
+"mas:1475387142" = "latest" # Tailscale
+"mas:497799835" = "latest"  # Xcode

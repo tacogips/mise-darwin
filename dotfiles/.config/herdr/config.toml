@@ -1,0 +1,14 @@
+onboarding = false
+
+[terminal]
+default_shell = "/opt/homebrew/bin/fish"
+shell_mode = "login"
+new_cwd = "follow"
+
+[keys]
+new_workspace = "alt+t"
+previous_workspace = "alt+k"
+next_workspace = "alt+j"
+rename_tab = "alt+r"
+switch_tab = "alt+1..9"
+zoom = "alt+f"

@@ -1,0 +1,14 @@
+name: darwin-mac-home-server
+
+services:
+  pigallery2:
+    image: bpatrik/pigallery2:latest
+    container_name: darwin-mac-home-server-pigallery2
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8082:80"
+    volumes:
+      - __SERVICE_ROOT__/state/pigallery2/config:/app/data/config
+      - __SERVICE_ROOT__/state/pigallery2/db:/app/data/db
+      - __SERVICE_ROOT__/state/pigallery2/tmp:/app/data/tmp
+      - __DATA_ROOT__/Photos:/app/data/images:ro

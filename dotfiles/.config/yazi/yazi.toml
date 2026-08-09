@@ -1,0 +1,27 @@
+[mgr]
+show_hidden = true
+sort_by = "mtime"
+sort_dir_first = true
+sort_reverse = true
+
+[opener]
+edit = [{ run = 'nvim "$@"', block = true, desc = "Neovim" }]
+open = [{ run = 'open "$@"', orphan = true, desc = "Open" }]
+chilla = [{ run = 'chilla "$@"', orphan = true, desc = "Chilla" }]
+terminal = [{ run = 'open -na Ghostty.app --args --working-directory="$1"', orphan = true, desc = "Terminal" }]
+
+[[open.prepend_rules]]
+mime = "inode/directory"
+use = "terminal"
+[[open.prepend_rules]]
+mime = "application/pdf"
+use = "chilla"
+[[open.prepend_rules]]
+mime = "image/*"
+use = "chilla"
+[[open.prepend_rules]]
+mime = "video/*"
+use = "chilla"
+[[open.append_rules]]
+url = "*"
+use = "edit"

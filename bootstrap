@@ -1,0 +1,24 @@
+#!/bin/sh
+set -eu
+
+profile="${1:-desktop}"
+if [ "$#" -gt 0 ]; then
+  shift
+fi
+case "$profile" in
+  desktop|home-server) ;;
+  *)
+    echo "usage: $0 [desktop|home-server]" >&2
+    exit 64
+    ;;
+esac
+
+repo_dir=$(cd -- "$(dirname -- "$0")" && pwd)
+cd "$repo_dir"
+
+if ! command -v mise >/dev/null 2>&1; then
+  echo "mise is required. Install it with: brew install mise" >&2
+  exit 127
+fi
+
+exec mise -E macos-arm64 -E "$profile" bootstrap --yes "$@"
