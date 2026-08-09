@@ -18,7 +18,7 @@
 	insteadOf = ssh://git@github.com/
 [credential "https://github.com"]
 	helper =
-	helper = !f() { test "$1" = get || exit 0; test -n "$GITHUB_TOKEN" || exit 0; echo username=x-access-token; echo "password=$GITHUB_TOKEN"; }; f
+	helper = "!f() { test \"$1\" = get || exit 0; test -n \"$GITHUB_TOKEN\" || exit 0; echo username=x-access-token; echo \"password=$GITHUB_TOKEN\"; }; f"
 [credential "https://gist.github.com"]
 	helper =
-	helper = !f() { test "$1" = get || exit 0; test -n "$GITHUB_TOKEN" || exit 0; echo username=x-access-token; echo "password=$GITHUB_TOKEN"; }; f
+	helper = "!f() { test \"$1\" = get || exit 0; test -n \"$GITHUB_TOKEN\" || exit 0; echo username=x-access-token; echo \"password=$GITHUB_TOKEN\"; }; f"

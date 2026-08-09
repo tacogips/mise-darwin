@@ -44,7 +44,7 @@ run = "./scripts/verify.sh"
 
 [tasks."nix:uninstall"]
 description = "Remove Nix after migration verification (requires explicit confirmation)"
-run = "./scripts/uninstall-nix.sh"
+run = "/bin/bash ./scripts/uninstall-nix.sh"
 
 [tasks."home-server:apply"]
 description = "Converge privileged home-server files and runtime directories"
