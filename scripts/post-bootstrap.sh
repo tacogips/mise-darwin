@@ -53,6 +53,10 @@ if [[ -d /Applications/chilla.app ]]; then
   codesign --force --deep --sign - /Applications/chilla.app >/dev/null
 fi
 
+if command -v ya >/dev/null 2>&1; then
+  ya pkg install
+fi
+
 developer_dir=/Applications/Xcode.app/Contents/Developer
 if [[ -d "$developer_dir" ]]; then
   current=$(/usr/bin/xcode-select -p 2>/dev/null || true)

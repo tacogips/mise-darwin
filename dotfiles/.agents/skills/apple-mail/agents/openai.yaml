@@ -1,0 +1,4 @@
+interface:
+  display_name: "Apple Mail"
+  short_description: "Search and read messages in Apple Mail"
+  default_prompt: "Use $apple-mail to search and read my Apple Mail messages."

@@ -35,7 +35,6 @@
 "brew:lazydocker" = "latest"
 "brew:yazi" = "latest"
 "brew:zoxide" = "latest"
-"brew:direnv" = "latest"
 "brew:sqlite" = "latest"
 "brew:file-formula" = "latest"
 "brew:ccls" = "latest"
@@ -91,3 +90,11 @@ run = "killall Dock Finder 2>/dev/null || true"
 "~/.config/lazygit" = { mode = "symlink" }
 "~/.config/yazi" = { mode = "symlink" }
 "~/.gitconfig" = { mode = "symlink" }
+"~/.agents/skills/apple-gateway" = { mode = "symlink" }
+"~/.agents/skills/apple-calendar" = { mode = "symlink" }
+"~/.agents/skills/apple-clock-alarms" = { mode = "symlink" }
+"~/.agents/skills/apple-mail" = { mode = "symlink" }
+"~/.agents/skills/apple-notes" = { mode = "symlink" }
+"~/.agents/skills/apple-notifications" = { mode = "symlink" }
+"~/.agents/skills/apple-reminders" = { mode = "symlink" }
+"~/.agents/skills/apple-schedule" = { mode = "symlink" }
