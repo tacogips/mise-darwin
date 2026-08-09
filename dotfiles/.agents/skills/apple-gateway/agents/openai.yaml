@@ -1,0 +1,4 @@
+interface:
+  display_name: "Apple Gateway"
+  short_description: "Diagnose and administer the apple-gateway CLI"
+  default_prompt: "Use $apple-gateway to diagnose my Apple Gateway setup or permissions."

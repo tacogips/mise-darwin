@@ -1,0 +1,4 @@
+interface:
+  display_name: "Apple Notes"
+  short_description: "Read and manage notes in Apple Notes"
+  default_prompt: "Use $apple-notes to find and manage my Apple Notes."

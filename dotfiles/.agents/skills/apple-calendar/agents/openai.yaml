@@ -1,0 +1,4 @@
+interface:
+  display_name: "Apple Calendar"
+  short_description: "Manage Apple Calendar events and calendars"
+  default_prompt: "Use $apple-calendar to review and manage my Apple Calendar events."

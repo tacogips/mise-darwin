@@ -23,10 +23,6 @@ if type -q zoxide
     zoxide init fish --cmd cd | source
 end
 
-if type -q direnv
-    direnv hook fish | source
-end
-
 # Secrets remain outside Git. Kinko's shared scope is loaded only when present.
 if status is-interactive; and type -q kinko
     kinko export fish --shared-only --force --confirm=false 2>/dev/null | source

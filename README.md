@@ -11,6 +11,7 @@ mise.macos-arm64.toml        Apple Silicon Mac 共通パッケージ・defaults�
 mise.desktop.toml            taco-mac の GUI アプリ・MAS アプリ
 mise.home-server.toml        darwin-mac-home-server のサービス依存
 dotfiles/.config/nvim/       通常の Lua + lazy.nvim 構成
+dotfiles/.agents/skills/     Apple Gateway の user skill 群
 home-server/                 /etc に収束させるサーバーテンプレート
 scripts/                     冪等な補助処理・検証・Nix アンインストール
 Brewfile.*                   Cask と third-party tap の差分
@@ -67,6 +68,11 @@ dotfiles/.config/nvim/
 プラグインは初回起動時に `lazy.nvim` が導入します。LSP、formatter、CLI は
 mise の tools または bootstrap の Homebrew package として管理します。
 `lazy-lock.json` が生成されたら Git に追加し、プラグインも固定してください。
+
+Yazi の Git plugin と Gruvbox flavor は `package.toml` で固定し、bootstrap
+終盤の `ya pkg install` で導入します。Karabiner は旧 Home Manager が生成していた
+ANSI/Kana 記号変換を含む完全な JSON を管理します。Apple Gateway user skills は
+他の user skill を巻き込まないよう、skill directory ごとに symlink します。
 
 ## 検証と Nix の削除
 

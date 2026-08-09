@@ -18,6 +18,166 @@
                 "to": [{ "key_code": "return_or_enter" }]
               }
             ]
+          },
+          {
+            "description": "restore ANSI symbol layout outside kana mode",
+            "manipulators": [
+              {
+                "type": "basic",
+                "from": { "key_code": "2", "modifiers": { "mandatory": ["shift"], "optional": ["caps_lock"] } },
+                "to": [{ "key_code": "open_bracket" }],
+                "conditions": [{ "type": "input_source_unless", "input_sources": [{ "input_source_id": "^com\\.apple\\.inputmethod\\.Kotoeri\\.KanaTyping\\.Japanese$" }] }]
+              },
+              {
+                "type": "basic",
+                "from": { "key_code": "6", "modifiers": { "mandatory": ["shift"], "optional": ["caps_lock"] } },
+                "to": [{ "key_code": "equal_sign" }],
+                "conditions": [{ "type": "input_source_unless", "input_sources": [{ "input_source_id": "^com\\.apple\\.inputmethod\\.Kotoeri\\.KanaTyping\\.Japanese$" }] }]
+              },
+              {
+                "type": "basic",
+                "from": { "key_code": "7", "modifiers": { "mandatory": ["shift"], "optional": ["caps_lock"] } },
+                "to": [{ "key_code": "6", "modifiers": ["shift"] }],
+                "conditions": [{ "type": "input_source_unless", "input_sources": [{ "input_source_id": "^com\\.apple\\.inputmethod\\.Kotoeri\\.KanaTyping\\.Japanese$" }] }]
+              },
+              {
+                "type": "basic",
+                "from": { "key_code": "8", "modifiers": { "mandatory": ["shift"], "optional": ["caps_lock"] } },
+                "to": [{ "key_code": "quote", "modifiers": ["shift"] }],
+                "conditions": [{ "type": "input_source_unless", "input_sources": [{ "input_source_id": "^com\\.apple\\.inputmethod\\.Kotoeri\\.KanaTyping\\.Japanese$" }] }]
+              },
+              {
+                "type": "basic",
+                "from": { "key_code": "9", "modifiers": { "mandatory": ["shift"], "optional": ["caps_lock"] } },
+                "to": [{ "key_code": "8", "modifiers": ["shift"] }],
+                "conditions": [{ "type": "input_source_unless", "input_sources": [{ "input_source_id": "^com\\.apple\\.inputmethod\\.Kotoeri\\.KanaTyping\\.Japanese$" }] }]
+              },
+              {
+                "type": "basic",
+                "from": { "key_code": "0", "modifiers": { "mandatory": ["shift"], "optional": ["caps_lock"] } },
+                "to": [{ "key_code": "9", "modifiers": ["shift"] }],
+                "conditions": [{ "type": "input_source_unless", "input_sources": [{ "input_source_id": "^com\\.apple\\.inputmethod\\.Kotoeri\\.KanaTyping\\.Japanese$" }] }]
+              },
+              {
+                "type": "basic",
+                "from": { "key_code": "hyphen", "modifiers": { "mandatory": ["shift"], "optional": ["caps_lock"] } },
+                "to": [{ "key_code": "international1", "modifiers": ["shift"] }],
+                "conditions": [{ "type": "input_source_unless", "input_sources": [{ "input_source_id": "^com\\.apple\\.inputmethod\\.Kotoeri\\.KanaTyping\\.Japanese$" }] }]
+              },
+              {
+                "type": "basic",
+                "from": { "key_code": "equal_sign", "modifiers": { "optional": ["caps_lock"] } },
+                "to": [{ "key_code": "hyphen", "modifiers": ["shift"] }],
+                "conditions": [{ "type": "input_source_unless", "input_sources": [{ "input_source_id": "^com\\.apple\\.inputmethod\\.Kotoeri\\.KanaTyping\\.Japanese$" }] }]
+              },
+              {
+                "type": "basic",
+                "from": { "key_code": "equal_sign", "modifiers": { "mandatory": ["shift"], "optional": ["caps_lock"] } },
+                "to": [{ "key_code": "semicolon", "modifiers": ["shift"] }],
+                "conditions": [{ "type": "input_source_unless", "input_sources": [{ "input_source_id": "^com\\.apple\\.inputmethod\\.Kotoeri\\.KanaTyping\\.Japanese$" }] }]
+              },
+              {
+                "type": "basic",
+                "from": { "key_code": "grave_accent_and_tilde", "modifiers": { "optional": ["caps_lock"] } },
+                "to": [{ "key_code": "open_bracket", "modifiers": ["shift"] }],
+                "conditions": [{ "type": "input_source_unless", "input_sources": [{ "input_source_id": "^com\\.apple\\.inputmethod\\.Kotoeri\\.KanaTyping\\.Japanese$" }] }]
+              },
+              {
+                "type": "basic",
+                "from": { "key_code": "grave_accent_and_tilde", "modifiers": { "mandatory": ["shift"], "optional": ["caps_lock"] } },
+                "to": [{ "key_code": "equal_sign", "modifiers": ["shift"] }],
+                "conditions": [{ "type": "input_source_unless", "input_sources": [{ "input_source_id": "^com\\.apple\\.inputmethod\\.Kotoeri\\.KanaTyping\\.Japanese$" }] }]
+              },
+              {
+                "type": "basic",
+                "from": { "key_code": "open_bracket", "modifiers": { "optional": ["caps_lock"] } },
+                "to": [{ "key_code": "close_bracket" }],
+                "conditions": [{ "type": "input_source_unless", "input_sources": [{ "input_source_id": "^com\\.apple\\.inputmethod\\.Kotoeri\\.KanaTyping\\.Japanese$" }] }]
+              },
+              {
+                "type": "basic",
+                "from": { "key_code": "open_bracket", "modifiers": { "mandatory": ["shift"], "optional": ["caps_lock"] } },
+                "to": [{ "key_code": "close_bracket", "modifiers": ["shift"] }],
+                "conditions": [{ "type": "input_source_unless", "input_sources": [{ "input_source_id": "^com\\.apple\\.inputmethod\\.Kotoeri\\.KanaTyping\\.Japanese$" }] }]
+              },
+              {
+                "type": "basic",
+                "from": { "key_code": "close_bracket", "modifiers": { "optional": ["caps_lock"] } },
+                "to": [{ "key_code": "backslash" }],
+                "conditions": [{ "type": "input_source_unless", "input_sources": [{ "input_source_id": "^com\\.apple\\.inputmethod\\.Kotoeri\\.KanaTyping\\.Japanese$" }] }]
+              },
+              {
+                "type": "basic",
+                "from": { "key_code": "close_bracket", "modifiers": { "mandatory": ["shift"], "optional": ["caps_lock"] } },
+                "to": [{ "key_code": "backslash", "modifiers": ["shift"] }],
+                "conditions": [{ "type": "input_source_unless", "input_sources": [{ "input_source_id": "^com\\.apple\\.inputmethod\\.Kotoeri\\.KanaTyping\\.Japanese$" }] }]
+              },
+              {
+                "type": "basic",
+                "from": { "key_code": "backslash", "modifiers": { "optional": ["caps_lock"] } },
+                "to": [{ "key_code": "international1" }],
+                "conditions": [{ "type": "input_source_unless", "input_sources": [{ "input_source_id": "^com\\.apple\\.inputmethod\\.Kotoeri\\.KanaTyping\\.Japanese$" }] }]
+              },
+              {
+                "type": "basic",
+                "from": { "key_code": "backslash", "modifiers": { "mandatory": ["shift"], "optional": ["caps_lock"] } },
+                "to": [{ "key_code": "international3", "modifiers": ["shift"] }],
+                "conditions": [{ "type": "input_source_unless", "input_sources": [{ "input_source_id": "^com\\.apple\\.inputmethod\\.Kotoeri\\.KanaTyping\\.Japanese$" }] }]
+              },
+              {
+                "type": "basic",
+                "from": { "key_code": "semicolon", "modifiers": { "mandatory": ["shift"], "optional": ["caps_lock"] } },
+                "to": [{ "key_code": "quote" }],
+                "conditions": [{ "type": "input_source_unless", "input_sources": [{ "input_source_id": "^com\\.apple\\.inputmethod\\.Kotoeri\\.KanaTyping\\.Japanese$" }] }]
+              },
+              {
+                "type": "basic",
+                "from": { "key_code": "quote", "modifiers": { "optional": ["caps_lock"] } },
+                "to": [{ "key_code": "7", "modifiers": ["shift"] }],
+                "conditions": [{ "type": "input_source_unless", "input_sources": [{ "input_source_id": "^com\\.apple\\.inputmethod\\.Kotoeri\\.KanaTyping\\.Japanese$" }] }]
+              },
+              {
+                "type": "basic",
+                "from": { "key_code": "quote", "modifiers": { "mandatory": ["shift"], "optional": ["caps_lock"] } },
+                "to": [{ "key_code": "2", "modifiers": ["shift"] }],
+                "conditions": [{ "type": "input_source_unless", "input_sources": [{ "input_source_id": "^com\\.apple\\.inputmethod\\.Kotoeri\\.KanaTyping\\.Japanese$" }] }]
+              }
+            ]
+          },
+          {
+            "description": "customize kana layout on US keyboard",
+            "manipulators": [
+              {
+                "type": "basic",
+                "from": { "key_code": "grave_accent_and_tilde", "modifiers": { "optional": ["caps_lock"] } },
+                "to": [{ "key_code": "international1" }],
+                "conditions": [{ "type": "input_source_if", "input_sources": [{ "input_source_id": "^com\\.apple\\.inputmethod\\.Kotoeri\\.KanaTyping\\.Japanese$" }] }]
+              },
+              {
+                "type": "basic",
+                "from": { "key_code": "equal_sign", "modifiers": { "mandatory": ["shift"], "optional": ["caps_lock"] } },
+                "to": [{ "key_code": "backslash", "modifiers": ["shift"] }],
+                "conditions": [{ "type": "input_source_if", "input_sources": [{ "input_source_id": "^com\\.apple\\.inputmethod\\.Kotoeri\\.KanaTyping\\.Japanese$" }] }]
+              },
+              {
+                "type": "basic",
+                "from": { "key_code": "hyphen", "modifiers": { "mandatory": ["shift"], "optional": ["caps_lock"] } },
+                "to": [{ "key_code": "international3" }],
+                "conditions": [{ "type": "input_source_if", "input_sources": [{ "input_source_id": "^com\\.apple\\.inputmethod\\.Kotoeri\\.KanaTyping\\.Japanese$" }] }]
+              },
+              {
+                "type": "basic",
+                "from": { "key_code": "backslash", "modifiers": { "mandatory": ["shift"], "optional": ["caps_lock"] } },
+                "to": [{ "key_code": "open_bracket", "modifiers": ["shift"] }],
+                "conditions": [{ "type": "input_source_if", "input_sources": [{ "input_source_id": "^com\\.apple\\.inputmethod\\.Kotoeri\\.KanaTyping\\.Japanese$" }] }]
+              },
+              {
+                "type": "basic",
+                "from": { "key_code": "grave_accent_and_tilde", "modifiers": { "mandatory": ["shift"], "optional": ["caps_lock"] } },
+                "to": [{ "key_code": "quote", "modifiers": ["shift"] }],
+                "conditions": [{ "type": "input_source_if", "input_sources": [{ "input_source_id": "^com\\.apple\\.inputmethod\\.Kotoeri\\.KanaTyping\\.Japanese$" }] }]
+              }
+            ]
           }
         ]
       }
