@@ -1,52 +1,105 @@
 # mise-darwin
 
-`tacogips/nix` の macOS（nix-darwin / Home Manager）構成を、mise を入口に
-再構築するリポジトリです。Nix Store や nix-darwin の世代管理には依存しません。
+This repository rebuilds the macOS configuration formerly managed in
+`tacogips/nix` with mise as the entry point. It does not depend on the Nix Store
+or nix-darwin generations.
 
-## 構成
+## Repository layout
 
 ```text
-mise.toml                    共通ツール・環境変数・タスク
-mise.macos-arm64.toml        Apple Silicon Mac 共通パッケージ・defaults・dotfiles
-mise.desktop.toml            taco-mac の GUI アプリ・MAS アプリ
-mise.home-server.toml        darwin-mac-home-server のサービス依存
-dotfiles/.config/nvim/       通常の Lua + lazy.nvim 構成
-dotfiles/.agents/skills/     Apple Gateway の user skill 群
-agent-user-scope/            Claude・Codex・Cursor・Riela の user-scope資産
-home-server/                 /etc に収束させるサーバーテンプレート
-scripts/                     冪等な補助処理・検証・Nix アンインストール
-Brewfile.*                   Cask と third-party tap の差分
+mise.toml                    Shared tools, environment variables, and tasks
+mise.macos-arm64.toml        Apple Silicon packages, defaults, and dotfiles
+mise.desktop.toml            Desktop GUI and Mac App Store applications
+mise.home-server.toml        Home-server service dependencies
+dotfiles/.config/nvim/       Lua and lazy.nvim configuration
+dotfiles/.agents/skills/     Apple Gateway user skills
+agent-user-scope/            Claude, Codex, Cursor, and Riela user assets
+home-server/                 Server templates converged under /etc
+scripts/                     Idempotent helpers, verification, and Nix removal
+Brewfile.*                   Casks and third-party tap packages
 ```
 
-`mise.macos-arm64.toml` とホストプロファイルを同時に明示して実行します。
-`bootstrap` wrapper はこの指定を行うため、通常は `-E` を直接扱う必要はありません。
+Commands load `mise.macos-arm64.toml` together with one host profile. The
+`bootstrap` wrapper supplies those environments, so normal use does not require
+passing `-E` manually.
 
-## Bootstrap
+## Set up a clean Mac
 
-Homebrew と mise の導入後、次を実行します。
+This repository targets Apple Silicon Macs with Homebrew installed under
+`/opt/homebrew`.
+
+First install the Xcode Command Line Tools. Wait for the installation dialog to
+finish before continuing.
 
 ```sh
-git clone https://github.com/tacogips/mise-darwin ~/gits/tacogips/mise-darwin
+xcode-select --install
+```
+
+Run the [official Homebrew installer](https://docs.brew.sh/Installation), then
+make Homebrew available in the current zsh session and future login sessions.
+
+```sh
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
+eval "$(/opt/homebrew/bin/brew shellenv)"
+```
+
+Install Git and mise. Homebrew is the
+[recommended mise installation method on macOS](https://mise.jdx.dev/installing-mise.html).
+
+```sh
+brew install git mise
+git --version
+mise --version
+```
+
+Clone this public repository and apply the desktop profile. Bootstrap may ask
+for the macOS password when changing system settings or the login shell. Sign in
+to the App Store first if Mac App Store applications should be installed.
+
+```sh
+mkdir -p ~/gits/tacogips
+git clone https://github.com/tacogips/mise-darwin.git ~/gits/tacogips/mise-darwin
 cd ~/gits/tacogips/mise-darwin
 mise trust
 ./bootstrap desktop
 ```
 
-home server は次の通りです。
+When bootstrap finishes, open a new Terminal window so the Homebrew Fish login
+shell is active, then verify the complete configuration.
+
+```sh
+cd ~/gits/tacogips/mise-darwin
+mise -E macos-arm64 -E desktop run verify
+```
+
+## Bootstrap an existing Mac
+
+If Homebrew and mise are already installed, run:
+
+```sh
+mkdir -p ~/gits/tacogips
+git clone https://github.com/tacogips/mise-darwin.git ~/gits/tacogips/mise-darwin
+cd ~/gits/tacogips/mise-darwin
+mise trust
+./bootstrap desktop
+```
+
+Use the home-server profile on the server Mac:
 
 ```sh
 ./bootstrap home-server
 ```
 
-変更を適用せず確認する場合:
+Preview changes or inspect missing resources without applying them:
 
 ```sh
 mise -E macos-arm64 -E desktop bootstrap --dry-run
 mise -E macos-arm64 -E desktop bootstrap status --missing
 ```
 
-既存の Home Manager symlink と衝突した場合、bootstrap は上書きせず停止します。
-内容を確認して退避した後に限り、`--force-dotfiles` を指定してください。
+Bootstrap stops instead of overwriting conflicting Home Manager links or local
+files. Inspect and back up those paths before explicitly allowing replacement:
 
 ```sh
 mise -E macos-arm64 -E desktop bootstrap --yes --force-dotfiles
@@ -54,80 +107,86 @@ mise -E macos-arm64 -E desktop bootstrap --yes --force-dotfiles
 
 ## Neovim
 
-Neovim は `dotfile_nvim` の階層構成と NVF の現行設定を元に、次の単位へ分割
-しています。
+The Neovim configuration translates the previous NVF setup into the layered
+layout used by `dotfile_nvim`:
 
 ```text
 dotfiles/.config/nvim/
 ├── init.lua
 ├── ftplugin/
 └── lua/taco/
-    ├── core/       options・keymaps・autocmds
-    └── plugins/    editor/UI/LSP・completion
+    ├── core/       Options, keymaps, and autocommands
+    └── plugins/    Editor, UI, LSP, and completion plugins
 ```
 
-プラグインは初回起動時に `lazy.nvim` が導入します。LSP、formatter、CLI は
-mise の tools または bootstrap の Homebrew package として管理します。
-`lazy-lock.json` が生成されたら Git に追加し、プラグインも固定してください。
+The first Neovim launch installs `lazy.nvim`. mise tools and bootstrap Homebrew
+packages provide language servers, formatters, and supporting CLI tools. Commit
+`lazy-lock.json` after reviewing the generated plugin lock.
 
-Yazi の Git plugin と Gruvbox flavor は `package.toml` で固定し、bootstrap
-終盤の `ya pkg install` で導入します。Karabiner は旧 Home Manager が生成していた
-ANSI/Kana 記号変換を含む完全な JSON を管理します。Apple Gateway user skills は
-他の user skill を巻き込まないよう、skill directory ごとに symlink します。
+Yazi Git plugins and the Gruvbox flavor are pinned in `package.toml` and
+installed with `ya pkg install` near the end of bootstrap. The Karabiner config
+includes the migrated ANSI/Kana symbol mappings. Apple Gateway skills are
+linked one skill directory at a time so unrelated user skills are preserved.
 
-## AI agent user scopeとRiela
+## AI agent user scope and Riela
 
-旧Home Managerが管理していたClaude user commands、Claude/Codex共通skills、
-Cursor CLI設定、Peekaboo MCP設定は`agent-user-scope/`に固定しています。
-bootstrapは既知のskill directoryだけを冪等に同期するため、Rielaや他の
-インストーラーが管理するskillを削除しません。`envrc-generate`だけはdirenv廃止
-方針により移植対象外です。
+`agent-user-scope/` contains the migrated Claude commands, shared Claude/Codex
+skills, Cursor CLI configuration, Peekaboo MCP configuration, and Cursor skill.
+Bootstrap synchronizes only known assets and does not remove skills managed by
+Riela or other installers. The old `envrc-generate` skill is intentionally
+excluded because this setup does not use direnv.
 
-デスクトップではRiela caskの導入後、`agent-user-scope/riela-packages.txt`の
-workflow/skill packageをuser scopeへインストールします。初回構築時に
-`~/gits/tacogips/riela-packages`がなければ公開GitHub repositoryからcloneします。
+On desktop hosts, bootstrap installs the Riela application and all user-scope
+workflow and skill packages listed in `agent-user-scope/riela-packages.txt`. If
+the public `tacogips/riela-packages` checkout is absent, the installer clones it
+under the standard checkout root.
 
-GitHub HTTPS認証は`GITHUB_TOKEN` credential helperを使います。Fishには
-`gh-token-export`、`gh-token-save-shared`、`gh-token-refresh`、`gh-token-reset`、
-`gh-clone`を移植しています。commit/push前のcredential検査は、Claude/Codexの
-`git-precommit-safety-check` user skillとして利用できます。
+GitHub HTTPS authentication uses the `GITHUB_TOKEN` credential helper. Fish
+provides `gh-token-export`, `gh-token-save-shared`, `gh-token-refresh`,
+`gh-token-reset`, and `gh-clone`. Claude and Codex expose the
+`git-precommit-safety-check` user skill for credential review before commit or
+push.
 
-## 検証と Nix の削除
+## Verification and Nix removal
 
-まず新しい shell で検証します。
+Verify the migrated setup from a new shell:
 
 ```sh
 mise -E macos-arm64 -E desktop run verify
 ```
 
-問題がないことを確認してから、Nix を削除します。taskは最初にnix-darwinを
-解除し、Determinate Installerがあればそのuninstallerを使います。それ以外は
-公式のlegacy multi-user手順を安全確認付きで実行します。
-
-```sh
-mise run nix:uninstall -- --confirm
-```
-
-Nix の削除は不可逆です。taskはDeterminate Installerに加えて、公式Nixの
-macOS legacy multi-user手順にも対応します。legacy経路ではAPFS `/nix` volume、
-login shell、user-scopeのNix Store symlinkを事前検証し、変更するsystem fileを
-`/var/backups/mise-darwin-nix-uninstall-*`へ退避してから削除します。実行内容だけを
-確認する場合は次を使用します。
-
-削除対象と順序は[Nix公式のmacOS multi-user uninstall手順](https://nix.dev/manual/nix/stable/installation/uninstall#macos)
-に合わせています。
+Only remove Nix after verification succeeds. Preview the destructive operation
+first:
 
 ```sh
 mise run nix:uninstall -- --confirm --dry-run
 ```
 
-`tacogips/nix` は移行完了まで参照用に残し、このリポジトリの検証が通ってから
-削除してください。
+Then run the uninstall task:
 
-## 現時点の境界
+```sh
+mise run nix:uninstall -- --confirm
+```
 
-- mise bootstrap は逐次収束で、nix-darwin の atomic switch / rollback はありません。
-- Formula は mise の direct brew manager、Cask と API metadata のない third-party tap は Homebrew Bundle で収束します。既存 Homebrew cask の receipt と競合しないための分離です。
-- Mac App Store は Apple Account、Xcode は初回起動・license 同意が必要な場合があります。
-- system LaunchDaemon は必要になった時点で、確認可能な専用 task と plist を追加します。
-- home server の `/etc` と volume directory は `home-server:apply` task が sudo で収束します。
+The task first removes nix-darwin. It uses the Determinate uninstaller when
+available and otherwise follows the
+[official legacy macOS multi-user uninstall procedure](https://nix.dev/manual/nix/stable/installation/uninstall#macos).
+The legacy path verifies the APFS `/nix` volume, login shell, and user-scope
+links before making changes. Modified system files are backed up under
+`/var/backups/mise-darwin-nix-uninstall-*`.
+
+Nix removal is irreversible. Keep the former configuration repository only as
+a migration reference until this repository passes verification.
+
+## Current boundaries
+
+- mise bootstrap converges sequentially and does not provide nix-darwin atomic
+  switches or generation rollback.
+- mise manages formulae directly. Homebrew Bundle handles casks and third-party
+  taps without API metadata, avoiding conflicts with existing cask receipts.
+- Mac App Store installation may require an Apple Account. Xcode may require a
+  first launch and license acceptance.
+- Add a dedicated, reviewable task and plist when a system LaunchDaemon becomes
+  necessary.
+- The `home-server:apply` task converges privileged `/etc` files and volume
+  directories for the home-server profile.

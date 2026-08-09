@@ -82,13 +82,15 @@ run = "./scripts/pre-packages.sh"
 run = "killall Dock Finder 2>/dev/null || true"
 
 [dotfiles]
-"~/.config/fish" = { mode = "symlink" }
+"~/.config/fish/config.fish" = { mode = "symlink" }
+"~/.config/fish/conf.d/shared-aliases.fish" = { mode = "symlink" }
+"~/.config/fish/functions" = { mode = "symlink" }
 "~/.config/ghostty" = { mode = "symlink" }
-"~/.config/herdr" = { mode = "symlink" }
-"~/.config/aerospace" = { mode = "symlink" }
-"~/.config/karabiner" = { mode = "symlink" }
+"~/.config/herdr/config.toml" = { mode = "symlink" }
+"~/.config/aerospace/aerospace.toml" = { mode = "symlink" }
+"~/.config/karabiner/karabiner.json" = { mode = "symlink" }
 "~/.config/nvim" = { mode = "symlink" }
-"~/.config/lazygit" = { mode = "symlink" }
+"~/.config/lazygit/config.yml" = { mode = "symlink" }
 "~/.config/yazi" = { mode = "symlink" }
 "~/.gitconfig" = { mode = "symlink" }
 "~/.agents/skills/apple-gateway" = { mode = "symlink" }
