@@ -36,16 +36,26 @@ julia = "latest"
 
 [tasks.bootstrap]
 description = "Run idempotent post-bootstrap configuration"
-run = "./scripts/post-bootstrap.sh"
+run = "python -m scripts.mise_darwin bootstrap"
 
 [tasks.verify]
 description = "Verify config, dotfiles, tools, and macOS integration"
-run = "./scripts/verify.sh"
+run = "python -m scripts.mise_darwin verify"
+
+[tasks.test]
+description = "Run the Python provisioning unit tests"
+run = "python -m unittest discover -s tests -v"
+
+[tasks."nvim:update"]
+description = "Update Neovim plugins and Tree-sitter parsers"
+run = '''
+nvim --headless "+Lazy! update" "+TSUpdateSync" +qa
+'''
 
 [tasks."nix:uninstall"]
 description = "Remove Nix after migration verification (requires explicit confirmation)"
-run = "/bin/bash ./scripts/uninstall-nix.sh"
+run = "python -m scripts.mise_darwin nix-uninstall"
 
 [tasks."home-server:apply"]
 description = "Converge privileged home-server files and runtime directories"
-run = "./scripts/home-server-apply.sh"
+run = "python -m scripts.mise_darwin home-server-apply"

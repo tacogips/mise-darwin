@@ -22,6 +22,7 @@ Source: `tacogips/nix/nixos/darwin` and its shared Home Manager modules.
 - GitHub token lifecycle Fish functions and the commit/push credential safety skill
 - Profile dry-runs, verification task, lockfile, and guarded Nix uninstall task
 - Determinate and official legacy macOS multi-user Nix uninstall paths with APFS and symlink preflight checks
+- Standard-library Python provisioning and verification, leaving shell only at the pre-Python bootstrap boundary
 
 ## Follow-up before deleting `tacogips/nix`
 
