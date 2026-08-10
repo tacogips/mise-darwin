@@ -27,6 +27,12 @@ for source_dir in "$source_root"/agents/skills/*; do
   sync_directory "$source_dir" "$HOME/.agents/skills/$(basename "$source_dir")"
 done
 
+# Wrike Gateway is shared by Codex-compatible agents and Claude Code. Keep one
+# canonical copy in the shared skill source and synchronize it to both roots.
+sync_directory \
+  "$source_root/agents/skills/wrike-via-gateway" \
+  "$HOME/.claude/skills/wrike-via-gateway"
+
 # Claude Code still uses its own command and skill roots.
 for source_file in "$source_root"/claude/commands/*.md; do
   [[ -f "$source_file" ]] || continue

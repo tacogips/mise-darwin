@@ -171,7 +171,8 @@ linked one skill directory at a time so unrelated user skills are preserved.
 ## AI agent user scope and Riela
 
 `agent-user-scope/` contains the migrated Claude commands, shared Claude/Codex
-skills, Cursor CLI configuration, Peekaboo MCP configuration, and Cursor skill.
+skills, including the Wrike Gateway skill, Cursor CLI configuration, Peekaboo
+MCP configuration, and Cursor skill.
 Bootstrap synchronizes only known assets and does not remove skills managed by
 Riela or other installers. The old `envrc-generate` skill is intentionally
 excluded because this setup does not use direnv.
