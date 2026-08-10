@@ -43,8 +43,10 @@ check "fish: GitHub token helper" test -f "$HOME/.config/fish/functions/gh-token
 check "agent skill: credential guardrail" test -f "$HOME/.agents/skills/git-precommit-safety-check/SKILL.md"
 check "agent skill: secure GitHub Actions" test -f "$HOME/.agents/skills/secure-github-action/SKILL.md"
 check "agent skill: diagram design" test -f "$HOME/.agents/skills/diagram-design/SKILL.md"
+check "agent skill: Wrike Gateway" test -f "$HOME/.agents/skills/wrike-via-gateway/SKILL.md"
 check "Claude user command" test -f "$HOME/.claude/commands/user-git-create-pr.md"
 check "Claude credential guardrail" test -f "$HOME/.claude/skills/git-precommit-safety-check/SKILL.md"
+check "Claude Wrike Gateway skill" test -f "$HOME/.claude/skills/wrike-via-gateway/SKILL.md"
 check "Cursor CLI config" test -f "$HOME/.cursor/cli-config.json"
 check_not_nix_symlink "Cursor config ownership" "$HOME/.cursor/cli-config.json"
 
