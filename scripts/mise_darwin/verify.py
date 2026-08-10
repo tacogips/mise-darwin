@@ -92,6 +92,8 @@ def _checks(profile: str, home: Path) -> list[tuple[str, Check]]:
         ("dotfile: nvim", path_check(home / ".config/nvim/init.lua")),
         ("dotfile: fish", path_check(home / ".config/fish/config.fish")),
         ("dotfile: git", path_check(home / ".gitconfig")),
+        ("dotfile: lazydocker", path_check(home / ".config/lazydocker/config.yml")),
+        ("dotfile: jj", path_check(home / ".config/jj/config.toml")),
         (
             "fish: GitHub token helper",
             path_check(home / ".config/fish/functions/gh-token-save-shared.fish", kind="file"),
@@ -143,6 +145,18 @@ def _checks(profile: str, home: Path) -> list[tuple[str, Check]]:
                 (
                     "Cursor Peekaboo skill",
                     path_check(home / ".cursor/skills/peekaboo/SKILL.md", kind="file"),
+                ),
+                (
+                    "AeroSpace display synchronizer",
+                    path_check(home / ".local/bin/aerospace-display-sync", kind="file"),
+                ),
+                (
+                    "AeroSpace display LaunchAgent",
+                    path_check(
+                        home
+                        / "Library/LaunchAgents/com.taco.aerospace-display-sync.plist",
+                        kind="file",
+                    ),
                 ),
             ]
         )

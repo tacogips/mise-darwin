@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import json
 import os
+import plistlib
+import sys
 from pathlib import Path
 from typing import cast
 
@@ -16,6 +18,7 @@ DOCKER_PLUGIN_DIRS = (
     "/usr/local/lib/docker/cli-plugins",
 )
 HERDR_TARGETS = ("claude", "codex")
+AEROSPACE_AGENT_LABEL = "com.taco.aerospace-display-sync"
 
 
 def _converge_brewfiles(profile: str) -> None:
@@ -135,6 +138,48 @@ def converge_docker_config(home: Path) -> None:
     atomic_write(path, json.dumps(config, indent=2, sort_keys=True) + "\n", mode=0o600)
 
 
+def converge_aerospace_sync(home: Path, *, load_agent: bool = True) -> None:
+    """Install the topology synchronizer and its periodic user LaunchAgent."""
+    launcher = home / ".local/bin/aerospace-display-sync"
+    source = REPO_ROOT / "scripts/mise_darwin/aerospace_sync.py"
+    launcher_content = (
+        f"#!{sys.executable}\n"
+        "import runpy\n"
+        f"runpy.run_path({str(source)!r}, run_name='__main__')\n"
+    )
+    if not launcher.is_file() or launcher.read_text(encoding="utf-8") != launcher_content:
+        atomic_write(launcher, launcher_content, mode=0o755)
+
+    state_dir = home / ".local/state/aerospace"
+    state_dir.mkdir(parents=True, exist_ok=True)
+    agent = home / "Library/LaunchAgents" / f"{AEROSPACE_AGENT_LABEL}.plist"
+    payload = plistlib.dumps(
+        {
+            "Label": AEROSPACE_AGENT_LABEL,
+            "ProgramArguments": [str(launcher)],
+            "RunAtLoad": True,
+            "StartInterval": 5,
+            "StandardOutPath": str(state_dir / "display-sync.log"),
+            "StandardErrorPath": str(state_dir / "display-sync.log"),
+        },
+        sort_keys=True,
+    )
+    changed = not agent.is_file() or agent.read_bytes() != payload
+    if changed:
+        atomic_write(agent, payload.decode("utf-8"), mode=0o644)
+
+    if not load_agent:
+        return
+    domain = f"gui/{os.getuid()}"
+    service = f"{domain}/{AEROSPACE_AGENT_LABEL}"
+    loaded = run(["launchctl", "print", service], quiet=True, check=False).returncode == 0
+    if changed and loaded:
+        run(["launchctl", "bootout", service], quiet=True, check=False)
+        loaded = False
+    if not loaded:
+        run(["launchctl", "bootstrap", domain, agent])
+
+
 def _configure_optional_tools() -> None:
     podman_helper = Path("/opt/homebrew/bin/podman-mac-helper")
     if podman_helper.is_file() and os.access(podman_helper, os.X_OK):
@@ -166,6 +211,8 @@ def apply(profile: str) -> None:
     _install_herdr_integrations()
     _retire_legacy_assets(home)
     converge_docker_config(home)
+    if profile == "desktop":
+        converge_aerospace_sync(home)
     _configure_optional_tools()
 
     if profile == "home-server":

@@ -1,9 +1,16 @@
 font-family = Noto Sans Mono CJK JP
 font-size = 15
-theme = Gruvbox Dark Hard
+theme = Gruvbox Dark
+window-padding-x = 5
+window-padding-y = 5
+window-decoration = auto
 macos-titlebar-style = hidden
 macos-option-as-alt = true
-shell-integration = fish
+shell-integration = none
+initial-command = /bin/sh -lc 'if command -v herdr >/dev/null 2>&1; then exec herdr; elif command -v fish >/dev/null 2>&1; then exec fish -l; else exec /bin/zsh -l; fi'
 command = /bin/sh -lc 'if command -v herdr >/dev/null 2>&1; then exec herdr; elif command -v fish >/dev/null 2>&1; then exec fish -l; else exec /bin/zsh -l; fi'
+copy-on-select = false
+confirm-close-surface = false
+app-notifications = config-reload,no-clipboard-copy
 keybind = cmd+d=ignore
 keybind = cmd+n=ignore

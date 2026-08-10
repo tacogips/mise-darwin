@@ -205,8 +205,11 @@ deleted line totals in red next to the branch.
 mise owns declarative packages, tools, dotfiles, defaults, and profile
 composition. Custom convergence is implemented as a standard-library Python
 package under `scripts/mise_darwin/`; it covers agent assets, Herdr and Riela
-integration, Docker configuration, home-server resources, verification, and
-guarded Nix removal. Run its unit tests with:
+integration, Docker configuration, AeroSpace display-topology workspace
+assignment, home-server resources, verification, and guarded Nix removal. On
+the desktop profile, workspaces 1 and 2 follow the first two external displays
+while workspace 9 follows the built-in display; a single external display owns
+both workspaces 1 and 2. Run its unit tests with:
 
 ```sh
 mise run test
