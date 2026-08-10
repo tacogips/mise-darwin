@@ -184,21 +184,6 @@ url = "https://julialang-s3.julialang.org/bin/mac/x64/1.12/julia-1.12.6-mac64.ta
 checksum = "sha256:1a70b7c606d6bac38a246e722369e5b30914dccf9378499d2712fb3bd282642c"
 url = "https://julialang-s3.julialang.org/bin/mac/x64/1.12/julia-1.12.6-mac64.tar.gz"
 
-[[tools.julia]]
-version = "1.12.6"
-backend = "http:julia"
-
-[tools.julia.options]
-format = "zip"
-
-[tools.julia."platforms.windows-x64"]
-checksum = "sha256:a63d991976e6893f508c512e3dc7bca1836c1a1f6ad1f3e4aedec159b6733e89"
-url = "https://julialang-s3.julialang.org/bin/winnt/x64/1.12/julia-1.12.6-win64.zip"
-
-[tools.julia."platforms.windows-x64-baseline"]
-checksum = "sha256:a63d991976e6893f508c512e3dc7bca1836c1a1f6ad1f3e4aedec159b6733e89"
-url = "https://julialang-s3.julialang.org/bin/winnt/x64/1.12/julia-1.12.6-win64.zip"
-
 [[tools.node]]
 version = "24.19.0"
 backend = "core:node"

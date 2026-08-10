@@ -23,6 +23,46 @@ Commands load `mise.macos-arm64.toml` together with one host profile. The
 `bootstrap` wrapper supplies those environments, so normal use does not require
 passing `-E` manually.
 
+## mise environments (`-E`)
+
+`-E NAME` tells mise to additionally load `mise.NAME.toml`. This repository
+defines the following environments:
+
+| `-E` value | Configuration file | Purpose |
+| --- | --- | --- |
+| `macos-arm64` | `mise.macos-arm64.toml` | Shared Apple Silicon packages, dotfiles, macOS defaults, and login shell |
+| `desktop` | `mise.desktop.toml` | Desktop packages, GUI applications, and `MISE_DARWIN_PROFILE=desktop` |
+| `home-server` | `mise.home-server.toml` | Home-server packages, paths, and `MISE_DARWIN_PROFILE=home-server` |
+
+Always combine `macos-arm64` with exactly one host profile:
+
+```sh
+# Desktop Mac
+mise -E macos-arm64 -E desktop bootstrap status --missing
+
+# Home-server Mac
+mise -E macos-arm64 -E home-server bootstrap status --missing
+```
+
+Without `-E`, mise loads only `mise.toml`. Common tools, environment variables,
+and tasks remain available, but the Homebrew packages, dotfiles, macOS defaults,
+login shell, and host-specific resources are not loaded. Consequently, a plain
+`mise bootstrap` is not a complete machine bootstrap.
+
+Prefer the wrapper for applying a host because it expands profiles correctly:
+
+```text
+./bootstrap desktop      -> mise -E macos-arm64 -E desktop bootstrap --yes
+./bootstrap home-server  -> mise -E macos-arm64 -E home-server bootstrap --yes
+```
+
+List profiles or display the mapping at any time:
+
+```sh
+./bootstrap --list-profiles
+./bootstrap --help
+```
+
 ## Set up a clean Mac
 
 This repository targets Apple Silicon Macs with Homebrew installed under

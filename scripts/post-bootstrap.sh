@@ -10,7 +10,7 @@ profile=${MISE_DARWIN_PROFILE:-desktop}
 brewfile="$repo_dir/Brewfile.$profile"
 common_brewfile="$repo_dir/Brewfile.common"
 if [[ -f "$common_brewfile" ]]; then
-  brew bundle check --file "$common_brewfile" >/dev/null 2>&1 || brew bundle --file "$common_brewfile" --no-lock
+  brew bundle check --file "$common_brewfile" >/dev/null 2>&1 || brew bundle --file "$common_brewfile"
 fi
 if [[ -f "$brewfile" ]]; then
   if [[ "$profile" == desktop ]]; then
@@ -18,7 +18,7 @@ if [[ -f "$brewfile" ]]; then
   else
     brew trust --tap slp/krunkit
   fi
-  brew bundle check --file "$brewfile" >/dev/null 2>&1 || brew bundle --file "$brewfile" --no-lock
+  brew bundle check --file "$brewfile" >/dev/null 2>&1 || brew bundle --file "$brewfile"
 fi
 
 "$repo_dir/scripts/install-agent-user-scope.sh"

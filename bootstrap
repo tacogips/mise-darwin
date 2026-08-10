@@ -1,6 +1,41 @@
 #!/bin/sh
 set -eu
 
+usage() {
+  cat <<'EOF'
+usage: ./bootstrap [desktop|home-server] [mise bootstrap options]
+
+Profiles:
+  desktop      load -E macos-arm64 -E desktop (default)
+  home-server  load -E macos-arm64 -E home-server
+
+Options:
+  -h, --help       show this help
+  --list-profiles  print supported profile names
+
+All arguments after the profile are forwarded to `mise bootstrap`.
+Running mise without -E loads only mise.toml; it does not load the shared
+macOS packages/dotfiles/defaults or either host profile.
+
+Examples:
+  ./bootstrap
+  ./bootstrap desktop
+  ./bootstrap desktop --dry-run
+  ./bootstrap home-server --only packages
+EOF
+}
+
+case "${1:-}" in
+  -h|--help|help)
+    usage
+    exit 0
+    ;;
+  --list-profiles)
+    printf '%s\n' desktop home-server
+    exit 0
+    ;;
+esac
+
 profile="${1:-desktop}"
 if [ "$#" -gt 0 ]; then
   shift
@@ -8,7 +43,7 @@ fi
 case "$profile" in
   desktop|home-server) ;;
   *)
-    echo "usage: $0 [desktop|home-server]" >&2
+    usage >&2
     exit 64
     ;;
 esac
