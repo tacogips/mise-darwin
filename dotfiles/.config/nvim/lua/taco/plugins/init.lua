@@ -66,6 +66,8 @@ return {
   },
   {
     "nvim-treesitter/nvim-treesitter",
+    -- The main branch is an incompatible rewrite without nvim-treesitter.configs.
+    branch = "master",
     build = ":TSUpdate",
     main = "nvim-treesitter.configs",
     opts = { highlight = { enable = true }, indent = { enable = true } },
