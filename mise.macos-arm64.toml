@@ -86,6 +86,8 @@ run = "killall Dock Finder 2>/dev/null || true"
 "~/.config/karabiner/karabiner.json" = { mode = "symlink" }
 "~/.config/nvim" = { mode = "symlink" }
 "~/.config/lazygit/config.yml" = { mode = "symlink" }
+"~/.config/lazydocker/config.yml" = { mode = "symlink" }
+"~/.config/jj/config.toml" = { mode = "symlink" }
 "~/.config/yazi" = { mode = "symlink" }
 "~/.gitconfig" = { mode = "symlink" }
 "~/.agents/skills/apple-gateway" = { mode = "symlink" }

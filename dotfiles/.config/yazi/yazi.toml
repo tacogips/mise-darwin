@@ -11,10 +11,10 @@ prepend_fetchers = [
 ]
 
 [opener]
-edit = [{ run = 'nvim "$@"', block = true, desc = "Neovim" }]
+edit = [{ run = '''mime_info="$(file -bL --mime -- "$1" 2>/dev/null || true)"; mime_type="${mime_info%%;*}"; if [ "$mime_type" != "inode/x-empty" ] && printf '%s' "$mime_info" | grep -q 'charset=binary'; then open "$1"; else target_dir="$(dirname -- "$1")"; target_name="$(basename -- "$1")"; cd -- "$target_dir" && "${EDITOR:-nvim}" -- "$target_name"; fi''', block = true, desc = "Neovim" }]
 open = [{ run = 'open "$@"', orphan = true, desc = "Open" }]
-chilla = [{ run = 'chilla "$@"', orphan = true, desc = "Chilla" }]
-terminal = [{ run = 'open -na Ghostty.app --args --working-directory="$1"', orphan = true, desc = "Terminal" }]
+chilla = [{ run = 'chilla "$@"', orphan = true, desc = "Open in Chilla" }]
+terminal = [{ run = 'open -na Ghostty.app --args --working-directory="$1"', orphan = true, desc = "Open terminal here" }]
 
 [[open.prepend_rules]]
 mime = "inode/directory"

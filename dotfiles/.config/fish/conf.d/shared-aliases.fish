@@ -3,6 +3,7 @@ alias gac='git add .; git commit -am'
 alias dc='docker compose'
 alias lg='lazygit'
 alias ldc='lazydocker'
+alias m='mise'
 alias gch='git checkout'
 alias htop='btm'
 alias cc='cargo check'
@@ -14,6 +15,8 @@ alias vim='nvim'
 alias n='nvim'
 alias cleanup="find . -type f -name '*.DS_Store' -ls -delete"
 
+# Codex 0.147.0 distinguishes Ctrl-I from Tab with keyboard enhancement enabled,
+# but completion handles only Tab. Re-test Ctrl-I after future Codex updates.
 function co --description 'Codex SOL with medium reasoning'
     command codex --dangerously-bypass-approvals-and-sandbox --model gpt-5.6-sol -c 'model_reasoning_effort="medium"' $argv
 end
