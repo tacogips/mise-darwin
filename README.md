@@ -15,7 +15,8 @@ dotfiles/.config/nvim/       Lua and lazy.nvim configuration
 dotfiles/.agents/skills/     Apple Gateway user skills
 agent-user-scope/            Claude, Codex, Cursor, and Riela user assets
 home-server/                 Server templates converged under /etc
-scripts/                     Idempotent helpers, verification, and Nix removal
+scripts/mise_darwin/         Standard-library Python provisioning commands
+tests/                       Python provisioning unit tests
 Brewfile.*                   Casks and third-party tap packages
 ```
 
@@ -163,8 +164,15 @@ The first Neovim launch installs `lazy.nvim`. mise tools and bootstrap Homebrew
 packages provide language servers, formatters, and supporting CLI tools. Commit
 `lazy-lock.json` after reviewing the generated plugin lock.
 
-Yazi Git plugins and the Gruvbox flavor are pinned in `package.toml` and
-installed with `ya pkg install` near the end of bootstrap. The Karabiner config
+Update Neovim plugins and Tree-sitter parsers through the shared mise entry
+point, then review and commit the resulting `lazy-lock.json` changes:
+
+```sh
+mise run nvim:update
+```
+
+Yazi Git plugins and the Gruvbox flavor are pinned in `package.toml` and their
+pinned contents are checked into the managed dotfiles. The Karabiner config
 includes the migrated ANSI/Kana symbol mappings. Apple Gateway skills are
 linked one skill directory at a time so unrelated user skills are preserved.
 
@@ -186,7 +194,26 @@ GitHub HTTPS authentication uses the `GITHUB_TOKEN` credential helper. Fish
 provides `gh-token-export`, `gh-token-save-shared`, `gh-token-refresh`,
 `gh-token-reset`, and `gh-clone`. Claude and Codex expose the
 `git-precommit-safety-check` user skill for credential review before commit or
-push.
+push. Bootstrap also installs or updates Herdr's built-in Claude and Codex hooks
+under each agent's home configuration while preserving their other settings.
+
+For tracked changes, the Fish prompt shows added line totals in green and
+deleted line totals in red next to the branch.
+
+## Provisioning implementation
+
+mise owns declarative packages, tools, dotfiles, defaults, and profile
+composition. Custom convergence is implemented as a standard-library Python
+package under `scripts/mise_darwin/`; it covers agent assets, Herdr and Riela
+integration, Docker configuration, home-server resources, verification, and
+guarded Nix removal. Run its unit tests with:
+
+```sh
+mise run test
+```
+
+Only the clean-machine `bootstrap` wrapper and the pre-package Homebrew conflict
+hook remain as POSIX shell because both can run before mise installs Python.
 
 ## Verification and Nix removal
 

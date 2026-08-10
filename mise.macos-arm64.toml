@@ -1,11 +1,9 @@
 [bootstrap.brew.taps]
 "tacogips/tap" = "https://github.com/tacogips/homebrew-tap.git"
-"tonyxiao/tap" = "https://github.com/tonyxiao/homebrew-tap.git"
-"steipete/tap" = "https://github.com/steipete/homebrew-tap.git"
-"slp/krunkit" = "https://github.com/slp/homebrew-krunkit.git"
 "nikitabobko/tap" = "https://github.com/nikitabobko/homebrew-tap.git"
 
 [bootstrap.packages]
+"brew:mise" = "latest"
 "brew:fish" = "latest"
 "brew:git" = "latest"
 "brew:gh" = "latest"
@@ -19,7 +17,6 @@
 "brew:shellcheck" = "latest"
 "brew:shfmt" = "latest"
 "brew:make" = "latest"
-"brew:go-task" = "latest"
 "brew:dust" = "latest"
 "brew:coreutils" = "latest"
 "brew:gawk" = "latest"
@@ -43,6 +40,7 @@
 "brew:basedpyright" = "latest"
 "brew:rust-analyzer" = "latest"
 "brew:stylua" = "latest"
+"brew:taplo" = "latest"
 "brew:zls" = "latest"
 "brew:prettier" = "latest"
 "brew:typescript-language-server" = "latest"

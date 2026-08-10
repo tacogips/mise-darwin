@@ -35,7 +35,8 @@ mise.home-server.toml     Home-server profile
 dotfiles/                 Symlinked user configuration
 agent-user-scope/         Explicitly synchronized agent assets
 home-server/              Home-server templates
-scripts/                  Idempotent bootstrap and maintenance helpers
+scripts/mise_darwin/      Standard-library Python provisioning commands
+scripts/pre-packages.sh   Pre-Python Homebrew conflict hook
 bootstrap                 Profile-aware bootstrap wrapper
 ```
 
@@ -43,6 +44,31 @@ Keep common resources in `mise.toml` or `mise.macos-arm64.toml`. Keep host-only
 resources in the corresponding profile file. Prefer declarative mise bootstrap
 resources; use a task only when the resource is unsupported or requires
 explicit idempotent logic.
+
+## Provisioning implementation policy
+
+- Use mise declarative resources first for packages, repositories, dotfiles,
+  macOS defaults, LaunchAgents, user settings, and versioned tools.
+- Implement provisioning that mise cannot express in the standard-library
+  Python package under `scripts/mise_darwin/`. Keep the CLI entry point in
+  `scripts/mise_darwin/__main__.py` and split behavior into focused modules.
+- Do not introduce new shell provisioning scripts. Shell is allowed only at the
+  pre-Python boundary, currently the `bootstrap` wrapper and
+  `scripts/pre-packages.sh`, where mise-managed Python is not yet available.
+- Run external commands with argument arrays through the shared Python command
+  helper. Do not use `shell=True`, command-string interpolation, or implicit
+  shell parsing.
+- Make every apply operation idempotent: inspect current state, change only
+  drifted resources, preserve unrelated user data, and report optional failures
+  explicitly.
+- Keep read-only verification separate from apply behavior. Destructive
+  operations must require explicit confirmation, validate exact targets, offer
+  a dry-run where practical, and preserve documented backups.
+- Use atomic writes for mutable configuration files and preserve unrelated keys
+  or content unless the repository explicitly owns the whole file.
+- Add or update unit tests for pure transformations, state detection, path
+  safety, and failure-prone convergence logic. Keep runtime dependencies out of
+  the Python package unless the standard library is demonstrably insufficient.
 
 ## Change procedure
 
@@ -85,6 +111,14 @@ depend on a user-managed shell:
 ```sh
 /bin/bash -n scripts/*.sh
 shellcheck scripts/*.sh
+```
+
+For Python provisioning changes, run:
+
+```sh
+python -m compileall -q scripts tests
+basedpyright scripts/mise_darwin tests
+mise run test
 ```
 
 Use `fish -n` for changed Fish files, `jq empty` for changed JSON files, and

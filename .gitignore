@@ -2,3 +2,5 @@
 mise.local.toml
 mise.*.local.toml
 .mise/
+__pycache__/
+*.py[cod]
