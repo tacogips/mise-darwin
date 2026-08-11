@@ -14,8 +14,8 @@ Options:
   --list-profiles  print supported profile names
 
 All arguments after the profile are forwarded to `mise bootstrap`.
-Running mise without -E loads only mise.toml; it does not load the shared
-macOS packages/dotfiles/defaults or either host profile.
+Ordinary mise commands default to the platform environment and desktop profile;
+this wrapper selects the requested host profile explicitly.
 
 Examples:
   ./bootstrap

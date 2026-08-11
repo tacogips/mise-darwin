@@ -7,11 +7,13 @@ or nix-darwin generations.
 ## Repository layout
 
 ```text
+.miserc.toml                 Default platform and desktop environments
 mise.toml                    Shared tools, environment variables, and tasks
 mise.macos-arm64.toml        Apple Silicon packages, defaults, and dotfiles
 mise.desktop.toml            Desktop GUI and Mac App Store applications
 mise.home-server.toml        Home-server service dependencies
 dotfiles/.config/nvim/       Lua and lazy.nvim configuration
+assets/wallpapers/           Git-managed desktop wallpaper
 dotfiles/.agents/skills/     Apple Gateway user skills
 agent-user-scope/            Claude, Codex, Cursor, and Riela user assets
 home-server/                 Server templates converged under /etc
@@ -20,9 +22,10 @@ tests/                       Python provisioning unit tests
 Brewfile.*                   Casks and third-party tap packages
 ```
 
-Commands load `mise.macos-arm64.toml` together with one host profile. The
-`bootstrap` wrapper supplies those environments, so normal use does not require
-passing `-E` manually.
+`.miserc.toml` enables mise's platform environment detection and selects the
+`desktop` host profile by default. On an Apple Silicon Mac, ordinary mise
+commands therefore load `mise.macos-arm64.toml` and `mise.desktop.toml` without
+requiring `-E`.
 
 ## mise environments (`-E`)
 
@@ -35,20 +38,21 @@ defines the following environments:
 | `desktop` | `mise.desktop.toml` | Desktop packages, GUI applications, and `MISE_DARWIN_PROFILE=desktop` |
 | `home-server` | `mise.home-server.toml` | Home-server packages, paths, and `MISE_DARWIN_PROFILE=home-server` |
 
-Always combine `macos-arm64` with exactly one host profile:
+Desktop commands use the defaults directly. Override the host profile for a
+home-server command:
 
 ```sh
 # Desktop Mac
-mise -E macos-arm64 -E desktop bootstrap status --missing
+mise bootstrap status --missing
 
 # Home-server Mac
-mise -E macos-arm64 -E home-server bootstrap status --missing
+mise -E home-server bootstrap status --missing
 ```
 
-Without `-E`, mise loads only `mise.toml`. Common tools, environment variables,
-and tasks remain available, but the Homebrew packages, dotfiles, macOS defaults,
-login shell, and host-specific resources are not loaded. Consequently, a plain
-`mise bootstrap` is not a complete machine bootstrap.
+The early `.miserc.toml` setting is required because platform and host
+environments must be selected before `mise.toml` is discovered. An explicit
+`-E` overrides the default `desktop` environment; `macos-arm64` remains
+automatic on Apple Silicon.
 
 Prefer the wrapper for applying a host because it expands profiles correctly:
 
@@ -62,6 +66,36 @@ List profiles or display the mapping at any time:
 ```sh
 ./bootstrap --list-profiles
 ./bootstrap --help
+```
+
+From Fish, update the shared mise tools followed by configured Desktop
+Homebrew formulae, casks, and Mac App Store packages with one command:
+
+```sh
+mupgrade-all
+```
+
+The same non-interactive operation is available directly as a mise task:
+
+```sh
+mise run upgrade-all
+```
+
+Run an individual update group when needed:
+
+```sh
+mise run upgrade-tools
+mise run upgrade-packages
+mise run upgrade-brew-common
+mise run upgrade-brew-desktop
+```
+
+Update only installed formulae and casks from `tacogips/tap` without a
+confirmation prompt:
+
+```sh
+mise run upgrade-taco
+mupgrade-taco
 ```
 
 ## Set up a clean Mac
@@ -171,9 +205,11 @@ point, then review and commit the resulting `lazy-lock.json` changes:
 mise run nvim:update
 ```
 
-Yazi Git plugins and the Gruvbox flavor are pinned in `package.toml` and their
-pinned contents are checked into the managed dotfiles. The Karabiner config
-includes the migrated ANSI/Kana symbol mappings. Apple Gateway skills are
+Yazi Git plugins are pinned in `package.toml`, and their pinned contents are
+checked into the managed dotfiles. Sora colors are shared by Neovim, Ghostty,
+Herdr, LazyGit, Yazi, bat/Delta, fzf, and eza. The Karabiner config
+includes the migrated ANSI/Kana symbol mappings. Desktop bootstrap applies the
+Git-managed Sora sea image to every macOS desktop. Apple Gateway skills are
 linked one skill directory at a time so unrelated user skills are preserved.
 
 ## AI agent user scope and Riela

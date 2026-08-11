@@ -20,10 +20,12 @@ end
 
 return {
   {
-    "ellisonleao/gruvbox.nvim",
+    "Aejkatappaja/sora",
     priority = 1000,
-    config = function()
-      vim.cmd.colorscheme("gruvbox")
+    opts = {},
+    config = function(_, opts)
+      require("sora").setup(opts)
+      vim.cmd.colorscheme("sora")
     end,
   },
   { "tpope/vim-surround" },
@@ -49,12 +51,9 @@ return {
   { "tomlion/vim-solidity", ft = "solidity" },
   { "evanleck/vim-svelte", ft = "svelte" },
   { "jbyuki/venn.nvim" },
-  { "cocopon/iceberg.vim" },
-  { "folke/tokyonight.nvim" },
   { "octol/vim-cpp-enhanced-highlight", ft = { "c", "cpp" } },
   { "tpope/vim-dispatch" },
   { "thosakwe/vim-flutter", ft = "dart" },
-  { "w0ng/vim-hybrid" },
   { "nvim-lua/lsp_extensions.nvim" },
   { "mracos/mermaid.vim", ft = "mermaid" },
   { "lewis6991/gitsigns.nvim", opts = {} },
@@ -151,7 +150,7 @@ return {
     dependencies = { "nvim-tree/nvim-web-devicons" },
     opts = {
       options = {
-        theme = "gruvbox",
+        theme = "sora",
         globalstatus = true,
         component_separators = { left = "", right = "|" },
         section_separators = { left = "", right = "" },
