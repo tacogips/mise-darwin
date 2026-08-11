@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import plistlib
@@ -10,7 +11,7 @@ from pathlib import Path
 from typing import cast
 
 from . import REPO_ROOT
-from . import agents, home_server
+from . import agents, home_server, wallpaper
 from .command import atomic_write, command_exists, manifest_lines, run
 
 DOCKER_PLUGIN_DIRS = (
@@ -19,6 +20,7 @@ DOCKER_PLUGIN_DIRS = (
 )
 HERDR_TARGETS = ("claude", "codex")
 AEROSPACE_AGENT_LABEL = "com.taco.aerospace-display-sync"
+BAT_THEME = REPO_ROOT / "dotfiles/.config/bat/themes/Sora.tmTheme"
 
 
 def _converge_brewfiles(profile: str) -> None:
@@ -95,6 +97,25 @@ def _install_herdr_integrations() -> None:
         if any(line.startswith(f"{target}: current ") for line in status.splitlines()):
             continue
         run(["herdr", "integration", "install", target])
+
+
+def converge_bat_theme_cache(home: Path) -> None:
+    """Rebuild bat's cache only when the managed Sora theme changes."""
+    if not command_exists("bat"):
+        print("warning: bat is not installed; skipping Sora theme cache")
+        return
+
+    digest = hashlib.sha256(BAT_THEME.read_bytes()).hexdigest()
+    stamp = home / ".cache/mise-darwin/bat-sora.sha256"
+    try:
+        current = stamp.read_text(encoding="utf-8").strip()
+    except FileNotFoundError:
+        current = ""
+    if current == digest:
+        return
+
+    run(["bat", "cache", "--build"])
+    atomic_write(stamp, f"{digest}\n", mode=0o600)
 
 
 def _retire_legacy_assets(home: Path) -> None:
@@ -209,9 +230,11 @@ def apply(profile: str) -> None:
     agents.install(profile=profile, home=home)
     _install_riela_packages(home)
     _install_herdr_integrations()
+    converge_bat_theme_cache(home)
     _retire_legacy_assets(home)
     converge_docker_config(home)
     if profile == "desktop":
+        wallpaper.apply()
         converge_aerospace_sync(home)
     _configure_optional_tools()
 

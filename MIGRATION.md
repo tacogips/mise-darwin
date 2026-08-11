@@ -11,11 +11,12 @@ Source: `tacogips/nix/nixos/darwin` and its shared Home Manager modules.
 - Fish activation, environment variables, common aliases/functions, and Kinko shared-secret import
 - Git identity, GitHub HTTPS URL conversion, token credential helper, and Delta integration
 - Ghostty, Herdr, AeroSpace, full ANSI/Kana Karabiner mapping, LazyGit, LazyDocker, Jujutsu/Delta, and Yazi configuration
+- Git-managed Sora sea wallpaper with desktop-wide macOS convergence
 - macOS keyboard, trackpad, Finder, Dock, Safari, and control-center defaults
 - Xcode selection and host toolchain environment
 - Docker CLI plugin paths, Podman helper, Chilla signing workaround, and retired Codex/tmux links
 - Hierarchical Neovim Lua configuration with lazy.nvim, LSP, completion, formatting, Telescope, Yazi, and filetype modules
-- Pinned Yazi Git plugin, Gruvbox flavor, git-diff tree, enter-directory behavior, and custom keymap
+- Pinned Yazi Git plugin, Sora theme, git-diff tree, enter-directory behavior, and custom keymap
 - Apple Gateway, Calendar, Clock, Mail, Notes, Notifications, Reminders, and Schedule user skills
 - Claude user commands, Claude/Codex shared user skills, Cursor CLI/MCP settings, and the Peekaboo Cursor skill
 - Riela desktop CLI/App and all declared user-scope development workflow/skill packages

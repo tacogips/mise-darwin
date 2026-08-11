@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Callable
 
 from . import REPO_ROOT
+from . import wallpaper
 from .command import manifest_lines, run
 
 
@@ -78,6 +79,13 @@ def herdr_integration(target: str) -> Check:
     return check
 
 
+def wallpaper_check() -> CheckResult:
+    target = wallpaper.WALLPAPER.resolve(strict=True)
+    current = wallpaper.desktop_pictures()
+    ok = bool(current) and all(path.resolve(strict=False) == target for path in current)
+    return CheckResult(ok, "managed wallpaper is not set on every desktop")
+
+
 def _checks(profile: str, home: Path) -> list[tuple[str, Check]]:
     checks: list[tuple[str, Check]] = [
         ("mise config", command_check("mise", "config", "ls")),
@@ -133,6 +141,7 @@ def _checks(profile: str, home: Path) -> list[tuple[str, Check]]:
     if profile == "desktop":
         checks.extend(
             [
+                ("desktop wallpaper", wallpaper_check),
                 ("riela", executable_check("riela")),
                 (
                     "Riela Codex user skill",

@@ -80,6 +80,7 @@ run = "killall Dock Finder 2>/dev/null || true"
 "~/.config/fish/config.fish" = { mode = "symlink" }
 "~/.config/fish/conf.d/shared-aliases.fish" = { mode = "symlink" }
 "~/.config/fish/functions" = { mode = "symlink" }
+"~/.config/bat/themes/Sora.tmTheme" = { mode = "symlink" }
 "~/.config/ghostty" = { mode = "symlink" }
 "~/.config/herdr/config.toml" = { mode = "symlink" }
 "~/.config/aerospace/aerospace.toml" = { mode = "symlink" }

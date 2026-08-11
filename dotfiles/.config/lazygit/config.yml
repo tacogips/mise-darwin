@@ -5,15 +5,19 @@ keybinding:
   universal:
     edit: <enter>
 gui:
+  nerdFontsVersion: "3"
   theme:
-    activeBorderColor: ["#89b4fa", bold]
-    inactiveBorderColor: ["#a6adc8"]
-    optionsTextColor: ["#89b4fa"]
-    selectedLineBgColor: ["#313244"]
-    cherryPickedCommitBgColor: ["#45475a"]
-    cherryPickedCommitFgColor: ["#89b4fa"]
-    unstagedChangesColor: ["#f38ba8"]
-    defaultFgColor: ["#cdd6f4"]
-    searchingActiveBorderColor: ["#f9e2af"]
+    activeBorderColor: ["#80c8e0", bold]
+    inactiveBorderColor: ["#586478"]
+    searchingActiveBorderColor: ["#d4b878", bold]
+    optionsTextColor: ["#80c8e0"]
+    selectedLineBgColor: ["#283448"]
+    inactiveViewSelectedLineBgColor: ["#1e2430"]
+    cherryPickedCommitFgColor: ["#80c8e0"]
+    cherryPickedCommitBgColor: ["#b0a0d8"]
+    markedBaseCommitFgColor: ["#80c8e0"]
+    markedBaseCommitBgColor: ["#d4b878"]
+    unstagedChangesColor: ["#c46c78"]
+    defaultFgColor: ["#c8d0e0"]
   authorColors:
-    "*": "#b4befe"
+    "*": "#b0a0d8"

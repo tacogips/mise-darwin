@@ -1,6 +1,6 @@
 font-family = Noto Sans Mono CJK JP
 font-size = 15
-theme = Gruvbox Dark
+theme = sora
 window-padding-x = 5
 window-padding-y = 5
 window-decoration = auto

@@ -5,7 +5,7 @@ from __future__ import annotations
 import argparse
 import os
 
-from . import bootstrap, home_server, nix_uninstall, verify
+from . import bootstrap, home_server, nix_uninstall, upgrade_taco, verify
 
 
 class Arguments(argparse.Namespace):
@@ -27,6 +27,9 @@ def parser() -> argparse.ArgumentParser:
     subcommands.add_parser("bootstrap", help="run idempotent post-tool configuration")
     subcommands.add_parser("verify", help="verify the current host profile")
     subcommands.add_parser("home-server-apply", help="converge home-server resources")
+    subcommands.add_parser(
+        "upgrade-taco", help="upgrade installed tacogips Homebrew formulae and casks"
+    )
     uninstall = subcommands.add_parser("nix-uninstall", help="remove Nix from macOS")
     uninstall.add_argument("--confirm", action="store_true")
     uninstall.add_argument("--dry-run", action="store_true")
@@ -43,6 +46,9 @@ def main() -> int:
         return 0 if verify.verify(profile) else 1
     if arguments.command == "home-server-apply":
         home_server.apply()
+        return 0
+    if arguments.command == "upgrade-taco":
+        upgrade_taco.upgrade()
         return 0
     if arguments.command == "nix-uninstall":
         return nix_uninstall.uninstall(
