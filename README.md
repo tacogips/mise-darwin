@@ -98,6 +98,63 @@ mise run upgrade-taco
 mupgrade-taco
 ```
 
+## Temporary packages
+
+Run the latest official qFlipper release without copying it into
+`/Applications`:
+
+```sh
+mise run shell -- qflipper
+```
+
+The task first searches mise's registry. When the name is not present there, it
+queries the Homebrew Cask API and verifies the Cask's published SHA-256. DMGs
+are stored under mise's cache root and extracted with macOS system tool
+`/usr/bin/hdiutil`; its presence and executable permission are checked before
+use. Ordinary mise tools are installed with `mise install-into`.
+The extracted application is reused from `/tmp/qflipper-<sha256-prefix>` while
+that directory exists. The temporary HTTP download cache is pruned after 30
+days without reuse. No Fish alias is installed for qFlipper.
+
+Unprefixed names search mise first and Homebrew Cask second. Prefix a name to
+select one resolver explicitly:
+
+```sh
+mise run shell -- brew-cask:qflipper
+mise run shell -- mise:ripgrep
+```
+
+For a Cask app, `shell` launches the temporary `.app`. For a mise CLI tool it
+starts `$SHELL` with the tool's executable directories prepended to `PATH`.
+Pass a command after another `--` to run it directly instead:
+
+```sh
+mise run shell -- mise:ripgrep -- rg --version
+```
+
+The same temporary installer can run another checksum-pinned HTTPS artifact:
+
+```sh
+mise run temp-install -- \
+  --name example \
+  --version 1.2.3 \
+  --url https://example.com/example-1.2.3.tar.gz \
+  --sha256 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef \
+  --executable bin/example \
+  --bin-path bin \
+  --format auto \
+  -- --help
+```
+
+The managed destination is `/tmp/<name>-<sha256-prefix>`. Existing paths are
+reused only when their ownership marker and artifact identity (name, URL, and
+SHA-256) match; an unrelated path is never overwritten. Add `--dry-run` before
+the final `--` to inspect the destination and command without installing or
+launching the tool. Use `--install-only` to install and print the executable
+path without launching it.
+Fish aliases for mise itself and the upgrade tasks are kept separately in
+`dotfiles/.config/fish/conf.d/mise-aliases.fish`.
+
 ## Set up a clean Mac
 
 This repository targets Apple Silicon Macs with Homebrew installed under
