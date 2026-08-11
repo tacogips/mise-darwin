@@ -48,6 +48,14 @@ run = "python -m scripts.mise_darwin verify"
 description = "Run the Python provisioning unit tests"
 run = "python -m unittest discover -s tests -v"
 
+[tasks.temp-install]
+description = "Install and run a checksum-pinned HTTP tool from /tmp"
+run = "python -m scripts.mise_darwin temp-install"
+
+[tasks.shell]
+description = "Resolve and run a temporary mise or Homebrew Cask package"
+run = "python -m scripts.mise_darwin shell"
+
 [tasks.upgrade-tools]
 description = "Update tools managed by mise"
 run = "mise upgrade --local --yes"
