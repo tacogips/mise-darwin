@@ -6,7 +6,7 @@ shell_mode = "login"
 new_cwd = "follow"
 
 [keys]
-new_workspace = "alt+n"
+new_workspace = ""
 new_tab = "alt+t"
 close_tab = "alt+w"
 previous_workspace = "alt+k"
