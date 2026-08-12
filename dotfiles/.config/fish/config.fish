@@ -24,6 +24,13 @@ end
 
 if type -q zoxide
     zoxide init fish --cmd cd | source
+
+    # zoxide marks its cd completion as --no-files, which prevents Fish from
+    # deriving path autosuggestions such as `cd news` -> `cd news-gateway/`.
+    # Keep zoxide's cd function while restoring local directory completion.
+    complete --erase cd
+    complete --command cd --arguments '(__zoxide_z_complete)'
+    complete --command cd --arguments '(__fish_complete_cd)'
 end
 
 # Secrets remain outside Git. Kinko's shared scope is loaded only when present.
