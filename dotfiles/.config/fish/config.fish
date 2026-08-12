@@ -50,6 +50,8 @@ fish_vi_key_bindings
 bind -M insert ctrl-p up-or-search
 bind -M insert ctrl-n down-or-search
 bind -M insert ctrl-o accept-autosuggestion
+bind -M insert ctrl-i accept-autosuggestion
+bind -M insert tab accept-autosuggestion
 bind -M insert ctrl-h backward-delete-char
 bind -M insert ctrl-a beginning-of-line
 
