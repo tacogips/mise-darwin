@@ -6,6 +6,7 @@
 "brew:mise" = "latest"
 "brew:fish" = "latest"
 "brew:git" = "latest"
+"brew:git-lfs" = "latest"
 "brew:gh" = "latest"
 "brew:neovim" = "latest"
 "brew:curl" = "latest"
