@@ -19,8 +19,7 @@ Map the request to the narrowest matching skill:
   `/riela` requests: `riela` first; let its routing select a narrower Riela skill
 - Browser UI operation: `brave-browser-computer-use`
 - Diagrams: `diagram-design`
-- Pre-commit safety or GitHub Actions: `git-precommit-safety-check` or
-  `secure-github-action`
+- GitHub Actions: `secure-github-action`
 - Source security review: `codex-source-security-check-loop`
 - Session self-review: `improve`
 - Environment setup: `envrc-generate`

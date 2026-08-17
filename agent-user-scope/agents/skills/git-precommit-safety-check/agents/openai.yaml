@@ -1,7 +1,0 @@
-interface:
-  display_name: "Git Precommit Safety Check"
-  short_description: "Review commit targets for secrets, private URLs, and local paths without gitleaks"
-  default_prompt: "Use $git-precommit-safety-check to inspect the commit target before committing or pushing."
-
-policy:
-  allow_implicit_invocation: true
