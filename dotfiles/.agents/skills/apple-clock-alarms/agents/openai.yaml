@@ -2,3 +2,6 @@ interface:
   display_name: "Apple Clock Alarms"
   short_description: "Manage alarms in the macOS Clock app"
   default_prompt: "Use $apple-clock-alarms to review and manage my Clock alarms."
+
+policy:
+  allow_implicit_invocation: false

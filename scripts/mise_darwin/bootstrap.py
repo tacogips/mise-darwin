@@ -10,8 +10,7 @@ import sys
 from pathlib import Path
 from typing import cast
 
-from . import REPO_ROOT
-from . import agents, home_server, wallpaper
+from . import REPO_ROOT, agents, home_server, wallpaper
 from .command import atomic_write, command_exists, manifest_lines, run
 
 DOCKER_PLUGIN_DIRS = (
@@ -79,10 +78,11 @@ def _install_riela_packages(home: Path) -> None:
             quiet=True,
         )
 
+    agent_paths = agents.AgentPaths(home)
     required = (
-        home / ".codex/skills/fable-and-improve-codex/SKILL.md",
-        home / ".claude/skills/fable-and-improve-codex/SKILL.md",
-        home / ".claude/skills/fable-and-improve-opus/SKILL.md",
+        agent_paths.codex_skills / "fable-and-improve-codex/SKILL.md",
+        agent_paths.claude_skills / "fable-and-improve-codex/SKILL.md",
+        agent_paths.claude_skills / "fable-and-improve-opus/SKILL.md",
     )
     missing = [path for path in required if not path.is_file()]
     if missing:
@@ -229,6 +229,7 @@ def apply(profile: str) -> None:
     _converge_brewfiles(profile)
     agents.install(profile=profile, home=home)
     _install_riela_packages(home)
+    agents.converge_codex_skill_visibility(home)
     _install_herdr_integrations()
     converge_bat_theme_cache(home)
     _retire_legacy_assets(home)
