@@ -148,8 +148,8 @@ commit target and ensure it contains none of the following:
 - Generated logs, sessions, caches, backups, or environment-expanded secrets.
 
 Environment-variable references such as `$GITHUB_TOKEN`, generic home-relative
-paths such as `~/.config`, and public repository URLs are acceptable. Use the
-`git-precommit-safety-check` skill before committing or pushing.
+paths such as `~/.config`, and public repository URLs are acceptable. Inspect
+the exact commit target manually before committing or pushing.
 
 ## GitHub authentication
 

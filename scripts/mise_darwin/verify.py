@@ -107,13 +107,6 @@ def _checks(profile: str, home: Path) -> list[tuple[str, Check]]:
             path_check(home / ".config/fish/functions/gh-token-save-shared.fish", kind="file"),
         ),
         (
-            "agent skill: credential guardrail",
-            path_check(
-                agent_paths.shared_skills / "git-precommit-safety-check/SKILL.md",
-                kind="file",
-            ),
-        ),
-        (
             "agent skill: secure GitHub Actions",
             path_check(
                 agent_paths.shared_skills / "secure-github-action/SKILL.md", kind="file"
@@ -141,13 +134,6 @@ def _checks(profile: str, home: Path) -> list[tuple[str, Check]]:
             "Claude user command",
             path_check(
                 agent_paths.claude_commands / "user-git-create-pr.md", kind="file"
-            ),
-        ),
-        (
-            "Claude credential guardrail",
-            path_check(
-                agent_paths.claude_skills / "git-precommit-safety-check/SKILL.md",
-                kind="file",
             ),
         ),
         (

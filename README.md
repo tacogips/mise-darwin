@@ -291,9 +291,8 @@ under the standard checkout root.
 
 GitHub HTTPS authentication uses the `GITHUB_TOKEN` credential helper. Fish
 provides `gh-token-export`, `gh-token-save-shared`, `gh-token-refresh`,
-`gh-token-reset`, and `gh-clone`. Claude and Codex expose the
-`git-precommit-safety-check` user skill for credential review before commit or
-push. Bootstrap also installs or updates Herdr's built-in Claude and Codex hooks
+`gh-token-reset`, and `gh-clone`. Bootstrap installs or updates Herdr's
+built-in Claude and Codex hooks
 under each agent's home configuration while preserving their other settings.
 
 For tracked changes, the Fish prompt shows added line totals in green and
