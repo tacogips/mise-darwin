@@ -9,8 +9,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable
 
-from . import REPO_ROOT
-from . import wallpaper
+from . import REPO_ROOT, agents, wallpaper
 from .command import manifest_lines, run
 
 
@@ -87,6 +86,7 @@ def wallpaper_check() -> CheckResult:
 
 
 def _checks(profile: str, home: Path) -> list[tuple[str, Check]]:
+    agent_paths = agents.AgentPaths(home)
     checks: list[tuple[str, Check]] = [
         ("mise config", command_check("mise", "config", "ls")),
         ("mise doctor", command_check("mise", "doctor")),
@@ -108,34 +108,56 @@ def _checks(profile: str, home: Path) -> list[tuple[str, Check]]:
         ),
         (
             "agent skill: credential guardrail",
-            path_check(home / ".agents/skills/git-precommit-safety-check/SKILL.md", kind="file"),
+            path_check(
+                agent_paths.shared_skills / "git-precommit-safety-check/SKILL.md",
+                kind="file",
+            ),
         ),
         (
             "agent skill: secure GitHub Actions",
-            path_check(home / ".agents/skills/secure-github-action/SKILL.md", kind="file"),
+            path_check(
+                agent_paths.shared_skills / "secure-github-action/SKILL.md", kind="file"
+            ),
         ),
         (
             "agent skill: diagram design",
-            path_check(home / ".agents/skills/diagram-design/SKILL.md", kind="file"),
+            path_check(
+                agent_paths.shared_skills / "diagram-design/SKILL.md", kind="file"
+            ),
         ),
         (
             "agent skill: Wrike Gateway",
-            path_check(home / ".agents/skills/wrike-via-gateway/SKILL.md", kind="file"),
+            path_check(
+                agent_paths.shared_skills / "wrike-via-gateway/SKILL.md", kind="file"
+            ),
+        ),
+        (
+            "agent skill: user skill router",
+            path_check(
+                agent_paths.shared_skills / "user-skill-router/SKILL.md", kind="file"
+            ),
         ),
         (
             "Claude user command",
-            path_check(home / ".claude/commands/user-git-create-pr.md", kind="file"),
+            path_check(
+                agent_paths.claude_commands / "user-git-create-pr.md", kind="file"
+            ),
         ),
         (
             "Claude credential guardrail",
-            path_check(home / ".claude/skills/git-precommit-safety-check/SKILL.md", kind="file"),
+            path_check(
+                agent_paths.claude_skills / "git-precommit-safety-check/SKILL.md",
+                kind="file",
+            ),
         ),
         (
             "Claude Wrike Gateway skill",
-            path_check(home / ".claude/skills/wrike-via-gateway/SKILL.md", kind="file"),
+            path_check(
+                agent_paths.claude_skills / "wrike-via-gateway/SKILL.md", kind="file"
+            ),
         ),
-        ("Cursor CLI config", path_check(home / ".cursor/cli-config.json", kind="file")),
-        ("Cursor config ownership", not_nix_symlink(home / ".cursor/cli-config.json")),
+        ("Cursor CLI config", path_check(agent_paths.cursor_config, kind="file")),
+        ("Cursor config ownership", not_nix_symlink(agent_paths.cursor_config)),
     ]
 
     if profile == "desktop":
@@ -145,15 +167,23 @@ def _checks(profile: str, home: Path) -> list[tuple[str, Check]]:
                 ("riela", executable_check("riela")),
                 (
                     "Riela Codex user skill",
-                    path_check(home / ".codex/skills/fable-and-improve-codex/SKILL.md", kind="file"),
+                    path_check(
+                        agent_paths.codex_skills / "fable-and-improve-codex/SKILL.md",
+                        kind="file",
+                    ),
                 ),
                 (
                     "Riela Claude user skill",
-                    path_check(home / ".claude/skills/fable-and-improve-codex/SKILL.md", kind="file"),
+                    path_check(
+                        agent_paths.claude_skills / "fable-and-improve-codex/SKILL.md",
+                        kind="file",
+                    ),
                 ),
                 (
                     "Cursor Peekaboo skill",
-                    path_check(home / ".cursor/skills/peekaboo/SKILL.md", kind="file"),
+                    path_check(
+                        agent_paths.cursor_skills / "peekaboo/SKILL.md", kind="file"
+                    ),
                 ),
                 (
                     "AeroSpace display synchronizer",

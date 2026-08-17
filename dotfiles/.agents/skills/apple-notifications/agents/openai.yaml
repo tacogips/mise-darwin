@@ -2,3 +2,6 @@ interface:
   display_name: "Apple Notifications"
   short_description: "Read, post, and dismiss macOS notifications"
   default_prompt: "Use $apple-notifications to review or manage my macOS notifications."
+
+policy:
+  allow_implicit_invocation: false

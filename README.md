@@ -278,6 +278,12 @@ Bootstrap synchronizes only known assets and does not remove skills managed by
 Riela or other installers. The old `envrc-generate` skill is intentionally
 excluded because this setup does not use direnv.
 
+Codex keeps only `user-skill-router` implicitly visible. Detailed user skills
+remain explicitly invocable and are loaded lazily through the router, avoiding
+the 2% skill-metadata context limit without removing functionality. Bootstrap
+derives the shared, Codex, Claude Code, and Cursor roots from one home-directory
+path model instead of maintaining repeated absolute paths.
+
 On desktop hosts, bootstrap installs the Riela application and all user-scope
 workflow and skill packages listed in `agent-user-scope/riela-packages.txt`. If
 the public `tacogips/riela-packages` checkout is absent, the installer clones it

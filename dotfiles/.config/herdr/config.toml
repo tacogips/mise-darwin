@@ -7,6 +7,7 @@ new_cwd = "follow"
 
 [keys]
 new_workspace = "alt+n"
+close_workspace = "alt+q"
 new_tab = "alt+t"
 close_tab = "alt+w"
 previous_workspace = "alt+k"
@@ -41,3 +42,4 @@ peach = "#d0a888"
 
 [ui]
 agent_panel_sort = "priority"
+confirm_close = true
