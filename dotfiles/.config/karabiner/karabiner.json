@@ -115,7 +115,7 @@
               {
                 "type": "basic",
                 "from": { "key_code": "backslash", "modifiers": { "optional": ["caps_lock"] } },
-                "to": [{ "key_code": "international1" }],
+                "to": [{ "key_code": "international3", "modifiers": ["right_option"] }],
                 "conditions": [{ "type": "input_source_unless", "input_sources": [{ "input_source_id": "^com\\.apple\\.inputmethod\\.Kotoeri\\.KanaTyping\\.Japanese$" }] }]
               },
               {
