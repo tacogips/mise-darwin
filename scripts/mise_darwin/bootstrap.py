@@ -20,6 +20,8 @@ DOCKER_PLUGIN_DIRS = (
 HERDR_TARGETS = ("claude", "codex")
 AEROSPACE_AGENT_LABEL = "com.taco.aerospace-display-sync"
 BAT_THEME = REPO_ROOT / "dotfiles/.config/bat/themes/Sora.tmTheme"
+LEGACY_CODEX_RIELA_SKILL = "fable-and-improve-codex"
+RIELA_CLI = Path("/opt/homebrew/bin/riela")
 
 
 def _converge_brewfiles(profile: str) -> None:
@@ -45,6 +47,7 @@ def _install_riela_packages(home: Path) -> None:
         print("warning: riela is not installed; skipping user package installation")
         return
 
+    converge_riela_cli_quarantine()
     checkout = Path(
         os.environ.get("RIELA_PACKAGES_CHECKOUT", home / "gits/tacogips/riela-packages")
     )
@@ -79,14 +82,44 @@ def _install_riela_packages(home: Path) -> None:
         )
 
     agent_paths = agents.AgentPaths(home)
+    retire_legacy_codex_riela_skill(agent_paths.codex_skills)
     required = (
-        agent_paths.codex_skills / "fable-and-improve-codex/SKILL.md",
+        agent_paths.codex_skills
+        / "codex-design-and-implement-review-loop/SKILL.md",
         agent_paths.claude_skills / "fable-and-improve-codex/SKILL.md",
         agent_paths.claude_skills / "fable-and-improve-opus/SKILL.md",
     )
     missing = [path for path in required if not path.is_file()]
     if missing:
         raise RuntimeError(f"Riela did not install required user skill: {missing[0]}")
+
+
+def converge_riela_cli_quarantine(cli: Path = RIELA_CLI) -> None:
+    """Remove a cask quarantine attribute that can stall the signed Riela CLI."""
+
+    if not cli.is_file():
+        return
+    quarantine = run(
+        ["xattr", "-p", "com.apple.quarantine", cli], quiet=True, check=False
+    )
+    if quarantine.returncode == 0:
+        run(["xattr", "-d", "com.apple.quarantine", cli])
+
+
+def retire_legacy_codex_riela_skill(codex_skills: Path) -> None:
+    """Remove only known files from the former cross-agent skill projection."""
+
+    skill = codex_skills / LEGACY_CODEX_RIELA_SKILL
+    for relative in (Path("SKILL.md"), Path("agents/openai.yaml")):
+        path = skill / relative
+        if path.is_file() or path.is_symlink():
+            path.unlink()
+
+    for directory in (skill / "agents", skill):
+        try:
+            directory.rmdir()
+        except (FileNotFoundError, OSError):
+            pass
 
 
 def _install_herdr_integrations() -> None:

@@ -154,7 +154,8 @@ def _checks(profile: str, home: Path) -> list[tuple[str, Check]]:
                 (
                     "Riela Codex user skill",
                     path_check(
-                        agent_paths.codex_skills / "fable-and-improve-codex/SKILL.md",
+                        agent_paths.codex_skills
+                        / "codex-design-and-implement-review-loop/SKILL.md",
                         kind="file",
                     ),
                 ),
