@@ -287,7 +287,15 @@ path model instead of maintaining repeated absolute paths.
 On desktop hosts, bootstrap installs the Riela application and all user-scope
 workflow and skill packages listed in `agent-user-scope/riela-packages.txt`. If
 the public `tacogips/riela-packages` checkout is absent, the installer clones it
-under the standard checkout root.
+under the standard checkout root. The Fable-led `fable-and-improve-codex` skill
+is installed for Claude Code only. Codex uses
+`codex-design-and-implement-review-loop`, whose analysis, design, planning,
+implementation, review, and verification roles are all Codex-backed. Bootstrap
+retires only the known files from the former Codex projection of the Fable
+skill and preserves any unrelated files in that directory. Before invoking the
+Riela CLI installed by the desktop cask, bootstrap removes its quarantine
+attribute only when present; this prevents a signed CLI update from stalling in
+the macOS loader.
 
 GitHub HTTPS authentication uses the `GITHUB_TOKEN` credential helper. Fish
 provides `gh-token-export`, `gh-token-save-shared`, `gh-token-refresh`,
