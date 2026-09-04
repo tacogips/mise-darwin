@@ -59,8 +59,8 @@ description = "Resolve and run a temporary mise or Homebrew Cask package"
 run = "python -m scripts.mise_darwin shell"
 
 [tasks.upgrade-tools]
-description = "Update tools managed by mise"
-run = "mise upgrade --local --yes"
+description = "Update tools managed by mise without pruning globally tracked versions"
+run = "mise upgrade --local --yes --no-prune"
 
 [tasks.upgrade-packages]
 description = "Update Desktop Homebrew formulae and Mac App Store packages"
@@ -76,17 +76,19 @@ description = "Install or update dependencies from Brewfile.desktop"
 env.HOMEBREW_NO_ASK = "1"
 run = "brew bundle install --file Brewfile.desktop"
 
-[tasks.upgrade-taco]
+[tasks.upgrade-tacogips]
 description = "Update installed tacogips Homebrew formulae and casks"
-run = "python -m scripts.mise_darwin upgrade-taco"
+run = "python -m scripts.mise_darwin upgrade-tacogips"
 
-[tasks.upgrade-all]
-description = "Update all Desktop dependencies"
+[tasks.upgrade-taco]
+description = "Update all managed Desktop dependencies"
+alias = "upgrade-all"
 run = [
   { task = "upgrade-tools" },
   { task = "upgrade-packages" },
   { task = "upgrade-brew-common" },
   { task = "upgrade-brew-desktop" },
+  { task = "upgrade-tacogips" },
 ]
 
 [tasks."nvim:update"]

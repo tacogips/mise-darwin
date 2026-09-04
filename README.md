@@ -68,16 +68,20 @@ List profiles or display the mapping at any time:
 ./bootstrap --help
 ```
 
-From Fish, update the shared mise tools followed by configured Desktop
-Homebrew formulae, casks, and Mac App Store packages with one command:
+From Fish, update everything managed for the Desktop profile with one
+command: mise tools, Homebrew formulae and casks, Mac App Store applications,
+and installed packages from `tacogips/tap`:
 
 ```sh
-mupgrade-all
+mupgrade-taco
 ```
 
-The same non-interactive operation is available directly as a mise task:
+The same non-interactive operation is available directly as a mise task.
+`upgrade-all` (and the `mupgrade-all` alias) is kept as an alias of the same
+task:
 
 ```sh
+mise run upgrade-taco
 mise run upgrade-all
 ```
 
@@ -88,15 +92,14 @@ mise run upgrade-tools
 mise run upgrade-packages
 mise run upgrade-brew-common
 mise run upgrade-brew-desktop
+mise run upgrade-tacogips
 ```
 
-Update only installed formulae and casks from `tacogips/tap` without a
-confirmation prompt:
+`upgrade-tools` skips mise's global tracked-config pruning so that source
+templates containing unrendered tool-version variables cannot block upgrades.
 
-```sh
-mise run upgrade-taco
-mupgrade-taco
-```
+`upgrade-tacogips` updates only installed formulae and casks from
+`tacogips/tap` without a confirmation prompt.
 
 ## Temporary packages
 
@@ -153,7 +156,10 @@ the final `--` to inspect the destination and command without installing or
 launching the tool. Use `--install-only` to install and print the executable
 path without launching it.
 Fish aliases for mise itself and the upgrade tasks are kept separately in
-`dotfiles/.config/fish/conf.d/mise-aliases.fish`.
+`dotfiles/.config/fish/conf.d/mise-aliases.fish`. mise's generated completions
+are loaded lazily from `dotfiles/.config/fish/completions/mise.fish`, so
+subcommands and configured tasks are suggested for commands such as
+`mise run` without adding work to shell startup.
 
 ## Set up a clean Mac
 
