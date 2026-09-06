@@ -297,8 +297,13 @@ under the standard checkout root. The Fable-led `fable-and-improve-codex` skill
 is installed for Claude Code only. Codex uses
 `codex-design-and-implement-review-loop`, with GPT-6 Astra handling design,
 design review, implementation-plan creation, and implementation-plan review;
-GPT-5.6 Terra handling implementation; and GPT-5.6 SOL handling implementation
-self-review, test-integrity review, independent review, and adversarial review.
+GPT-5.6 Terra handling implementation; and GPT-5.6 SOL handling test-integrity,
+independent, and adversarial review. The compact 18-step graph integrates
+author self-checks into design, planning, and implementation, and combines
+implementation-plan completion verification with commit preparation while
+retaining the independent review gates. The Fable-led Codex and Opus workflows
+likewise author design and implementation plans in one Fable execution before
+their independent implementation review and final goal review.
 Bootstrap retires only the known files from the former Codex projection of the
 Fable skill and preserves any unrelated files in that directory. Before invoking the
 Riela CLI installed by the desktop cask, bootstrap removes its quarantine
