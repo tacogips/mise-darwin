@@ -295,10 +295,12 @@ workflow and skill packages listed in `agent-user-scope/riela-packages.txt`. If
 the public `tacogips/riela-packages` checkout is absent, the installer clones it
 under the standard checkout root. The Fable-led `fable-and-improve-codex` skill
 is installed for Claude Code only. Codex uses
-`codex-design-and-implement-review-loop`, whose analysis, design, planning,
-implementation, review, and verification roles are all Codex-backed. Bootstrap
-retires only the known files from the former Codex projection of the Fable
-skill and preserves any unrelated files in that directory. Before invoking the
+`codex-design-and-implement-review-loop`, with GPT-6 Astra handling design,
+design review, implementation-plan creation, and implementation-plan review;
+GPT-5.6 Terra handling implementation; and GPT-5.6 SOL handling implementation
+self-review, test-integrity review, independent review, and adversarial review.
+Bootstrap retires only the known files from the former Codex projection of the
+Fable skill and preserves any unrelated files in that directory. Before invoking the
 Riela CLI installed by the desktop cask, bootstrap removes its quarantine
 attribute only when present; this prevents a signed CLI update from stalling in
 the macOS loader.
