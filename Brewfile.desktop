@@ -6,6 +6,7 @@ tap "nikitabobko/tap"
 
 brew "tacogips/tap/wrike-gateway"
 brew "tacogips/tap/apple-gateway"
+brew "tacogips/tap/google-documents-gateway"
 brew "tonyxiao/tap/bws"
 brew "slp/krunkit/krunkit"
 brew "tacogips/tap/ign"
