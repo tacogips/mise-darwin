@@ -42,39 +42,47 @@ def _trust_brew_taps(profile: str) -> None:
     run(["brew", "trust", "--tap", *taps])
 
 
-def _install_riela_packages(home: Path) -> None:
+def converge_riela_packages(home: Path) -> None:
     if not command_exists("riela"):
         print("warning: riela is not installed; skipping user package installation")
         return
 
     converge_riela_cli_quarantine()
-    checkout = Path(
-        os.environ.get("RIELA_PACKAGES_CHECKOUT", home / "gits/tacogips/riela-packages")
-    )
+    configured_checkout = os.environ.get("RIELA_PACKAGES_CHECKOUT") or None
+    checkout = Path(configured_checkout or home / "gits/tacogips/riela-packages")
+    git_executable = os.environ.get("RIELA_GIT_EXECUTABLE") or "git"
     packages = checkout / "packages"
     if not packages.is_dir():
         if checkout.exists():
             raise RuntimeError(f"{checkout} exists but has no packages directory")
         checkout.parent.mkdir(parents=True, exist_ok=True)
-        run(["git", "clone", "https://github.com/tacogips/riela-packages.git", checkout])
+        run([git_executable, "clone", "https://github.com/tacogips/riela-packages.git", checkout])
+    elif configured_checkout is None:
+        if not (checkout / ".git").exists():
+            raise RuntimeError(f"default Riela package checkout is not a Git repository: {checkout}")
+        run([git_executable, "-C", checkout, "pull", "--ff-only"])
 
     manifest = REPO_ROOT / "agent-user-scope/riela-packages.txt"
     for package_id in manifest_lines(manifest):
         source = packages / package_id
         if not source.is_dir():
             raise RuntimeError(f"required Riela package source is missing: {source}")
-        print(f"installing Riela user package: {package_id}")
+        installed = home / ".riela/packages" / package_id
+        if installed.exists() and not (installed / "riela-package.json").is_file():
+            raise RuntimeError(f"Riela package destination exists without a manifest: {installed}")
+        action = "update" if (installed / "riela-package.json").is_file() else "install"
+        verb = "updating" if action == "update" else "installing"
+        print(f"{verb} Riela user package: {package_id}")
         run(
             [
                 "riela",
                 "package",
-                "install",
+                action,
                 package_id,
                 "--source",
                 source,
                 "--scope",
                 "user",
-                "--overwrite",
                 "--output",
                 "json",
             ],
@@ -261,7 +269,7 @@ def apply(profile: str) -> None:
     _trust_brew_taps(profile)
     _converge_brewfiles(profile)
     agents.install(profile=profile, home=home)
-    _install_riela_packages(home)
+    converge_riela_packages(home)
     agents.converge_codex_skill_visibility(home)
     _install_herdr_integrations()
     converge_bat_theme_cache(home)

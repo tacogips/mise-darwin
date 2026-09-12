@@ -294,7 +294,14 @@ path model instead of maintaining repeated absolute paths.
 On desktop hosts, bootstrap installs the Riela application and all user-scope
 workflow and skill packages listed in `agent-user-scope/riela-packages.txt`. If
 the public `tacogips/riela-packages` checkout is absent, the installer clones it
-under the standard checkout root. The Fable-led `fable-and-improve-codex` skill
+under the standard checkout root. Later runs fast-forward that checkout once
+(regular Git checkouts and worktrees are supported),
+then use `riela package update --source` for installed packages and
+`riela package install --source` for missing ones. Set `RIELA_PACKAGES_CHECKOUT`
+to use a locally managed checkout without pulling it, and set
+`RIELA_GIT_EXECUTABLE` when Git is not on `PATH`. No default Riela registry or
+`package registry sync` command is needed. The Fable-led
+`fable-and-improve-codex` skill
 is installed for Claude Code only. Codex uses
 `codex-design-and-implement-review-loop`, with GPT-6 Astra handling design,
 design review, implementation-plan creation, and implementation-plan review;
