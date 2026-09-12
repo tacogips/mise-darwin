@@ -10,7 +10,7 @@ import sys
 from pathlib import Path
 from typing import cast
 
-from . import REPO_ROOT, agents, home_server, wallpaper
+from . import REPO_ROOT, agents, wallpaper
 from .command import atomic_write, command_exists, manifest_lines, run
 
 DOCKER_PLUGIN_DIRS = (
@@ -271,6 +271,3 @@ def apply(profile: str) -> None:
         wallpaper.apply()
         converge_aerospace_sync(home)
     _configure_optional_tools()
-
-    if profile == "home-server":
-        home_server.apply()

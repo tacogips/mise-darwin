@@ -211,19 +211,6 @@ def _checks(profile: str, home: Path) -> list[tuple[str, Check]]:
             ]
         )
 
-    if profile == "home-server":
-        checks.extend(
-            [
-                (
-                    "home-server config",
-                    path_check(Path("/etc/darwin-mac-home-server/compose.yaml"), kind="file"),
-                ),
-                (
-                    "home-server workspace",
-                    path_check(home / "home-server/compose.yaml", kind="symlink"),
-                ),
-            ]
-        )
     return checks
 
 

@@ -11,12 +11,10 @@ or nix-darwin generations.
 mise.toml                    Shared tools, environment variables, and tasks
 mise.macos-arm64.toml        Apple Silicon packages, defaults, and dotfiles
 mise.desktop.toml            Desktop GUI and Mac App Store applications
-mise.home-server.toml        Home-server service dependencies
 dotfiles/.config/nvim/       Lua and lazy.nvim configuration
 assets/wallpapers/           Git-managed desktop wallpaper
 dotfiles/.agents/skills/     Apple Gateway user skills
 agent-user-scope/            Claude, Codex, Cursor, and Riela user assets
-home-server/                 Server templates converged under /etc
 scripts/mise_darwin/         Standard-library Python provisioning commands
 tests/                       Python provisioning unit tests
 Brewfile.*                   Casks and third-party tap packages
@@ -36,17 +34,12 @@ defines the following environments:
 | --- | --- | --- |
 | `macos-arm64` | `mise.macos-arm64.toml` | Shared Apple Silicon packages, dotfiles, macOS defaults, and login shell |
 | `desktop` | `mise.desktop.toml` | Desktop packages, GUI applications, and `MISE_DARWIN_PROFILE=desktop` |
-| `home-server` | `mise.home-server.toml` | Home-server packages, paths, and `MISE_DARWIN_PROFILE=home-server` |
-
-Desktop commands use the defaults directly. Override the host profile for a
-home-server command:
+Desktop commands use the defaults directly:
 
 ```sh
 # Desktop Mac
 mise bootstrap status --missing
 
-# Home-server Mac
-mise -E home-server bootstrap status --missing
 ```
 
 The early `.miserc.toml` setting is required because platform and host
@@ -58,7 +51,6 @@ Prefer the wrapper for applying a host because it expands profiles correctly:
 
 ```text
 ./bootstrap desktop      -> mise -E macos-arm64 -E desktop bootstrap --yes
-./bootstrap home-server  -> mise -E macos-arm64 -E home-server bootstrap --yes
 ```
 
 List profiles or display the mapping at any time:
@@ -223,12 +215,6 @@ mise trust
 ./bootstrap desktop
 ```
 
-Use the home-server profile on the server Mac:
-
-```sh
-./bootstrap home-server
-```
-
 Preview changes or inspect missing resources without applying them:
 
 ```sh
@@ -325,7 +311,7 @@ mise owns declarative packages, tools, dotfiles, defaults, and profile
 composition. Custom convergence is implemented as a standard-library Python
 package under `scripts/mise_darwin/`; it covers agent assets, Herdr and Riela
 integration, Docker configuration, AeroSpace display-topology workspace
-assignment, home-server resources, verification, and guarded Nix removal. On
+assignment, verification, and guarded Nix removal. On
 the desktop profile, workspaces 1 and 2 follow the first two external displays
 while workspace 9 follows the built-in display; a single external display owns
 both workspaces 1 and 2. Run its unit tests with:
@@ -378,5 +364,3 @@ a migration reference until this repository passes verification.
   first launch and license acceptance.
 - Add a dedicated, reviewable task and plist when a system LaunchDaemon becomes
   necessary.
-- The `home-server:apply` task converges privileged `/etc` files and volume
-  directories for the home-server profile.
