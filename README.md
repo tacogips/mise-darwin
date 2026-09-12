@@ -1,8 +1,27 @@
 # mise-darwin
 
-This repository rebuilds the macOS configuration formerly managed in
-`tacogips/nix` with mise as the entry point. It does not depend on the Nix Store
-or nix-darwin generations.
+This repository rebuilds an Apple Silicon macOS development desktop formerly
+managed in `tacogips/nix`, with mise as the entry point. It is intentionally
+desktop-only: it is not a home-server or general-purpose host configuration.
+It does not depend on the Nix Store or nix-darwin generations.
+
+## New machine setup
+
+On a new Apple Silicon Mac, install Homebrew if it is not already available,
+then install mise, check out this repository under the standard workspace path,
+and run the desktop bootstrap:
+
+```sh
+brew install mise
+mkdir -p ~/gits/tacogips
+git clone https://github.com/tacogips/mise-darwin.git ~/gits/tacogips/mise-darwin
+cd ~/gits/tacogips/mise-darwin
+mise trust
+./bootstrap
+```
+
+The bootstrap configures this Mac as the development desktop. Sign in to the
+Mac App Store first if App Store applications should be installed.
 
 ## Repository layout
 
@@ -21,9 +40,8 @@ Brewfile.*                   Casks and third-party tap packages
 ```
 
 `.miserc.toml` enables mise's platform environment detection and selects the
-`desktop` host profile by default. On an Apple Silicon Mac, ordinary mise
-commands therefore load `mise.macos-arm64.toml` and `mise.desktop.toml` without
-requiring `-E`.
+`desktop` environment by default. This repository targets development desktop
+Macs only.
 
 ## mise environments (`-E`)
 
@@ -33,24 +51,21 @@ defines the following environments:
 | `-E` value | Configuration file | Purpose |
 | --- | --- | --- |
 | `macos-arm64` | `mise.macos-arm64.toml` | Shared Apple Silicon packages, dotfiles, macOS defaults, and login shell |
-| `desktop` | `mise.desktop.toml` | Desktop packages, GUI applications, and `MISE_DARWIN_PROFILE=desktop` |
+| `desktop` | `mise.desktop.toml` | Development desktop packages, GUI applications, and Mac App Store apps |
 Desktop commands use the defaults directly:
 
 ```sh
-# Desktop Mac
 mise bootstrap status --missing
 
 ```
 
-The early `.miserc.toml` setting is required because platform and host
-environments must be selected before `mise.toml` is discovered. An explicit
-`-E` overrides the default `desktop` environment; `macos-arm64` remains
-automatic on Apple Silicon.
+The early `.miserc.toml` setting is required because platform and desktop
+environments must be selected before `mise.toml` is discovered.
 
-Prefer the wrapper for applying a host because it expands profiles correctly:
+Prefer the wrapper for applying the development desktop:
 
 ```text
-./bootstrap desktop      -> mise -E macos-arm64 -E desktop bootstrap --yes
+./bootstrap              -> mise -E macos-arm64 -E desktop bootstrap --yes
 ```
 
 List profiles or display the mapping at any time:
@@ -183,7 +198,7 @@ git --version
 mise --version
 ```
 
-Clone this public repository and apply the desktop profile. Bootstrap may ask
+Clone this public repository and apply the desktop configuration. Bootstrap may ask
 for the macOS password when changing system settings or the login shell. Sign in
 to the App Store first if Mac App Store applications should be installed.
 
@@ -192,7 +207,7 @@ mkdir -p ~/gits/tacogips
 git clone https://github.com/tacogips/mise-darwin.git ~/gits/tacogips/mise-darwin
 cd ~/gits/tacogips/mise-darwin
 mise trust
-./bootstrap desktop
+./bootstrap
 ```
 
 When bootstrap finishes, open a new Terminal window so the Homebrew Fish login
@@ -212,7 +227,7 @@ mkdir -p ~/gits/tacogips
 git clone https://github.com/tacogips/mise-darwin.git ~/gits/tacogips/mise-darwin
 cd ~/gits/tacogips/mise-darwin
 mise trust
-./bootstrap desktop
+./bootstrap
 ```
 
 Preview changes or inspect missing resources without applying them:
@@ -307,7 +322,7 @@ deleted line totals in red next to the branch.
 
 ## Provisioning implementation
 
-mise owns declarative packages, tools, dotfiles, defaults, and profile
+mise owns declarative packages, tools, dotfiles, defaults, and desktop
 composition. Custom convergence is implemented as a standard-library Python
 package under `scripts/mise_darwin/`; it covers agent assets, Herdr and Riela
 integration, Docker configuration, AeroSpace display-topology workspace

@@ -1,6 +1,3 @@
-[env]
-MISE_DARWIN_PROFILE = "desktop"
-
 [bootstrap.packages]
 "brew:ccusage" = "latest"
 "brew:cline" = "latest"

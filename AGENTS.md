@@ -16,7 +16,7 @@ this repository and its subdirectories.
 
 ## Repository purpose
 
-This repository rebuilds Apple Silicon macOS hosts through mise, Homebrew,
+This repository rebuilds an Apple Silicon macOS development desktop through mise, Homebrew,
 dotfiles, and idempotent tasks. It replaces the former nix-darwin and Home
 Manager configuration; do not add Nix as a runtime or bootstrap dependency.
 
@@ -36,8 +36,8 @@ scripts/pre-packages.sh   Pre-Python Homebrew conflict hook
 bootstrap                 Profile-aware bootstrap wrapper
 ```
 
-Keep common resources in `mise.toml` or `mise.macos-arm64.toml`. Keep host-only
-resources in the corresponding profile file. Prefer declarative mise bootstrap
+Keep common resources in `mise.toml` or `mise.macos-arm64.toml`. Keep desktop-only
+resources in `mise.desktop.toml`. Prefer declarative mise bootstrap
 resources; use a task only when the resource is unsupported or requires
 explicit idempotent logic.
 
@@ -71,7 +71,7 @@ explicit idempotent logic.
 After a code or configuration change:
 
 1. Preserve the existing style and keep edits scoped to the request.
-2. Validate mise configuration for each affected profile.
+2. Validate the desktop mise configuration.
 3. Run syntax and format checks appropriate to changed files.
 4. Run the relevant verification or dry-run command.
 5. Update README.md or MIGRATION.md when behavior, layout, or operation changes.
@@ -81,7 +81,7 @@ a verification step cannot run on the current Mac.
 
 ## Verification commands
 
-Validate profile composition:
+Validate desktop composition:
 
 ```sh
 mise -E macos-arm64 -E desktop config ls

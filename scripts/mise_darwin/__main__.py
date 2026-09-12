@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import argparse
-import os
 
 from . import (
     bootstrap,
@@ -22,10 +21,8 @@ class Arguments(argparse.Namespace):
 
 
 def _profile() -> str:
-    profile = os.environ.get("MISE_DARWIN_PROFILE", "desktop")
-    if profile != "desktop":
-        raise ValueError(f"unsupported MISE_DARWIN_PROFILE: {profile}")
-    return profile
+    """Return the only supported host profile: the development desktop."""
+    return "desktop"
 
 
 def command_arguments(arguments: list[str]) -> list[str]:
@@ -51,7 +48,7 @@ def parser() -> argparse.ArgumentParser:
     command_parser = argparse.ArgumentParser(prog="python -m scripts.mise_darwin")
     subcommands = command_parser.add_subparsers(dest="command", required=True)
     subcommands.add_parser("bootstrap", help="run idempotent post-tool configuration")
-    subcommands.add_parser("verify", help="verify the current host profile")
+    subcommands.add_parser("verify", help="verify the development desktop")
     subcommands.add_parser(
         "upgrade-tacogips",
         help="upgrade installed tacogips Homebrew formulae and casks",
