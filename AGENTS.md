@@ -20,10 +20,8 @@ This repository rebuilds Apple Silicon macOS hosts through mise, Homebrew,
 dotfiles, and idempotent tasks. It replaces the former nix-darwin and Home
 Manager configuration; do not add Nix as a runtime or bootstrap dependency.
 
-Two host profiles are supported:
-
-- `desktop` for the primary interactive Mac and GUI applications.
-- `home-server` for server packages, templates, and privileged directories.
+The `desktop` profile is supported for the primary interactive Mac and GUI
+applications.
 
 ## Structure
 
@@ -31,10 +29,8 @@ Two host profiles are supported:
 mise.toml                 Shared tools, environment, and tasks
 mise.macos-arm64.toml     Shared Apple Silicon bootstrap resources
 mise.desktop.toml         Desktop profile
-mise.home-server.toml     Home-server profile
 dotfiles/                 Symlinked user configuration
 agent-user-scope/         Explicitly synchronized agent assets
-home-server/              Home-server templates
 scripts/mise_darwin/      Standard-library Python provisioning commands
 scripts/pre-packages.sh   Pre-Python Homebrew conflict hook
 bootstrap                 Profile-aware bootstrap wrapper
@@ -89,7 +85,6 @@ Validate profile composition:
 
 ```sh
 mise -E macos-arm64 -E desktop config ls
-mise -E macos-arm64 -E home-server config ls
 ```
 
 Inspect bootstrap convergence without applying it:

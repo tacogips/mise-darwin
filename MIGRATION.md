@@ -7,7 +7,6 @@ Source: `tacogips/nix/nixos/darwin` and its shared Home Manager modules.
 - Versioned Go, Rust, Python, Node, Bun, Zig, Java, and Julia toolchains
 - Common CLI packages and Neovim LSP/formatter dependencies
 - Desktop Homebrew formulae, casks, private taps, and Mac App Store apps
-- Home-server packages, PiGallery2 Compose template, Caddy template, runtime directories, and volume directories
 - Fish activation, environment variables, common aliases/functions, and Kinko shared-secret import
 - Git identity, GitHub HTTPS URL conversion, token credential helper, and Delta integration
 - Ghostty, Herdr, AeroSpace, full ANSI/Kana Karabiner mapping, LazyGit, LazyDocker, Jujutsu/Delta, and Yazi configuration

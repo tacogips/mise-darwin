@@ -3,11 +3,10 @@ set -eu
 
 usage() {
   cat <<'EOF'
-usage: ./bootstrap [desktop|home-server] [mise bootstrap options]
+usage: ./bootstrap [mise bootstrap options]
 
 Profiles:
   desktop      load -E macos-arm64 -E desktop (default)
-  home-server  load -E macos-arm64 -E home-server
 
 Options:
   -h, --help       show this help
@@ -21,7 +20,6 @@ Examples:
   ./bootstrap
   ./bootstrap desktop
   ./bootstrap desktop --dry-run
-  ./bootstrap home-server --only packages
 EOF
 }
 
@@ -31,20 +29,8 @@ case "${1:-}" in
     exit 0
     ;;
   --list-profiles)
-    printf '%s\n' desktop home-server
+    printf '%s\n' desktop
     exit 0
-    ;;
-esac
-
-profile="${1:-desktop}"
-if [ "$#" -gt 0 ]; then
-  shift
-fi
-case "$profile" in
-  desktop|home-server) ;;
-  *)
-    usage >&2
-    exit 64
     ;;
 esac
 
@@ -56,4 +42,4 @@ if ! command -v mise >/dev/null 2>&1; then
   exit 127
 fi
 
-exec mise -E macos-arm64 -E "$profile" bootstrap --yes "$@"
+exec mise -E macos-arm64 -E desktop bootstrap --yes "$@"

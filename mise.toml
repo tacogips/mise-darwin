@@ -101,10 +101,6 @@ nvim --headless "+Lazy! update" "+TSUpdateSync" +qa
 description = "Remove Nix after migration verification (requires explicit confirmation)"
 run = "python -m scripts.mise_darwin nix-uninstall"
 
-[tasks."home-server:apply"]
-description = "Converge privileged home-server files and runtime directories"
-run = "python -m scripts.mise_darwin home-server-apply"
-
 [tasks.install-git-hooks]
 description = "Install mise tools and the repository pre-commit hook"
 run = '''
