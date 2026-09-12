@@ -12,14 +12,11 @@ Options:
   -h, --help       show this help
   --list-profiles  print supported profile names
 
-All arguments after the profile are forwarded to `mise bootstrap`.
-Ordinary mise commands default to the platform environment and desktop profile;
-this wrapper selects the requested host profile explicitly.
+All arguments are forwarded to `mise bootstrap` for the development desktop.
 
 Examples:
   ./bootstrap
-  ./bootstrap desktop
-  ./bootstrap desktop --dry-run
+  ./bootstrap --dry-run
 EOF
 }
 
