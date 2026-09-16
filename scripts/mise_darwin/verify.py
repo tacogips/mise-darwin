@@ -67,6 +67,20 @@ def not_nix_symlink(path: Path) -> Check:
     return check
 
 
+def homebrew_owned(name: str) -> Check:
+    """Fail when a standalone installer shadows the Homebrew-managed executable."""
+
+    def check() -> CheckResult:
+        found = shutil.which(name)
+        if found is None:
+            return CheckResult(False, f"{name} not found on PATH")
+        resolved = Path(found).resolve(strict=False)
+        ok = resolved.is_relative_to(Path("/opt/homebrew"))
+        return CheckResult(ok, f"{name} resolves outside Homebrew: {resolved}")
+
+    return check
+
+
 def herdr_integration(target: str) -> Check:
     def check() -> CheckResult:
         result = run(["herdr", "integration", "status"], capture=True, check=False)
@@ -166,6 +180,7 @@ def _checks(profile: str, home: Path) -> list[tuple[str, Check]]:
                         kind="file",
                     ),
                 ),
+                ("cursor-agent (Homebrew-managed)", homebrew_owned("cursor-agent")),
                 (
                     "Cursor Peekaboo skill",
                     path_check(

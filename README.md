@@ -285,6 +285,15 @@ Bootstrap synchronizes only known assets and does not remove skills managed by
 Riela or other installers. The old `envrc-generate` skill is intentionally
 excluded because this setup does not use direnv.
 
+The `cursor-agent` CLI is owned by the `cursor-cli` Homebrew cask in
+`Brewfile.desktop`, so `mise run upgrade-brew-desktop` updates it. Cursor's own
+`install.sh` installs a self-updating copy under `~/.local/share/cursor-agent`
+and links it into `~/.local/bin`, which shadows the cask because `~/.local/bin`
+precedes `/opt/homebrew/bin` on `PATH`. Do not run that installer; `verify`
+fails the `cursor-agent (Homebrew-managed)` check when a shadowing copy
+reappears, and the fix is to delete `~/.local/bin/cursor-agent`,
+`~/.local/bin/agent`, `~/.local/bin/cursor`, and `~/.local/share/cursor-agent`.
+
 Codex keeps only `user-skill-router` implicitly visible. Detailed user skills
 remain explicitly invocable and are loaded lazily through the router, avoiding
 the 2% skill-metadata context limit without removing functionality. Bootstrap
