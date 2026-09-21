@@ -24,6 +24,7 @@ codex-simple-work-package
 codex-source-security-check-loop
 codex-task-watchdog
 codex-website-builder
+cursor-cli-design-and-implement-review-loop
 cursor-cli-hydra-claude-design-and-implement-review-loop
 cursor-cli-hydra-codex-design-and-implement-review-loop
 cursor-cli-goal
