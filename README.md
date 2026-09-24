@@ -52,6 +52,13 @@ defines the following environments:
 | --- | --- | --- |
 | `macos-arm64` | `mise.macos-arm64.toml` | Shared Apple Silicon packages, dotfiles, macOS defaults, and login shell |
 | `desktop` | `mise.desktop.toml` | Development desktop packages, GUI applications, and Mac App Store apps |
+
+To use Command-Space for Raycast, open Raycast Settings → General, click
+Raycast Hotkey, and press Command-Space. Disable Spotlight's Command-Space
+shortcut in System Settings → Keyboard → Keyboard Shortcuts → Spotlight first.
+Raycast's shortcut must be changed in the app; writing its preference with
+`defaults` does not update its active shortcut reliably.
+
 Desktop commands use the defaults directly:
 
 ```sh
