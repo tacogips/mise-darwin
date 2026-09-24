@@ -38,7 +38,7 @@ function codex-step-loop
 
     for i in (seq $n)
         echo "[$loop_name] iteration $i of $n $progress_note" >&2
-        command codex --dangerously-bypass-approvals-and-sandbox --model gpt-5.6-sol -c 'model_reasoning_effort="high"' exec "$prompt"
+        command codex --dangerously-bypass-approvals-and-sandbox --model gpt-6-astra -c 'model_reasoning_effort="high"' exec "$prompt"
         set -l step_status $status
         if test $step_status -ne 0
             echo "[$loop_name] iteration $i failed (exit $step_status)" >&2

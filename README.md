@@ -115,6 +115,23 @@ templates containing unrendered tool-version variables cannot block upgrades.
 `upgrade-tacogips` updates only installed formulae and casks from
 `tacogips/tap` without a confirmation prompt.
 
+Homebrew formulae and casks that are not declared in this repository stay
+installed until you clean them up. Preview extras first, then uninstall only
+after reviewing the exact list. Other projects' `mise.toml` `brew:` packages
+are not kept; re-enter those projects to reinstall them. Mac App Store apps
+and mise `[tools]` versions are not removed.
+
+```sh
+mise run brew:cleanup -- --dry-run
+mise run brew:cleanup -- --confirm
+```
+
+The keep-set is the union of `brew:` packages in `mise.macos-arm64.toml` and
+`mise.desktop.toml` with `Brewfile.common` and `Brewfile.desktop`. Homebrew
+dependencies of those packages are retained. Extra taps are listed after
+packages. The command refuses to run unless `--dry-run` or `--confirm` is
+passed. Mac App Store apps are left installed.
+
 ## Temporary packages
 
 Run the latest official qFlipper release without copying it into
@@ -321,7 +338,7 @@ to use a locally managed checkout without pulling it, and set
 is installed for Claude Code only. Codex uses
 `codex-design-and-implement-review-loop`, with GPT-6 Astra handling design,
 design review, implementation-plan creation, and implementation-plan review;
-GPT-5.6 Terra handling implementation; and GPT-5.6 SOL handling test-integrity,
+GPT-6 Sol handling implementation; and GPT-6 Astra handling test-integrity,
 independent, and adversarial review. The compact 18-step graph integrates
 author self-checks into design, planning, and implementation, and combines
 implementation-plan completion verification with commit preparation while
@@ -349,7 +366,7 @@ mise owns declarative packages, tools, dotfiles, defaults, and desktop
 composition. Custom convergence is implemented as a standard-library Python
 package under `scripts/mise_darwin/`; it covers agent assets, Herdr and Riela
 integration, Docker configuration, AeroSpace display-topology workspace
-assignment, verification, and guarded Nix removal. On
+assignment, verification, guarded Nix removal, and guarded Homebrew cleanup. On
 the desktop profile, workspaces 1 and 2 follow the first two external displays
 while workspace 9 follows the built-in display; a single external display owns
 both workspaces 1 and 2. Run its unit tests with:

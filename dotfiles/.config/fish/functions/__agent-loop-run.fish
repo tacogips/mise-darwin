@@ -108,7 +108,7 @@ Original prompt:
         set -l step_status 0
         switch $runner
             case codex
-                command codex --dangerously-bypass-approvals-and-sandbox --model gpt-5.6-sol -c 'model_reasoning_effort="high"' exec "$prompt"
+                command codex --dangerously-bypass-approvals-and-sandbox --model gpt-6-astra -c 'model_reasoning_effort="high"' exec "$prompt"
                 set step_status $status
             case cursor
                 command cursor-agent --yolo --approve-mcps --model composer-2.5 --print --output-format stream-json --stream-partial-output --trust "$prompt"

@@ -33,8 +33,6 @@ python = "3.13"
 node = "24"
 bun = "latest"
 zig = "latest"
-java = "temurin-21"
-julia = "latest"
 gitleaks = "latest"
 pre-commit = "latest"
 
@@ -100,6 +98,10 @@ nvim --headless "+Lazy! update" "+TSUpdateSync" +qa
 [tasks."nix:uninstall"]
 description = "Remove Nix after migration verification (requires explicit confirmation)"
 run = "python -m scripts.mise_darwin nix-uninstall"
+
+[tasks."brew:cleanup"]
+description = "Uninstall Homebrew formulae and casks not declared in this repository"
+run = "python -m scripts.mise_darwin brew-cleanup"
 
 [tasks.install-git-hooks]
 description = "Install mise tools and the repository pre-commit hook"
