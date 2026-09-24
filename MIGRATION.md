@@ -4,7 +4,7 @@ Source: `tacogips/nix/nixos/darwin` and its shared Home Manager modules.
 
 ## Migrated
 
-- Versioned Go, Rust, Python, Node, Bun, Zig, Java, and Julia toolchains
+- Versioned Go, Rust, Python, Node, Bun, and Zig toolchains
 - Common CLI packages and Neovim LSP/formatter dependencies
 - Desktop Homebrew formulae, casks, private taps, and Mac App Store apps
 - Fish activation, environment variables, common aliases/functions, and Kinko shared-secret import

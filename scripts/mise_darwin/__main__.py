@@ -6,6 +6,7 @@ import argparse
 
 from . import (
     bootstrap,
+    brew_cleanup,
     nix_uninstall,
     temporary_packages,
     upgrade_taco,
@@ -56,6 +57,12 @@ def parser() -> argparse.ArgumentParser:
     uninstall = subcommands.add_parser("nix-uninstall", help="remove Nix from macOS")
     uninstall.add_argument("--confirm", action="store_true")
     uninstall.add_argument("--dry-run", action="store_true")
+    brew_clean = subcommands.add_parser(
+        "brew-cleanup",
+        help="uninstall Homebrew formulae and casks not declared in this repository",
+    )
+    brew_clean.add_argument("--confirm", action="store_true")
+    brew_clean.add_argument("--dry-run", action="store_true")
     shell = subcommands.add_parser(
         "shell", help="resolve and run a temporary mise or Homebrew Cask package"
     )
@@ -97,6 +104,12 @@ def main() -> int:
         return 0
     if arguments.command == "nix-uninstall":
         return nix_uninstall.uninstall(
+            profile=profile,
+            confirmed=arguments.confirm,
+            dry_run=arguments.dry_run,
+        )
+    if arguments.command == "brew-cleanup":
+        return brew_cleanup.cleanup(
             profile=profile,
             confirmed=arguments.confirm,
             dry_run=arguments.dry_run,
