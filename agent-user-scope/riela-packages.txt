@@ -26,6 +26,7 @@ codex-task-watchdog
 codex-website-builder
 fable-and-improve-codex
 fable-and-improve-opus
+fable-astra-design-plan-review-loop
 riela-package-manager-skill
 riela-package-release-skill
 riela-temporary-workflow-skill
