@@ -333,7 +333,10 @@ then use `riela package update --source` for installed packages and
 `riela package install --source` for missing ones. Set `RIELA_PACKAGES_CHECKOUT`
 to use a locally managed checkout without pulling it, and set
 `RIELA_GIT_EXECUTABLE` when Git is not on `PATH`. No default Riela registry or
-`package registry sync` command is needed. The Fable-led
+`package registry sync` command is needed. The `fable-astra-design-plan-review-loop`
+package installs its Fable 5 / GPT-6 Astra design and implementation-plan
+review workflow with skills for both Claude Code and Codex (medium effort).
+The Fable-led
 `fable-and-improve-codex` skill
 is installed for Claude Code only. Codex uses
 `codex-design-and-implement-review-loop`, with GPT-6 Astra handling design,
