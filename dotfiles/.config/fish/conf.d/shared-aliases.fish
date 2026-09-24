@@ -46,7 +46,7 @@ function cro --description 'Cursor Agent with GPT-6 Astra'
 end
 
 function crc --description 'Cursor Agent with Claude Opus'
-    command cursor-agent --yolo --approve-mcps --model claude-opus-4-8-high $argv
+    command cursor-agent --yolo --approve-mcps --model claude-opus-5-5-high $argv
 end
 
 function crr --description 'List Cursor Agent sessions'
