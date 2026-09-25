@@ -293,6 +293,10 @@ point, then review and commit the resulting `lazy-lock.json` changes:
 mise run nvim:update
 ```
 
+Yazi openers use the Yazi 26.9+ `%s` file placeholders. Text files open in
+Neovim with the file’s parent directory as its working directory; binary files
+use the macOS default application.
+
 Yazi Git plugins are pinned in `package.toml`, and their pinned contents are
 checked into the managed dotfiles. Sora colors are shared by Neovim, Ghostty,
 Herdr, LazyGit, Yazi, bat/Delta, fzf, and eza. The Karabiner config
