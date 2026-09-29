@@ -17,24 +17,18 @@ from scripts.mise_darwin.bootstrap import (
     converge_bat_theme_cache,
     converge_aerospace_sync,
     converge_docker_config,
-    retire_legacy_codex_riela_skill,
+    retire_riela_user_packages,
 )
 
 
 class BootstrapTests(unittest.TestCase):
     def _riela_fixture(self, root: Path, home: Path, checkout: Path) -> None:
-        manifest = root / "agent-user-scope/riela-packages.txt"
-        manifest.parent.mkdir(parents=True)
-        manifest.write_text("first\nsecond\n", encoding="utf-8")
+        for agent, content in (("claude", "first\n"), ("codex", "first\nsecond\n")):
+            manifest = root / "agent-user-scope" / agent / "riela-packages.txt"
+            manifest.parent.mkdir(parents=True)
+            manifest.write_text(content, encoding="utf-8")
         for package_id in ("first", "second"):
             (checkout / "packages" / package_id).mkdir(parents=True)
-        for path in (
-            home / ".codex/skills/codex-design-and-implement-review-loop/SKILL.md",
-            home / ".claude/skills/fable-and-improve-codex/SKILL.md",
-            home / ".claude/skills/fable-and-improve-opus/SKILL.md",
-        ):
-            path.parent.mkdir(parents=True)
-            path.write_text("test\n", encoding="utf-8")
 
     @patch("scripts.mise_darwin.bootstrap.converge_riela_cli_quarantine")
     @patch("scripts.mise_darwin.bootstrap.command_exists", return_value=True)
@@ -52,7 +46,7 @@ class BootstrapTests(unittest.TestCase):
             installed_manifest.parent.mkdir(parents=True)
             installed_manifest.write_text("{}\n", encoding="utf-8")
             with (
-                patch("scripts.mise_darwin.bootstrap.REPO_ROOT", root),
+                patch("scripts.mise_darwin.agents.REPO_ROOT", root),
                 patch.dict(os.environ, {"RIELA_GIT_EXECUTABLE": "/custom/git"}, clear=True),
             ):
                 converge_riela_packages(home)
@@ -70,7 +64,7 @@ class BootstrapTests(unittest.TestCase):
                     ),
                     call(
                         [
-                            "riela", "package", "install", "second", "--source",
+                            "riela", "package", "install", "second", "--overwrite", "--source",
                             checkout / "packages/second", "--scope", "user", "--output", "json",
                         ],
                         quiet=True,
@@ -91,7 +85,7 @@ class BootstrapTests(unittest.TestCase):
             self._riela_fixture(root, home, checkout)
             (checkout / ".git").mkdir()
             with (
-                patch("scripts.mise_darwin.bootstrap.REPO_ROOT", root),
+                patch("scripts.mise_darwin.agents.REPO_ROOT", root),
                 patch.dict(os.environ, {"RIELA_PACKAGES_CHECKOUT": str(checkout)}, clear=True),
             ):
                 converge_riela_packages(home)
@@ -112,7 +106,7 @@ class BootstrapTests(unittest.TestCase):
             self._riela_fixture(root, home, checkout)
             (checkout / ".git").write_text("gitdir: /test/repository/worktrees/packages\n", encoding="utf-8")
             with (
-                patch("scripts.mise_darwin.bootstrap.REPO_ROOT", root),
+                patch("scripts.mise_darwin.agents.REPO_ROOT", root),
                 patch.dict(os.environ, {}, clear=True),
             ):
                 converge_riela_packages(home)
@@ -132,7 +126,7 @@ class BootstrapTests(unittest.TestCase):
             checkout = home / "gits/tacogips/riela-packages"
             self._riela_fixture(root, home, checkout)
             with (
-                patch("scripts.mise_darwin.bootstrap.REPO_ROOT", root),
+                patch("scripts.mise_darwin.agents.REPO_ROOT", root),
                 patch.dict(os.environ, {}, clear=True),
             ):
                 with self.assertRaisesRegex(RuntimeError, "not a Git repository"):
@@ -163,22 +157,38 @@ class BootstrapTests(unittest.TestCase):
                 ],
             )
 
-    def test_retire_legacy_codex_riela_skill_preserves_unrelated_files(self) -> None:
+    def test_retire_riela_user_packages_removes_package_and_lock_entry(
+        self,
+    ) -> None:
         with tempfile.TemporaryDirectory() as temporary:
-            codex_skills = Path(temporary)
-            skill = codex_skills / "fable-and-improve-codex"
-            metadata = skill / "agents"
-            metadata.mkdir(parents=True)
-            (skill / "SKILL.md").write_text("managed\n", encoding="utf-8")
-            (metadata / "openai.yaml").write_text("managed\n", encoding="utf-8")
-            user_file = skill / "notes.md"
-            user_file.write_text("preserve\n", encoding="utf-8")
+            home = Path(temporary)
+            installed = home / ".riela/packages/fable-and-improve-opus"
+            installed.mkdir(parents=True)
+            (installed / "riela-package.json").write_text("{}\n", encoding="utf-8")
+            kept = home / ".riela/packages/fable-astra-design-plan-review-loop"
+            kept.mkdir(parents=True)
+            lock = home / ".riela/riela-lock.json"
+            lock.write_text(
+                json.dumps(
+                    {
+                        "lockfileVersion": 1,
+                        "packages": {
+                            "fable-and-improve-opus": {"version": "0.4.2"},
+                            "fable-astra-design-plan-review-loop": {"version": "0.1.0"},
+                        },
+                    }
+                ),
+                encoding="utf-8",
+            )
 
-            retire_legacy_codex_riela_skill(codex_skills)
+            retire_riela_user_packages(home, ("fable-and-improve-opus", "fable-and-improve"))
 
-            self.assertFalse((skill / "SKILL.md").exists())
-            self.assertFalse((metadata / "openai.yaml").exists())
-            self.assertEqual(user_file.read_text(encoding="utf-8"), "preserve\n")
+            self.assertFalse(installed.exists())
+            self.assertTrue(kept.is_dir())
+            self.assertEqual(
+                list(json.loads(lock.read_text(encoding="utf-8"))["packages"]),
+                ["fable-astra-design-plan-review-loop"],
+            )
 
     @patch("scripts.mise_darwin.bootstrap.run")
     @patch("scripts.mise_darwin.bootstrap.command_exists", return_value=True)

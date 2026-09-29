@@ -1,0 +1,7 @@
+interface:
+  display_name: "iOS App Run"
+  short_description: "Run Your Body on iOS Simulator"
+  default_prompt: "Use $ios-app-run-skill to build, install, launch, and verify the Your Body iOS app."
+
+policy:
+  allow_implicit_invocation: false

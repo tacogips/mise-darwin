@@ -4,10 +4,23 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from scripts.mise_darwin.command import atomic_write, manifest_lines, sync_directory
+from scripts.mise_darwin.command import atomic_write, manifest_lines, remove_path, sync_directory
 
 
 class CommandTests(unittest.TestCase):
+    def test_remove_path_removes_read_only_directory_tree(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            skill = Path(temporary) / "skill"
+            scripts = skill / "scripts"
+            scripts.mkdir(parents=True)
+            (scripts / "run.sh").write_text("#!/bin/sh\n", encoding="utf-8")
+            (scripts / "run.sh").chmod(0o555)
+            scripts.chmod(0o555)
+
+            remove_path(skill)
+
+            self.assertFalse(skill.exists())
+
     def test_sync_directory_mirrors_managed_tree(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

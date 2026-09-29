@@ -32,8 +32,9 @@ mise.macos-arm64.toml        Apple Silicon packages, defaults, and dotfiles
 mise.desktop.toml            Desktop GUI and Mac App Store applications
 dotfiles/.config/nvim/       Lua and lazy.nvim configuration
 assets/wallpapers/           Git-managed desktop wallpaper
-dotfiles/.agents/skills/     Apple Gateway user skills
-agent-user-scope/            Claude, Codex, Cursor, and Riela user assets
+agent-user-scope/claude/     Claude Code commands, skills, and Riela package list
+agent-user-scope/codex/      Codex skills (including Apple Gateway) and Riela package list
+agent-user-scope/cursor/     Cursor CLI configuration and skill
 scripts/mise_darwin/         Standard-library Python provisioning commands
 tests/                       Python provisioning unit tests
 Brewfile.*                   Casks and third-party tap packages
@@ -191,6 +192,7 @@ Fish aliases for mise itself and the upgrade tasks are kept separately in
 are loaded lazily from `dotfiles/.config/fish/completions/mise.fish`, so
 subcommands and configured tasks are suggested for commands such as
 `mise run` without adding work to shell startup.
+The `co` Fish function starts Codex with GPT-6 Luna and medium reasoning.
 
 ## Set up a clean Mac
 
@@ -301,17 +303,29 @@ Yazi Git plugins are pinned in `package.toml`, and their pinned contents are
 checked into the managed dotfiles. Sora colors are shared by Neovim, Ghostty,
 Herdr, LazyGit, Yazi, bat/Delta, fzf, and eza. The Karabiner config
 includes the migrated ANSI/Kana symbol mappings. Desktop bootstrap applies the
-Git-managed Sora sea image to every macOS desktop. Apple Gateway skills are
-linked one skill directory at a time so unrelated user skills are preserved.
+Git-managed Sora sea image to every macOS desktop.
 
 ## AI agent user scope and Riela
 
-`agent-user-scope/` contains the migrated Claude commands, shared Claude/Codex
-skills, including the Wrike Gateway skill, Cursor CLI configuration, Peekaboo
-MCP configuration, and Cursor skill.
-Bootstrap synchronizes only known assets and does not remove skills managed by
-Riela or other installers. The old `envrc-generate` skill is intentionally
-excluded because this setup does not use direnv.
+User-scope skills are managed only by this repository and are kept separate
+per agent. `agent-user-scope/claude/skills/` becomes `~/.claude/skills/` and
+`agent-user-scope/codex/skills/` becomes `~/.codex/skills/`; a skill both agents
+need (for example `wrike-via-gateway`) has a copy in each tree. No skill is
+placed in `~/.agents/skills/`. Riela packages are listed per agent in
+`agent-user-scope/claude/riela-packages.txt` and
+`agent-user-scope/codex/riela-packages.txt`, and only the matching
+`skills/claude/` or `skills/codex/` directory of each listed package is
+installed for that agent. When two listed packages ship the same skill, the
+later entry wins; a package may never shadow a skill defined in this repository.
+
+Every bootstrap refreshes skills by clearing `~/.claude/skills/` and
+`~/.codex/skills/` (agent-owned entries are kept: dot-prefixed ones such as
+Codex's bundled `.system` skills, and Claude Code's account-synced `synced`
+store), deleting `~/.agents/skills/`, and recreating only the skills
+defined above. Skills installed by hand or by other tools do not survive a
+refresh; add them to `agent-user-scope/` instead. `agent-user-scope/` also holds
+the Claude commands, Cursor CLI configuration, Peekaboo MCP configuration, and
+Cursor skill.
 
 The `cursor-agent` CLI is owned by the `cursor-cli` Homebrew cask in
 `Brewfile.desktop`, so `mise run upgrade-brew-desktop` updates it. Cursor's own
@@ -325,35 +339,39 @@ reappears, and the fix is to delete `~/.local/bin/cursor-agent`,
 Codex keeps only `user-skill-router` implicitly visible. Detailed user skills
 remain explicitly invocable and are loaded lazily through the router, avoiding
 the 2% skill-metadata context limit without removing functionality. Bootstrap
-derives the shared, Codex, Claude Code, and Cursor roots from one home-directory
+derives the Codex, Claude Code, and Cursor roots from one home-directory
 path model instead of maintaining repeated absolute paths.
 
 On desktop hosts, bootstrap installs the Riela application and all user-scope
-workflow and skill packages listed in `agent-user-scope/riela-packages.txt`. If
+workflow packages listed in either agent's `riela-packages.txt`. If
 the public `tacogips/riela-packages` checkout is absent, the installer clones it
 under the standard checkout root. Later runs fast-forward that checkout once
 (regular Git checkouts and worktrees are supported),
 then use `riela package update --source` for installed packages and
-`riela package install --source` for missing ones. Set `RIELA_PACKAGES_CHECKOUT`
+`riela package install --overwrite --source` for missing ones; the skill refresh
+then rebuilds the agent skill roots from the installed packages. Set `RIELA_PACKAGES_CHECKOUT`
 to use a locally managed checkout without pulling it, and set
 `RIELA_GIT_EXECUTABLE` when Git is not on `PATH`. No default Riela registry or
 `package registry sync` command is needed. The `fable-astra-design-plan-review-loop`
 package installs its Fable 5 / GPT-6 Astra design and implementation-plan
 review workflow with skills for both Claude Code and Codex (medium effort).
-The Fable-led
-`fable-and-improve-codex` skill
-is installed for Claude Code only. Codex uses
+Claude Code uses the
+`opus-luna-design-and-implement-review-loop` skill: Opus 5.5 designs, writes
+Luna-ready implementation plans, runs every review gate (repairing findings
+through Sonnet subagents before re-reviewing) and the final integration review,
+while Codex GPT-6 Luna (high effort, fast tier) implements every
+dependency-ready plan in unbounded fanout. It replaces the former
+`fable-and-improve`, `fable-and-improve-codex` and `fable-and-improve-opus`
+user packages; bootstrap uninstalls those packages and their lock entries, and
+the skill refresh drops their skills. Codex uses
 `codex-design-and-implement-review-loop`, with GPT-6 Astra handling design,
 design review, implementation-plan creation, and implementation-plan review;
 GPT-6 Sol handling implementation; and GPT-6 Astra handling test-integrity,
 independent, and adversarial review. The compact 18-step graph integrates
 author self-checks into design, planning, and implementation, and combines
 implementation-plan completion verification with commit preparation while
-retaining the independent review gates. The Fable-led Codex and Opus workflows
-likewise author design and implementation plans in one Fable execution before
-their independent implementation review and final goal review.
-Bootstrap retires only the known files from the former Codex projection of the
-Fable skill and preserves any unrelated files in that directory. Before invoking the
+retaining the independent review gates.
+Before invoking the
 Riela CLI installed by the desktop cask, bootstrap removes its quarantine
 attribute only when present; this prevents a signed CLI update from stalling in
 the macOS loader.

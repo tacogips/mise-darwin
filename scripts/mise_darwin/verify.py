@@ -9,8 +9,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable
 
-from . import REPO_ROOT, agents, wallpaper
-from .command import manifest_lines, run
+from . import agents, wallpaper
+from .command import run
 
 
 @dataclass(frozen=True)
@@ -45,6 +45,13 @@ def path_check(path: Path, *, kind: str = "exists") -> Check:
     def check() -> CheckResult:
         ok = predicates[kind]()
         return CheckResult(ok, f"missing {kind}: {path}")
+
+    return check
+
+
+def absent_check(path: Path) -> Check:
+    def check() -> CheckResult:
+        return CheckResult(not path.exists() and not path.is_symlink(), f"unexpected path: {path}")
 
     return check
 
@@ -121,28 +128,32 @@ def _checks(profile: str, home: Path) -> list[tuple[str, Check]]:
             path_check(home / ".config/fish/functions/gh-token-save-shared.fish", kind="file"),
         ),
         (
-            "agent skill: secure GitHub Actions",
+            "Codex skill: secure GitHub Actions",
             path_check(
-                agent_paths.shared_skills / "secure-github-action/SKILL.md", kind="file"
+                agent_paths.codex_skills / "secure-github-action/SKILL.md", kind="file"
             ),
         ),
         (
-            "agent skill: diagram design",
+            "Codex skill: diagram design",
             path_check(
-                agent_paths.shared_skills / "diagram-design/SKILL.md", kind="file"
+                agent_paths.codex_skills / "diagram-design/SKILL.md", kind="file"
             ),
         ),
         (
-            "agent skill: Wrike Gateway",
+            "Codex skill: Wrike Gateway",
             path_check(
-                agent_paths.shared_skills / "wrike-via-gateway/SKILL.md", kind="file"
+                agent_paths.codex_skills / "wrike-via-gateway/SKILL.md", kind="file"
             ),
         ),
         (
-            "agent skill: user skill router",
+            "Codex skill: user skill router",
             path_check(
-                agent_paths.shared_skills / "user-skill-router/SKILL.md", kind="file"
+                agent_paths.codex_skills / "user-skill-router/SKILL.md", kind="file"
             ),
+        ),
+        (
+            "no shared ~/.agents skills",
+            absent_check(agent_paths.legacy_shared_skills),
         ),
         (
             "Claude user command",
@@ -176,7 +187,8 @@ def _checks(profile: str, home: Path) -> list[tuple[str, Check]]:
                 (
                     "Riela Claude user skill",
                     path_check(
-                        agent_paths.claude_skills / "fable-and-improve-codex/SKILL.md",
+                        agent_paths.claude_skills
+                        / "opus-luna-design-and-implement-review-loop/SKILL.md",
                         kind="file",
                     ),
                 ),
@@ -201,8 +213,7 @@ def _checks(profile: str, home: Path) -> list[tuple[str, Check]]:
                 ),
             ]
         )
-        manifest = REPO_ROOT / "agent-user-scope/riela-packages.txt"
-        for package_id in manifest_lines(manifest):
+        for package_id in agents.riela_package_ids():
             checks.append(
                 (
                     f"Riela package: {package_id}",

@@ -183,7 +183,7 @@ not stream child stdout incrementally.
 Prefer the bundled monitor helper:
 
 ```bash
-~/.agents/skills/code-with-cursor/scripts/cursor-agent-monitor.sh start \
+~/.codex/skills/code-with-cursor/scripts/cursor-agent-monitor.sh start \
   --state-dir "$state_dir" \
   --workspace /abs/workspace/path \
   --model composer-2 \
@@ -193,8 +193,8 @@ Prefer the bundled monitor helper:
 Then poll from the parent run:
 
 ```bash
-~/.agents/skills/code-with-cursor/scripts/cursor-agent-monitor.sh poll --state-dir "$state_dir"
-~/.agents/skills/code-with-cursor/scripts/cursor-agent-monitor.sh status --state-dir "$state_dir"
+~/.codex/skills/code-with-cursor/scripts/cursor-agent-monitor.sh poll --state-dir "$state_dir"
+~/.codex/skills/code-with-cursor/scripts/cursor-agent-monitor.sh status --state-dir "$state_dir"
 ```
 
 Use this monitored path when:
@@ -279,7 +279,7 @@ non-options such as the Codex `web` tool.
 3. For generic impl-plan requests, resolve them into one concrete plan/task
    slice before delegating.
 4. When running inside another agent, prefer
-   `~/.agents/skills/code-with-cursor/scripts/cursor-agent-monitor.sh` so the
+   `~/.codex/skills/code-with-cursor/scripts/cursor-agent-monitor.sh` so the
    parent can poll progress instead of blocking silently.
 5. Treat observed `cursor-agent` launch/output as a required success condition
    for implementation passes, not as optional telemetry.

@@ -1,0 +1,7 @@
+interface:
+  display_name: "Invoice Update Download"
+  short_description: "Update billing documents and download verified PDFs"
+  default_prompt: "Use $invoice-update-download to update billing document fields, download the corrected PDFs, and verify the output."
+
+policy:
+  allow_implicit_invocation: false

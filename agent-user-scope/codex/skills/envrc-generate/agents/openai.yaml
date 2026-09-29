@@ -1,0 +1,7 @@
+interface:
+  display_name: "Generate .envrc"
+  short_description: "Create the standard Nix and kinko direnv file"
+  default_prompt: "Use $envrc-generate to create the standard .envrc in the current directory."
+
+policy:
+  allow_implicit_invocation: false
