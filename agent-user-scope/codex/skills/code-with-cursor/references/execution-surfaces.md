@@ -40,13 +40,13 @@ In that case, wrap direct `cursor-agent` with the bundled monitor helper:
 
 ```bash
 # Codex parent
-~/.agents/skills/code-with-cursor/scripts/cursor-agent-monitor.sh start \
+~/.codex/skills/code-with-cursor/scripts/cursor-agent-monitor.sh start \
   --state-dir "$state_dir" \
   --workspace /repo \
   --model composer-2 \
   --prompt-file "$prompt_file"
-~/.agents/skills/code-with-cursor/scripts/cursor-agent-monitor.sh poll --state-dir "$state_dir"
-~/.agents/skills/code-with-cursor/scripts/cursor-agent-monitor.sh status --state-dir "$state_dir"
+~/.codex/skills/code-with-cursor/scripts/cursor-agent-monitor.sh poll --state-dir "$state_dir"
+~/.codex/skills/code-with-cursor/scripts/cursor-agent-monitor.sh status --state-dir "$state_dir"
 
 # Claude parent
 ~/.claude/skills/code-with-cursor/scripts/cursor-agent-monitor.sh start \

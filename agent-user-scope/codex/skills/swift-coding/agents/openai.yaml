@@ -1,0 +1,6 @@
+display_name: Swift Coding
+short_description: Swift DTO and API coding rules
+default_prompt: "Use $swift-coding to write or review Swift code with typed DTOs, enums for closed value sets, and stable Codable wire values."
+
+policy:
+  allow_implicit_invocation: false

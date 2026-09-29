@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import os
 import shutil
+import stat
 import subprocess
 import tempfile
 from collections.abc import Iterable, Mapping, Sequence
@@ -48,7 +49,22 @@ def remove_path(path: Path) -> None:
     if path.is_symlink() or path.is_file():
         path.unlink(missing_ok=True)
     elif path.is_dir():
-        shutil.rmtree(path)
+        shutil.rmtree(path, onexc=_make_writable_and_retry)
+
+
+def _make_writable_and_retry(function, target: str, error: BaseException) -> None:
+    """Retry a failed removal after granting the owner write access.
+
+    Directories copied from read-only sources (for example the Nix store) keep
+    their ``r-x`` mode, which blocks unlinking their entries.
+    """
+
+    if not isinstance(error, PermissionError):
+        raise error
+    for directory in {Path(target).parent, Path(target)}:
+        if directory.is_dir() and not directory.is_symlink():
+            directory.chmod(directory.stat().st_mode | stat.S_IWUSR)
+    function(target)
 
 
 def sync_file(source: Path, target: Path) -> None:

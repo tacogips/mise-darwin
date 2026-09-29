@@ -30,11 +30,10 @@ If the user explicitly names a user skill, prefer that exact name.
 
 ## Loading
 
-1. Look for the selected skill at `~/.agents/skills/<name>/SKILL.md`, then at
-   `~/.codex/skills/<name>/SKILL.md`.
+1. Look for the selected skill at `~/.codex/skills/<name>/SKILL.md`.
 2. Read the selected `SKILL.md` completely before acting.
 3. Follow its instructions as though it had triggered directly.
-4. If neither path exists, state that the requested user skill is unavailable
+4. If the path does not exist, state that the requested user skill is unavailable
    and continue with the safest applicable fallback.
 
 Do not scan or load every installed skill. Load only the selected skill.

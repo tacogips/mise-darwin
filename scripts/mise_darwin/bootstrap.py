@@ -6,12 +6,13 @@ import hashlib
 import json
 import os
 import plistlib
+import shutil
 import sys
 from pathlib import Path
 from typing import cast
 
 from . import REPO_ROOT, agents, wallpaper
-from .command import atomic_write, command_exists, manifest_lines, run
+from .command import atomic_write, command_exists, run
 
 DOCKER_PLUGIN_DIRS = (
     "/opt/homebrew/lib/docker/cli-plugins",
@@ -20,8 +21,17 @@ DOCKER_PLUGIN_DIRS = (
 HERDR_TARGETS = ("claude", "codex")
 AEROSPACE_AGENT_LABEL = "com.taco.aerospace-display-sync"
 BAT_THEME = REPO_ROOT / "dotfiles/.config/bat/themes/Sora.tmTheme"
-LEGACY_CODEX_RIELA_SKILL = "fable-and-improve-codex"
+# Former user-scope packages replaced by opus-luna-design-and-implement-review-loop.
+RETIRED_RIELA_PACKAGES = (
+    "fable-and-improve",
+    "fable-and-improve-codex",
+    "fable-and-improve-opus",
+)
 RIELA_CLI = Path("/opt/homebrew/bin/riela")
+REQUIRED_USER_SKILLS = (
+    ("codex", "codex-design-and-implement-review-loop"),
+    ("claude", "opus-luna-design-and-implement-review-loop"),
+)
 
 
 def _converge_brewfiles(profile: str) -> None:
@@ -62,23 +72,24 @@ def converge_riela_packages(home: Path) -> None:
             raise RuntimeError(f"default Riela package checkout is not a Git repository: {checkout}")
         run([git_executable, "-C", checkout, "pull", "--ff-only"])
 
-    manifest = REPO_ROOT / "agent-user-scope/riela-packages.txt"
-    for package_id in manifest_lines(manifest):
+    retire_riela_user_packages(home, RETIRED_RIELA_PACKAGES)
+    for package_id in agents.riela_package_ids():
         source = packages / package_id
         if not source.is_dir():
             raise RuntimeError(f"required Riela package source is missing: {source}")
         installed = home / ".riela/packages" / package_id
         if installed.exists() and not (installed / "riela-package.json").is_file():
             raise RuntimeError(f"Riela package destination exists without a manifest: {installed}")
-        action = "update" if (installed / "riela-package.json").is_file() else "install"
-        verb = "updating" if action == "update" else "installing"
-        print(f"{verb} Riela user package: {package_id}")
+        installed_now = (installed / "riela-package.json").is_file()
+        print(f"{'updating' if installed_now else 'installing'} Riela user package: {package_id}")
+        # Riela's own skill projections are discarded by agents.refresh_skills,
+        # so a fresh install may overwrite leftovers from the previous refresh.
+        action = ["update", package_id] if installed_now else ["install", package_id, "--overwrite"]
         run(
             [
                 "riela",
                 "package",
-                action,
-                package_id,
+                *action,
                 "--source",
                 source,
                 "--scope",
@@ -89,17 +100,13 @@ def converge_riela_packages(home: Path) -> None:
             quiet=True,
         )
 
+
+def verify_required_user_skills(home: Path) -> None:
     agent_paths = agents.AgentPaths(home)
-    retire_legacy_codex_riela_skill(agent_paths.codex_skills)
-    required = (
-        agent_paths.codex_skills
-        / "codex-design-and-implement-review-loop/SKILL.md",
-        agent_paths.claude_skills / "fable-and-improve-codex/SKILL.md",
-        agent_paths.claude_skills / "fable-and-improve-opus/SKILL.md",
-    )
-    missing = [path for path in required if not path.is_file()]
-    if missing:
-        raise RuntimeError(f"Riela did not install required user skill: {missing[0]}")
+    for agent, name in REQUIRED_USER_SKILLS:
+        path = agent_paths.skills(agent) / name / "SKILL.md"
+        if not path.is_file():
+            raise RuntimeError(f"required {agent} user skill is missing after refresh: {path}")
 
 
 def converge_riela_cli_quarantine(cli: Path = RIELA_CLI) -> None:
@@ -114,20 +121,20 @@ def converge_riela_cli_quarantine(cli: Path = RIELA_CLI) -> None:
         run(["xattr", "-d", "com.apple.quarantine", cli])
 
 
-def retire_legacy_codex_riela_skill(codex_skills: Path) -> None:
-    """Remove only known files from the former cross-agent skill projection."""
+def retire_riela_user_packages(home: Path, package_ids: tuple[str, ...]) -> None:
+    """Uninstall retired user-scope packages; the skill refresh drops their skills."""
 
-    skill = codex_skills / LEGACY_CODEX_RIELA_SKILL
-    for relative in (Path("SKILL.md"), Path("agents/openai.yaml")):
-        path = skill / relative
-        if path.is_file() or path.is_symlink():
-            path.unlink()
-
-    for directory in (skill / "agents", skill):
-        try:
-            directory.rmdir()
-        except (FileNotFoundError, OSError):
-            pass
+    lock_path = home / ".riela/riela-lock.json"
+    for package_id in package_ids:
+        installed = home / ".riela/packages" / package_id
+        if not (installed / "riela-package.json").is_file():
+            continue
+        print(f"retiring Riela user package: {package_id}")
+        shutil.rmtree(installed)
+        if lock_path.is_file():
+            lock = json.loads(lock_path.read_text(encoding="utf-8"))
+            if lock.get("packages", {}).pop(package_id, None) is not None:
+                atomic_write(lock_path, json.dumps(lock, indent=2) + "\n")
 
 
 def _install_herdr_integrations() -> None:
@@ -268,8 +275,10 @@ def apply(profile: str) -> None:
 
     _trust_brew_taps(profile)
     _converge_brewfiles(profile)
-    agents.install(profile=profile, home=home)
     converge_riela_packages(home)
+    agents.install(profile=profile, home=home)
+    if command_exists("riela"):
+        verify_required_user_skills(home)
     agents.converge_codex_skill_visibility(home)
     _install_herdr_integrations()
     converge_bat_theme_cache(home)

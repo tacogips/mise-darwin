@@ -1,4 +1,10 @@
-"""Synchronize explicitly managed agent assets without deleting user content."""
+"""Synchronize explicitly managed agent assets.
+
+User-scope skills are owned by this repository: every refresh clears the Claude
+Code and Codex skill roots and recreates only the skills defined here plus the
+agent-specific skills of the Riela packages listed per agent. Nothing is placed
+in the former shared ``~/.agents/skills`` root.
+"""
 
 from __future__ import annotations
 
@@ -8,7 +14,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from . import REPO_ROOT
-from .command import atomic_write, sync_directory, sync_file
+from .command import atomic_write, manifest_lines, remove_path, sync_directory, sync_file
 
 LEGACY_CLAUDE_COMMANDS = (
     "add-local-command.md",
@@ -25,6 +31,13 @@ LEGACY_CLAUDE_COMMANDS = (
 )
 
 USER_SKILL_ROUTER = "user-skill-router"
+SKILL_AGENTS = ("claude", "codex")
+# Entries each agent manages itself; a refresh never removes them. Dot-prefixed
+# entries (such as Codex's bundled ``.system`` skills) are always kept too.
+AGENT_OWNED_SKILL_ENTRIES = {
+    "claude": frozenset({"synced"}),  # skills synced from the Claude account
+    "codex": frozenset(),
+}
 
 
 @dataclass(frozen=True)
@@ -34,8 +47,16 @@ class AgentPaths:
     home: Path
 
     @property
-    def shared_skills(self) -> Path:
+    def legacy_shared_skills(self) -> Path:
+        """Former cross-agent skill root; refresh removes it."""
         return self.home / ".agents/skills"
+
+    @property
+    def riela_packages(self) -> Path:
+        return self.home / ".riela/packages"
+
+    def skills(self, agent: str) -> Path:
+        return {"claude": self.claude_skills, "codex": self.codex_skills}[agent]
 
     @property
     def codex_skills(self) -> Path:
@@ -93,14 +114,83 @@ def _set_implicit_invocation(skill: Path, *, allowed: bool) -> None:
 def converge_codex_skill_visibility(home: Path | None = None) -> None:
     """Keep one user-skill router implicit and all detailed user skills explicit."""
 
-    paths = AgentPaths(home or Path.home())
-    for root in (paths.shared_skills, paths.codex_skills):
-        if not root.is_dir():
+    root = AgentPaths(home or Path.home()).codex_skills
+    if not root.is_dir():
+        return
+    for skill in sorted(root.iterdir()):
+        if skill.name.startswith(".") or not (skill / "SKILL.md").is_file():
             continue
-        for skill in sorted(root.iterdir()):
-            if not skill.is_dir() or not (skill / "SKILL.md").is_file():
+        _set_implicit_invocation(skill, allowed=skill.name == USER_SKILL_ROUTER)
+
+
+def riela_package_manifest(agent: str) -> Path:
+    return REPO_ROOT / "agent-user-scope" / agent / "riela-packages.txt"
+
+
+def riela_package_ids() -> list[str]:
+    """Every Riela package any agent needs, in first-listed order."""
+
+    ids: list[str] = []
+    for agent in SKILL_AGENTS:
+        for package_id in manifest_lines(riela_package_manifest(agent)):
+            if package_id not in ids:
+                ids.append(package_id)
+    return ids
+
+
+def skill_sources(agent: str, paths: AgentPaths) -> dict[str, Path]:
+    """Map skill name to source directory for one agent.
+
+    Repository skills come first, then each listed Riela package's
+    ``skills/<agent>`` directory in manifest order. A later package overrides an
+    earlier package that ships the same skill name; a package may never shadow a
+    skill defined in this repository.
+    """
+
+    sources: dict[str, Path] = {}
+    managed = REPO_ROOT / "agent-user-scope" / agent / "skills"
+    for source in sorted(managed.iterdir()) if managed.is_dir() else ():
+        if (source / "SKILL.md").is_file():
+            sources[source.name] = source
+    repository_names = set(sources)
+    for package_id in manifest_lines(riela_package_manifest(agent)):
+        package_skills = paths.riela_packages / package_id / "skills" / agent
+        if not (paths.riela_packages / package_id / "riela-package.json").is_file():
+            print(f"warning: Riela package {package_id} is not installed; skipping its {agent} skills")
+            continue
+        for source in sorted(package_skills.iterdir()) if package_skills.is_dir() else ():
+            if not (source / "SKILL.md").is_file():
                 continue
-            _set_implicit_invocation(skill, allowed=skill.name == USER_SKILL_ROUTER)
+            if source.name in repository_names or source.name in AGENT_OWNED_SKILL_ENTRIES[agent]:
+                raise RuntimeError(
+                    f"Riela package {package_id} ships {agent} skill {source.name}, "
+                    "which agent-user-scope already defines"
+                )
+            sources[source.name] = source
+    return sources
+
+
+def refresh_skills(home: Path) -> None:
+    """Clear the Claude Code and Codex skill roots, then recreate managed skills.
+
+    Dot-prefixed entries such as Codex's bundled ``.system`` skills and Claude
+    Code's account-synced ``synced`` store belong to the agent itself and are
+    kept. The legacy shared ``~/.agents/skills`` root is
+    removed entirely.
+    """
+
+    paths = AgentPaths(home)
+    planned = {agent: skill_sources(agent, paths) for agent in SKILL_AGENTS}
+    remove_path(paths.legacy_shared_skills)
+    for agent in SKILL_AGENTS:
+        root = paths.skills(agent)
+        root.mkdir(parents=True, exist_ok=True)
+        for existing in root.iterdir():
+            if existing.name.startswith(".") or existing.name in AGENT_OWNED_SKILL_ENTRIES[agent]:
+                continue
+            remove_path(existing)
+        for name, source in planned[agent].items():
+            sync_directory(source, root / name)
 
 
 def install(*, profile: str, home: Path | None = None) -> None:
@@ -108,14 +198,7 @@ def install(*, profile: str, home: Path | None = None) -> None:
     paths = AgentPaths(home)
     source_root = REPO_ROOT / "agent-user-scope"
 
-    for source in sorted((source_root / "agents/skills").iterdir()):
-        if source.is_dir():
-            sync_directory(source, paths.shared_skills / source.name)
-
-    sync_directory(
-        source_root / "agents/skills/wrike-via-gateway",
-        paths.claude_skills / "wrike-via-gateway",
-    )
+    refresh_skills(home)
 
     for source in sorted((source_root / "claude/commands").glob("*.md")):
         sync_file(source, paths.claude_commands / source.name)
@@ -124,10 +207,6 @@ def install(*, profile: str, home: Path | None = None) -> None:
         path = paths.claude_commands / name
         if path.is_symlink() and os.readlink(path).startswith("/nix/store/"):
             path.unlink()
-
-    for source in sorted((source_root / "claude/skills").iterdir()):
-        if source.is_dir():
-            sync_directory(source, paths.claude_skills / source.name)
 
     sync_file(source_root / "cursor/cli-config.json", paths.cursor_config)
     if profile == "desktop":
