@@ -34,6 +34,7 @@ node = "24"
 bun = "latest"
 zig = "latest"
 gitleaks = "latest"
+gcloud = "latest"
 pre-commit = "latest"
 
 [tasks.bootstrap]
