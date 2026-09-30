@@ -116,6 +116,12 @@ templates containing unrendered tool-version variables cannot block upgrades.
 `upgrade-tacogips` updates only installed formulae and casks from
 `tacogips/tap` without a confirmation prompt.
 
+Google gateways use the latest releases from `tacogips/tap`. The common profile
+installs `google-calendar-gateway`, which provides separate reader and writer
+commands; the retired `calendar-gateway` package is no longer declared. The
+desktop Brewfile includes all five Gmail roles, Docs/Sheets/Drive, Analytics,
+Marketing, Document OCR, and Service gateways.
+
 Homebrew formulae and casks that are not declared in this repository stay
 installed until you clean them up. Preview extras first, then uninstall only
 after reviewing the exact list. Other projects' `mise.toml` `brew:` packages
