@@ -44,6 +44,10 @@ Brewfile.*                   Casks and third-party tap packages
 `desktop` environment by default. This repository targets development desktop
 Macs only.
 
+The Google Cloud CLI (`gcloud`) is managed by mise in `mise.toml`. Run
+`mise install gcloud` to install it, then `mise exec -- gcloud version` to verify
+the installation. Authenticate with `gcloud auth login` when needed.
+
 ## mise environments (`-E`)
 
 `-E NAME` tells mise to additionally load `mise.NAME.toml`. This repository
