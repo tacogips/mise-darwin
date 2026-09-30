@@ -22,6 +22,7 @@
 "brew:coreutils" = "latest"
 "brew:gawk" = "latest"
 "brew:mas" = "latest"
+"brew:calendar-gateway" = "latest"
 "brew:bat" = "latest"
 "brew:bottom" = "latest"
 "brew:eza" = "latest"
