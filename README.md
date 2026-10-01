@@ -126,6 +126,10 @@ commands; the retired `calendar-gateway` package is no longer declared. The
 desktop Brewfile includes all five Gmail roles, Docs/Sheets/Drive, Analytics,
 Marketing, Document OCR, and Service gateways.
 
+Use `$google-service-gateway-oauth-setup` in Codex for Google gateway authentication
+setup. It uses Service gateway for projects, API enablement, and local client
+import, with Google Auth Platform Console registration for Desktop/Web clients.
+
 Homebrew formulae and casks that are not declared in this repository stay
 installed until you clean them up. Preview extras first, then uninstall only
 after reviewing the exact list. Other projects' `mise.toml` `brew:` packages
