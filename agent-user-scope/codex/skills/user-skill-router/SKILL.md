@@ -17,6 +17,7 @@ Map the request to the narrowest matching skill:
   `apple-gateway`
 - Riela packages, workflows, execution, testing, troubleshooting, or explicit
   `/riela` requests: `riela` first; let its routing select a narrower Riela skill
+- Google gateway OAuth bootstrap or client setup: `google-service-gateway-oauth-setup`
 - Browser UI operation: `brave-browser-computer-use`
 - Diagrams: `diagram-design`
 - GitHub Actions: `secure-github-action`
