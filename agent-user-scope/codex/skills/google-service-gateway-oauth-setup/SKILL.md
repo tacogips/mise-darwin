@@ -15,7 +15,9 @@ already registered client locally; it does not create a client at Google.
 Inspect installed command versions, `--help`, existing project records, client
 files, and selected credentials before creating resources. Preserve the user's
 chosen project ownership, number of clients, browser, and existing external
-credential inputs. Reuse an existing project only when that matches the request.
+credential inputs. The default is one shared project and OAuth client configured
+through Service gateway, used by all gateways with separate role tokens and
+scopes. Create separate projects or clients only when explicitly requested.
 Do not recreate projects merely because client registration is unfinished.
 
 For the initial Cloud grant, use:
@@ -104,11 +106,14 @@ Back up an existing private client before authorized replacement. Import:
 
 ```sh
 google-service-gateway-auth clients register \
-  --product "$PRODUCT" --file "$CLIENT_JSON" --replace
+  --file "$CLIENT_JSON" --replace
 ```
 
-`PRODUCT` is one of the nine selectors above, and `CLIENT_JSON` is absolute.
-Use `--replace` only for intended replacement. For a Web client, supply its exact
+`CLIENT_JSON` is absolute. Omitting `--product` installs Service's shared default
+client and callback settings for all gateways. Explicit environment inputs and
+product-specific client files take precedence. Use `--product` with a selector
+above only for an intentional product override. Use `--replace` only for intended
+replacement. For a Web client, supply its exact
 registered `--redirect-uri` and the required `--listen-host` / `--listen-port`.
 Public HTTPS callbacks require TLS termination outside the local HTTP listener.
 Desktop clients use loopback callbacks; configurable ephemeral ports are valid.
