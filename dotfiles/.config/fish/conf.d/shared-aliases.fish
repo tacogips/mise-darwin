@@ -17,8 +17,8 @@ alias cleanup="find . -type f -name '*.DS_Store' -ls -delete"
 
 # Codex 0.147.0 distinguishes Ctrl-I from Tab with keyboard enhancement enabled,
 # but completion handles only Tab. Re-test Ctrl-I after future Codex updates.
-function co --description 'Codex Luna with medium reasoning'
-    command codex --dangerously-bypass-approvals-and-sandbox --model gpt-6-luna -c 'model_reasoning_effort="medium"' $argv
+function co --description 'Codex GPT-6.1 Sol with medium reasoning'
+    command codex --dangerously-bypass-approvals-and-sandbox --model gpt-6.1-sol -c 'model_reasoning_effort="medium"' $argv
 end
 
 function cot --description 'Codex Sol with medium reasoning'

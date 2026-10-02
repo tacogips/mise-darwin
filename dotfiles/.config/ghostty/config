@@ -14,3 +14,4 @@ confirm-close-surface = false
 app-notifications = config-reload,no-clipboard-copy
 keybind = cmd+d=ignore
 keybind = cmd+n=ignore
+keybind = cmd+w=ignore

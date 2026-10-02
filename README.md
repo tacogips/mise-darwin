@@ -206,7 +206,7 @@ Fish aliases for mise itself and the upgrade tasks are kept separately in
 are loaded lazily from `dotfiles/.config/fish/completions/mise.fish`, so
 subcommands and configured tasks are suggested for commands such as
 `mise run` without adding work to shell startup.
-The `co` Fish function starts Codex with GPT-6 Luna and medium reasoning.
+The `co` Fish function starts Codex with GPT-6.1 Sol and medium reasoning.
 
 ## Set up a clean Mac
 
