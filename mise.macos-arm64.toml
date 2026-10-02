@@ -79,6 +79,7 @@ run = "./scripts/pre-packages.sh"
 run = "killall Dock Finder 2>/dev/null || true"
 
 [dotfiles]
+"~/.pi/agent/keybindings.json" = { mode = "symlink" }
 "~/.config/fish/config.fish" = { mode = "symlink" }
 "~/.config/fish/conf.d/mise-aliases.fish" = { mode = "symlink" }
 "~/.config/fish/conf.d/shared-aliases.fish" = { mode = "symlink" }

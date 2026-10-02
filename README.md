@@ -48,6 +48,14 @@ The Google Cloud CLI (`gcloud`) is managed by mise in `mise.toml`. Run
 `mise install gcloud` to install it, then `mise exec -- gcloud version` to verify
 the installation. Authenticate with `gcloud auth login` when needed.
 
+Pi keybindings are managed through `dotfiles/.pi/agent/keybindings.json`, linked
+by mise to `~/.pi/agent/keybindings.json`. Both Backspace and Ctrl-H delete the
+previous character. Apply the link with `mise bootstrap dotfiles apply`, then run
+`/reload` in an existing Pi session (or restart Pi). Only the keybindings file
+is linked; credentials, settings, and sessions remain user-owned. This uses Pi's
+default agent directory; a custom `PI_CODING_AGENT_DIR` needs its own keybindings
+configuration.
+
 ## mise environments (`-E`)
 
 `-E NAME` tells mise to additionally load `mise.NAME.toml`. This repository
