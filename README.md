@@ -327,6 +327,11 @@ Herdr, LazyGit, Yazi, bat/Delta, fzf, and eza. The Karabiner config
 includes the migrated ANSI/Kana symbol mappings. Desktop bootstrap applies the
 Git-managed Sora sea image to every macOS desktop.
 
+Ghostty forwards Cmd+W to Herdr using the Kitty keyboard protocol
+(`csi:119;9u`). Herdr maps it to `close_tab` and asks for confirmation before
+closing the active tab. Reload Ghostty's configuration with Cmd+Shift+, after
+changing this binding.
+
 ## AI agent user scope and Riela
 
 User-scope skills are managed only by this repository and are kept separate
