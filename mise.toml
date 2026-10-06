@@ -79,6 +79,10 @@ run = "brew bundle install --file Brewfile.desktop"
 description = "Update installed tacogips Homebrew formulae and casks"
 run = "python -m scripts.mise_darwin upgrade-tacogips"
 
+[tasks.upgrade-apple-gateway]
+description = "Update only the apple-gateway Homebrew formula"
+run = "brew upgrade --formula --no-ask tacogips/tap/apple-gateway"
+
 [tasks.upgrade-taco]
 description = "Update all managed Desktop dependencies"
 alias = "upgrade-all"
