@@ -128,6 +128,10 @@ templates containing unrendered tool-version variables cannot block upgrades.
 `upgrade-tacogips` updates only installed formulae and casks from
 `tacogips/tap` without a confirmation prompt.
 
+The desktop profile also declares `apple-gateway` as a latest-version bootstrap
+package. Update it alone without touching other packages with
+`mise -E macos-arm64 -E desktop bootstrap packages upgrade brew:tacogips/tap/apple-gateway --yes`.
+
 Google gateways use the latest releases from `tacogips/tap`. The common profile
 installs `google-calendar-gateway`, which provides separate reader and writer
 commands; the retired `calendar-gateway` package is no longer declared. The
