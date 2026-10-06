@@ -1,4 +1,5 @@
 [bootstrap.packages]
+"brew:tacogips/tap/apple-gateway" = "latest"
 "brew:ccusage" = "latest"
 "brew:cline" = "latest"
 "brew:colima" = "latest"
