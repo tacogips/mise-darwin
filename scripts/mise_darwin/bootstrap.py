@@ -11,7 +11,7 @@ import sys
 from pathlib import Path
 from typing import cast
 
-from . import REPO_ROOT, agents, wallpaper
+from . import REPO_ROOT, agents, tailscale, wallpaper
 from .command import atomic_write, command_exists, run
 
 DOCKER_PLUGIN_DIRS = (
@@ -274,6 +274,8 @@ def apply(profile: str) -> None:
         path.mkdir(parents=True, exist_ok=True)
 
     _trust_brew_taps(profile)
+    if profile == "desktop":
+        tailscale.apply()
     _converge_brewfiles(profile)
     converge_riela_packages(home)
     agents.install(profile=profile, home=home)

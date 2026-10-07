@@ -138,6 +138,47 @@ installs `google-calendar-gateway`, which provides separate reader and writer
 commands; the retired `calendar-gateway` package is no longer declared. The
 desktop Brewfile includes all five Gmail roles, Docs/Sheets/Drive, Analytics,
 Marketing, Document OCR, and Service gateways.
+The desktop Brewfile installs the standalone Tailscale.app through the
+`tailscale-app` cask. It provides a menu-bar icon and the `tailscale` CLI for
+outbound SSH connections; this Mac does not host Tailscale SSH.
+
+Desktop bootstrap configures the documented standalone-app policies at
+`~/Library/Preferences/io.tailscale.ipn.macsys.plist`:
+
+- `TailscaleStartOnLogin = true`: start the app at user login.
+- `AllowIncomingConnections = "never"`: block incoming tailnet connections
+  while allowing outgoing connections.
+
+Bootstrap preserves unrelated preferences, opens the app if it is not running,
+and installs a managed Python CLI launcher at `~/.local/bin/tailscale`, which
+forwards arguments to the app's binary. It preserves unrelated files at that
+path and reports conflicts instead of overwriting them. Bootstrap also
+retires the known Homebrew/mise CLI-only daemons before installing the GUI
+app. It validates each daemon's label and executable, backs up its plist next
+to the original as `*.plist.mise-darwin-backup-<timestamp>`, unregisters the
+service, and uninstalls only the `tailscale` formula. Customized or symlinked
+service definitions are rejected; authentication data is preserved.
+If starting the old service with sudo changed formula ownership, setup restores
+ownership only inside its Tailscale keg and its validated `opt/tailscale` link
+before asking Homebrew to uninstall it.
+
+Apply just the Tailscale setup, or preview it without changing the host:
+
+```sh
+mise -E macos-arm64 -E desktop run tailscale:setup -- --dry-run
+mise -E macos-arm64 -E desktop run tailscale:setup
+```
+
+The same setup runs during the normal desktop bootstrap. Package installation
+and removal of root daemons can require sudo. On a new Mac, approve the system
+extension and VPN configuration and sign in when the app prompts; bootstrap
+does not bypass these macOS approvals or store authentication credentials.
+The app's first launch registers its login helper. Use `tailscale ssh user@host`
+after sign-in; the destination must support Tailscale SSH and its tailnet policy
+must permit your connection. `mise run verify` checks the app, CLI, and both
+configured policies. See [system policies](https://tailscale.com/docs/features/tailscale-system-policies),
+[standalone preferences](https://tailscale.com/docs/integrations/mdm/mac),
+and [macOS variants](https://tailscale.com/docs/concepts/macos-variants).
 
 Use `$google-service-gateway-oauth-setup` in Codex for Google gateway authentication
 setup. It uses Service gateway for projects, API enablement, and local client

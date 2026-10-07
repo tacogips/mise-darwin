@@ -8,6 +8,7 @@ from . import (
     bootstrap,
     brew_cleanup,
     nix_uninstall,
+    tailscale,
     temporary_packages,
     upgrade_taco,
     verify,
@@ -50,6 +51,10 @@ def parser() -> argparse.ArgumentParser:
     subcommands = command_parser.add_subparsers(dest="command", required=True)
     subcommands.add_parser("bootstrap", help="run idempotent post-tool configuration")
     subcommands.add_parser("verify", help="verify the development desktop")
+    tailscale_setup = subcommands.add_parser(
+        "tailscale-setup", help="configure the outbound-only Tailscale desktop app"
+    )
+    tailscale_setup.add_argument("--dry-run", action="store_true")
     subcommands.add_parser(
         "upgrade-tacogips",
         help="upgrade installed tacogips Homebrew formulae and casks",
@@ -99,6 +104,9 @@ def main() -> int:
         return 0
     if arguments.command == "verify":
         return 0 if verify.verify(profile) else 1
+    if arguments.command == "tailscale-setup":
+        tailscale.apply(dry_run=arguments.dry_run)
+        return 0
     if arguments.command == "upgrade-tacogips":
         upgrade_taco.upgrade()
         return 0
