@@ -15,5 +15,8 @@
 "mas:1352778147" = "latest" # Bitwarden
 "mas:1033342465" = "latest" # Just Press Record
 "mas:302584613" = "latest"  # Amazon Kindle
-"mas:1475387142" = "latest" # Tailscale
 "mas:497799835" = "latest"  # Xcode
+
+[tasks."tailscale:setup"]
+description = "Converge the Tailscale menu-bar app, login startup, and outbound-only policy"
+run = "python -m scripts.mise_darwin tailscale-setup"

@@ -9,7 +9,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable
 
-from . import agents, wallpaper
+from . import agents, tailscale, wallpaper
 from .command import run
 
 
@@ -106,6 +106,15 @@ def wallpaper_check() -> CheckResult:
     return CheckResult(ok, "managed wallpaper is not set on every desktop")
 
 
+def tailscale_policies_check(home: Path) -> CheckResult:
+    preferences = home / "Library/Preferences/io.tailscale.ipn.macsys.plist"
+    for key, _, _, expected in tailscale.POLICIES:
+        current = run(["defaults", "read", preferences, key], capture=True, check=False)
+        if current.returncode != 0 or current.stdout.strip() != expected:
+            return CheckResult(False, f"Tailscale policy {key} is not {expected!r}")
+    return CheckResult(True)
+
+
 def _checks(profile: str, home: Path) -> list[tuple[str, Check]]:
     agent_paths = agents.AgentPaths(home)
     checks: list[tuple[str, Check]] = [
@@ -175,6 +184,9 @@ def _checks(profile: str, home: Path) -> list[tuple[str, Check]]:
         checks.extend(
             [
                 ("desktop wallpaper", wallpaper_check),
+                ("Tailscale menu-bar app", path_check(tailscale.APP)),
+                ("Tailscale CLI", executable_check("tailscale")),
+                ("Tailscale login/outbound policy", lambda: tailscale_policies_check(home)),
                 ("riela", executable_check("riela")),
                 (
                     "Riela Codex user skill",
