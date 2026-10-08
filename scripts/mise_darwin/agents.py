@@ -8,10 +8,12 @@ in the former shared ``~/.agents/skills`` root.
 
 from __future__ import annotations
 
+import json
 import os
 import re
 from dataclasses import dataclass
 from pathlib import Path
+from typing import cast
 
 from . import REPO_ROOT
 from .command import atomic_write, manifest_lines, remove_path, sync_directory, sync_file
@@ -69,6 +71,10 @@ class AgentPaths:
     @property
     def claude_skills(self) -> Path:
         return self.home / ".claude/skills"
+
+    @property
+    def claude_settings(self) -> Path:
+        return self.home / ".claude/settings.json"
 
     @property
     def cursor_config(self) -> Path:
@@ -193,10 +199,37 @@ def refresh_skills(home: Path) -> None:
             sync_directory(source, root / name)
 
 
+def converge_claude_settings(home: Path) -> None:
+    """Merge managed attribution into user settings without replacing preferences."""
+
+    path = AgentPaths(home).claude_settings
+    source = REPO_ROOT / "agent-user-scope/claude/settings.json"
+    managed = cast(
+        dict[str, dict[str, object]], json.loads(source.read_text(encoding="utf-8"))
+    )
+    try:
+        content = path.read_text(encoding="utf-8")
+    except FileNotFoundError:
+        content = "{}"
+    decoded = cast(object, json.loads(content))
+    if not isinstance(decoded, dict):
+        raise ValueError("Claude user settings must be a JSON object")
+    settings = cast(dict[str, object], decoded)
+    current = settings.get("attribution")
+    attribution = dict(cast(dict[str, object], current)) if isinstance(current, dict) else {}
+    attribution.update(managed["attribution"])
+    if current == attribution:
+        return
+    settings["attribution"] = attribution
+    atomic_write(path, json.dumps(settings, indent=2) + "\n", mode=0o600)
+
+
 def install(*, profile: str, home: Path | None = None) -> None:
     home = home or Path.home()
     paths = AgentPaths(home)
     source_root = REPO_ROOT / "agent-user-scope"
+
+    converge_claude_settings(home)
 
     refresh_skills(home)
 

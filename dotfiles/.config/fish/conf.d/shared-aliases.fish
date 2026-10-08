@@ -21,6 +21,10 @@ function co --description 'Codex GPT-6.1 Sol with medium reasoning'
     command codex --dangerously-bypass-approvals-and-sandbox --model gpt-6.1-sol -c 'model_reasoning_effort="medium"' $argv
 end
 
+function pic --description 'Pi with OpenAI GPT-6.1 Sol'
+    command pi --provider openai --model gpt-6.1-sol $argv
+end
+
 function cot --description 'Codex Sol with medium reasoning'
     command codex --dangerously-bypass-approvals-and-sandbox --model gpt-6-sol -c 'model_reasoning_effort="medium"' $argv
 end

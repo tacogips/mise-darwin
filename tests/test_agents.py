@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -7,6 +8,7 @@ from unittest.mock import patch
 
 from scripts.mise_darwin.agents import (
     AgentPaths,
+    converge_claude_settings,
     converge_codex_skill_visibility,
     refresh_skills,
 )
@@ -23,6 +25,42 @@ class AgentPathsTests(unittest.TestCase):
         self.assertEqual(paths.codex_skills, home / ".codex/skills")
         self.assertEqual(paths.claude_skills, home / ".claude/skills")
         self.assertEqual(paths.cursor_skills, home / ".cursor/skills")
+
+
+class ClaudeSettingsTests(unittest.TestCase):
+    def test_creates_settings_and_preserves_preferences_without_rewriting(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            home = Path(temporary)
+            path = AgentPaths(home).claude_settings
+            converge_claude_settings(home)
+            settings = json.loads(path.read_text(encoding="utf-8"))
+            self.assertEqual(
+                settings["attribution"], {"commit": "", "pr": "", "sessionUrl": False}
+            )
+            settings["permissions"] = {"allow": ["Read"]}
+            settings["attribution"]["futureKey"] = "preserved"
+            settings["attribution"]["commit"] = "old attribution"
+            path.write_text(json.dumps(settings), encoding="utf-8")
+            converge_claude_settings(home)
+            updated = json.loads(path.read_text(encoding="utf-8"))
+            self.assertEqual(updated["permissions"], settings["permissions"])
+            self.assertEqual(updated["attribution"]["futureKey"], "preserved")
+            self.assertEqual(updated["attribution"]["commit"], "")
+            with patch("scripts.mise_darwin.agents.atomic_write") as write:
+                converge_claude_settings(home)
+                write.assert_not_called()
+
+    def test_invalid_settings_are_not_overwritten(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            home = Path(temporary)
+            path = AgentPaths(home).claude_settings
+            path.parent.mkdir(parents=True)
+            for content in ("broken JSON", "[]", "null"):
+                with self.subTest(content=content):
+                    path.write_text(content, encoding="utf-8")
+                    with self.assertRaises(ValueError):
+                        converge_claude_settings(home)
+                    self.assertEqual(path.read_text(encoding="utf-8"), content)
 
 
 class CodexSkillVisibilityTests(unittest.TestCase):

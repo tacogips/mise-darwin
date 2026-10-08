@@ -48,6 +48,11 @@ The Google Cloud CLI (`gcloud`) is managed by mise in `mise.toml`. Run
 `mise install gcloud` to install it, then `mise exec -- gcloud version` to verify
 the installation. Authenticate with `gcloud auth login` when needed.
 
+The `pi` coding agent harness is managed by mise in `mise.toml` through the
+registry's checksum-verified `aqua:earendil-works/pi` backend. Run
+`mise install pi` to install it, then `mise exec -- pi --version` to verify the
+installation. Update it with `mise run upgrade-tools`.
+
 Pi keybindings are managed through `dotfiles/.pi/agent/keybindings.json`, linked
 by mise to `~/.pi/agent/keybindings.json`. Both Backspace and Ctrl-H delete the
 previous character. Apply the link with `mise bootstrap dotfiles apply`, then run
@@ -261,6 +266,9 @@ are loaded lazily from `dotfiles/.config/fish/completions/mise.fish`, so
 subcommands and configured tasks are suggested for commands such as
 `mise run` without adding work to shell startup.
 The `co` Fish function starts Codex with GPT-6.1 Sol and medium reasoning.
+The `pic` Fish function starts Pi with `--provider openai --model gpt-6.1-sol`
+and forwards additional arguments. Pi 0.99.2 lists this model under `openai`.
+Reload existing Fish shells with `source ~/.config/fish/conf.d/shared-aliases.fish`.
 
 ## Set up a clean Mac
 
@@ -379,6 +387,11 @@ closing the active tab. Reload Ghostty's configuration with Cmd+Shift+, after
 changing this binding.
 
 ## AI agent user scope and Riela
+
+Bootstrap merges `agent-user-scope/claude/settings.json` into
+`~/.claude/settings.json`, preserving unrelated preferences. Claude Code's
+commit and PR attribution and session links are disabled through the
+`attribution` JSON setting. Invalid existing JSON is reported without overwriting it.
 
 User-scope skills are managed only by this repository and are kept separate
 per agent. `agent-user-scope/claude/skills/` becomes `~/.claude/skills/` and
