@@ -36,6 +36,7 @@ zig = "latest"
 gitleaks = "latest"
 gcloud = "latest"
 pre-commit = "latest"
+pi = "latest"
 
 [tasks.bootstrap]
 description = "Run idempotent post-bootstrap configuration"
