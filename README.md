@@ -133,6 +133,13 @@ templates containing unrendered tool-version variables cannot block upgrades.
 `upgrade-tacogips` updates only installed formulae and casks from
 `tacogips/tap` without a confirmation prompt.
 
+`Brewfile.desktop` declares the `diagra` diagram/ERD editor cask from
+`tacogips/tap`, which also links the `diagra-cli` command used by projects that
+keep their database schema in a diagra document (for example telescreen's
+`mise run ddl-check`). Install it alone, without applying the rest of the
+Brewfile, with `brew install --cask tacogips/tap/diagra`; `upgrade-tacogips`
+keeps it current.
+
 The desktop profile also declares `apple-gateway` as a latest-version bootstrap
 package. Update it alone without touching other packages with
 `mise run upgrade-apple-gateway`. This uses Homebrew directly because mise's
