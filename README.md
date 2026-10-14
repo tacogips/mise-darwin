@@ -135,9 +135,8 @@ templates containing unrendered tool-version variables cannot block upgrades.
 
 `Brewfile.desktop` declares the `nodetto` diagram/ERD editor cask from
 `tacogips/tap`, which also links the `nodetto-cli` command for DDL export and
-checks, formatting, and validation of Nodetto JSONL documents. Nodetto was
-formerly named diagra; the tap maps the old cask name to `nodetto`. Install it
-alone, without applying the rest of the Brewfile, with
+checks, formatting, and validation of Nodetto JSONL documents. Install it alone,
+without applying the rest of the Brewfile, with
 `brew install --cask tacogips/tap/nodetto`; `upgrade-tacogips` keeps it current.
 
 The desktop profile also declares `apple-gateway` as a latest-version bootstrap
