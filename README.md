@@ -133,12 +133,12 @@ templates containing unrendered tool-version variables cannot block upgrades.
 `upgrade-tacogips` updates only installed formulae and casks from
 `tacogips/tap` without a confirmation prompt.
 
-`Brewfile.desktop` declares the `diagra` diagram/ERD editor cask from
-`tacogips/tap`, which also links the `diagra-cli` command used by projects that
-keep their database schema in a diagra document (for example telescreen's
-`mise run ddl-check`). Install it alone, without applying the rest of the
-Brewfile, with `brew install --cask tacogips/tap/diagra`; `upgrade-tacogips`
-keeps it current.
+`Brewfile.desktop` declares the `nodetto` diagram/ERD editor cask from
+`tacogips/tap`, which also links the `nodetto-cli` command for DDL export and
+checks, formatting, and validation of Nodetto JSONL documents. Nodetto was
+formerly named diagra; the tap maps the old cask name to `nodetto`. Install it
+alone, without applying the rest of the Brewfile, with
+`brew install --cask tacogips/tap/nodetto`; `upgrade-tacogips` keeps it current.
 
 The desktop profile also declares `apple-gateway` as a latest-version bootstrap
 package. Update it alone without touching other packages with
