@@ -429,6 +429,10 @@ refresh; add them to `agent-user-scope/` instead. `agent-user-scope/` also holds
 the Claude commands, Cursor CLI configuration, Peekaboo MCP configuration, and
 Cursor skill.
 
+The `disk-cleanup` skill covers Rust targets, SwiftPM/Xcode compilation outputs,
+package caches, and container build storage. It preserves source, active builds,
+release archives, and persistent volumes, and verifies reclaimed host space.
+
 The `cursor-agent` CLI is owned by the `cursor-cli` Homebrew cask in
 `Brewfile.desktop`, so `mise run upgrade-brew-desktop` updates it. Cursor's own
 `install.sh` installs a self-updating copy under `~/.local/share/cursor-agent`
