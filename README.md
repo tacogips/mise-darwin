@@ -394,6 +394,16 @@ changing this binding.
 
 ## AI agent user scope and Riela
 
+Bootstrap merges `dotfiles/.codex/config.toml` into `~/.codex/config.toml`
+using mise's declarative TOML merge (mise 2026.10.5 or newer). This sets the
+default Codex model to `gpt-6.1-sol` while preserving unrelated settings,
+including MCP servers, reasoning effort, profiles, and comments. To apply
+only this setting, run:
+
+```sh
+mise -E macos-arm64 -E desktop dot apply '~/.codex/config.toml/model'
+```
+
 Bootstrap merges `agent-user-scope/claude/settings.json` into
 `~/.claude/settings.json`, preserving unrelated preferences. Claude Code's
 commit and PR attribution and session links are disabled through the
