@@ -1,6 +1,6 @@
 ---
 name: user-skill-router
-description: Route requests to detailed user-scope skills without injecting every description. Use for Apple apps, Riela, browser automation, diagrams, Git safety, security, Product Hunt, Wrike, Swift/iOS, invoices, environment setup, or an explicitly named user skill.
+description: Route requests to detailed user-scope skills without injecting every description. Use for Apple apps, Riela, browser automation, diagrams, Git safety, security, Product Hunt, Wrike, Swift/iOS, invoices, disk cleanup, environment setup, or an explicitly named user skill.
 ---
 
 # User Skill Router
@@ -23,6 +23,7 @@ Map the request to the narrowest matching skill:
 - GitHub Actions: `secure-github-action`
 - Source security review: `codex-source-security-check-loop`
 - Session self-review: `improve`
+- Low disk space, development build/cache cleanup, or container disk usage: `disk-cleanup`
 - Environment setup: `envrc-generate`
 - Product Hunt, Wrike, invoice/PDF correction, Swift, iOS app launch, Konjac,
   Miro, task queue, or task watchdog work: use the same-named installed skill
