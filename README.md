@@ -396,7 +396,7 @@ changing this binding.
 
 Bootstrap merges `dotfiles/.codex/config.toml` into `~/.codex/config.toml`
 using mise's declarative TOML merge (mise 2026.10.5 or newer). This sets the
-default Codex model to `gpt-6.1-sol` while preserving unrelated settings,
+default Codex model to `gpt-6-luna` while preserving unrelated settings,
 including MCP servers, reasoning effort, profiles, and comments. To apply
 only this setting, run:
 
