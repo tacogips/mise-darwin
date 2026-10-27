@@ -27,7 +27,7 @@ _.path = [
 ]
 
 [tools]
-go = "latest"
+go = "1.27.3"
 rust = "latest"
 python = "3.13"
 node = "24.22.1"
