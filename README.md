@@ -550,3 +550,9 @@ a migration reference until this repository passes verification.
   first launch and license acceptance.
 - Add a dedicated, reviewable task and plist when a system LaunchDaemon becomes
   necessary.
+
+## Go verifier security baseline
+
+The shared tool configuration pins Go 1.27.3 for CVE-2026-111943.
+Run the normal mise tool installation to select this compiler consistently.
+Existing compiled tools need to be rebuilt separately to incorporate its verifier.
