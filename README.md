@@ -23,6 +23,10 @@ mise trust
 The bootstrap configures this Mac as the development desktop. Sign in to the
 Mac App Store first if App Store applications should be installed.
 
+The desktop container runtimes are Apple `container` and Docker through Colima.
+Podman, podman-compose, and the Podman macOS helper are not provisioned. Existing
+Podman VM data is retained when migrating from older configurations.
+
 ## Repository layout
 
 ```text
