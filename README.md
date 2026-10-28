@@ -466,7 +466,7 @@ Claude Code uses the
 Terra-ready implementation plans, runs every review gate and the final
 integration review, and returns implementation findings to the owning Terra
 implementer for correction,
-while Codex GPT-6.1 Terra (high effort, fast tier) implements every
+while Codex GPT-6.1 Terra (medium effort) implements every
 dependency-ready plan in unbounded fanout. It replaces the former
 `opus-luna-design-and-implement-review-loop`, `fable-and-improve`,
 `fable-and-improve-codex` and `fable-and-improve-opus`
