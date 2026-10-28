@@ -21,8 +21,9 @@ DOCKER_PLUGIN_DIRS = (
 HERDR_TARGETS = ("claude", "codex")
 AEROSPACE_AGENT_LABEL = "com.taco.aerospace-display-sync"
 BAT_THEME = REPO_ROOT / "dotfiles/.config/bat/themes/Sora.tmTheme"
-# Former user-scope packages replaced by opus-luna-design-and-implement-review-loop.
+# Former user-scope packages replaced by opus-terra-design-and-implement-review-loop.
 RETIRED_RIELA_PACKAGES = (
+    "opus-luna-design-and-implement-review-loop",
     "fable-and-improve",
     "fable-and-improve-codex",
     "fable-and-improve-opus",
@@ -30,7 +31,7 @@ RETIRED_RIELA_PACKAGES = (
 RIELA_CLI = Path("/opt/homebrew/bin/riela")
 REQUIRED_USER_SKILLS = (
     ("codex", "codex-design-and-implement-review-loop"),
-    ("claude", "opus-luna-design-and-implement-review-loop"),
+    ("claude", "opus-terra-design-and-implement-review-loop"),
 )
 
 

@@ -11,7 +11,7 @@ claude-code-source-security-check-loop
 claude-code-task-watchdog
 claude-code-website-builder
 fable-astra-design-plan-review-loop
-opus-luna-design-and-implement-review-loop
+opus-terra-design-and-implement-review-loop
 riela-package-manager-skill
 riela-package-release-skill
 riela-temporary-workflow-skill

@@ -200,7 +200,7 @@ def _checks(profile: str, home: Path) -> list[tuple[str, Check]]:
                     "Riela Claude user skill",
                     path_check(
                         agent_paths.claude_skills
-                        / "opus-luna-design-and-implement-review-loop/SKILL.md",
+                        / "opus-terra-design-and-implement-review-loop/SKILL.md",
                         kind="file",
                     ),
                 ),
