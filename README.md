@@ -462,12 +462,14 @@ to use a locally managed checkout without pulling it, and set
 package installs its Fable 5 / GPT-6 Astra design and implementation-plan
 review workflow with skills for both Claude Code and Codex (medium effort).
 Claude Code uses the
-`opus-luna-design-and-implement-review-loop` skill: Opus 5.5 designs, writes
-Luna-ready implementation plans, runs every review gate (repairing findings
-through Sonnet subagents before re-reviewing) and the final integration review,
-while Codex GPT-6 Luna (high effort, fast tier) implements every
+`opus-terra-design-and-implement-review-loop` skill: Opus 5.5 designs, writes
+Terra-ready implementation plans, runs every review gate and the final
+integration review, and returns implementation findings to the owning Terra
+implementer for correction,
+while Codex GPT-6.1 Terra (high effort, fast tier) implements every
 dependency-ready plan in unbounded fanout. It replaces the former
-`fable-and-improve`, `fable-and-improve-codex` and `fable-and-improve-opus`
+`opus-luna-design-and-implement-review-loop`, `fable-and-improve`,
+`fable-and-improve-codex` and `fable-and-improve-opus`
 user packages; bootstrap uninstalls those packages and their lock entries, and
 the skill refresh drops their skills. Codex uses
 `codex-design-and-implement-review-loop`, with GPT-6 Astra handling design,
