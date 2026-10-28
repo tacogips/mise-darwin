@@ -4,8 +4,6 @@
 "brew:cline" = "latest"
 "brew:colima" = "latest"
 "brew:container" = "latest"
-"brew:podman" = "latest"
-"brew:podman-compose" = "latest"
 "brew:docker" = "latest"
 "brew:docker-compose" = "latest"
 "brew:herdr" = "latest"

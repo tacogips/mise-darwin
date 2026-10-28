@@ -251,12 +251,6 @@ def converge_aerospace_sync(home: Path, *, load_agent: bool = True) -> None:
 
 
 def _configure_optional_tools() -> None:
-    podman_helper = Path("/opt/homebrew/bin/podman-mac-helper")
-    if podman_helper.is_file() and os.access(podman_helper, os.X_OK):
-        result = run([podman_helper, "install"], check=False)
-        if result.returncode != 0:
-            print("warning: podman-mac-helper setup failed")
-
     chilla = Path("/Applications/chilla.app")
     if chilla.is_dir():
         run(["xattr", "-rd", "com.apple.quarantine", chilla], quiet=True, check=False)
