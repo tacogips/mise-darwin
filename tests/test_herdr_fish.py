@@ -78,6 +78,21 @@ else:
         self.env["HERDR_BIN_PATH"] = str(self.root / "missing-herdr")
         self.assertEqual(self.run_hook(), [])
 
+    def test_non_git_directory_creates_space(self):
+        destination = self.root / "ordinary directory" / "nested directory"
+        destination.mkdir(parents=True)
+        self.env["TEST_HERDR_DESTINATION"] = str(destination)
+        self.assertEqual(self.run_hook()[-1], ["pane", "move", "w1:p2", "--new-workspace",
+            "--label", destination.name, "--focus"])
+
+    def test_without_git_uses_current_directory(self):
+        binary_dir = self.root / "bin"
+        binary_dir.mkdir()
+        (binary_dir / "jq").symlink_to(str(shutil.which("jq")))
+        self.env["PATH"] = str(binary_dir)
+        self.assertEqual(self.run_hook()[-1], ["pane", "move", "w1:p2", "--new-workspace",
+            "--label", "nested", "--focus"])
+
     def test_outside_herdr_is_silent(self):
         del self.env["HERDR_PANE_ID"]
         self.assertEqual(self.run_hook(), [])

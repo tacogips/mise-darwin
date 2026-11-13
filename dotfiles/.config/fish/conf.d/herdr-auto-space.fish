@@ -3,7 +3,7 @@ function __taco_herdr_auto_space_route
     set -q HERDR_PANE_ID; or return 0
     test -n "$HERDR_PANE_ID"; or return 0
     test "$HERDR_AUTO_SPACE_DISABLE" != 1; or return 0
-    command -sq git; and command -sq jq; or return 0
+    command -sq jq; or return 0
 
     set -l herdr_bin herdr
     if set -q HERDR_BIN_PATH; and test -n "$HERDR_BIN_PATH"
@@ -11,8 +11,11 @@ function __taco_herdr_auto_space_route
     end
     command -sq "$herdr_bin"; or return 0
 
-    set -l root (command git -C "$PWD" rev-parse --show-toplevel 2>/dev/null | string collect)
-    test -n "$root"; or return 0
+    set -l root
+    if command -sq git
+        set root (command git -C "$PWD" rev-parse --show-toplevel 2>/dev/null | string collect)
+    end
+    test -n "$root"; or set root "$PWD"
     set -l label (path basename "$root")
 
     # Herdr resolves launch-time pane aliases after cross-Space moves.

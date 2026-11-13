@@ -280,13 +280,15 @@ The `pic` Fish function starts Pi with `--provider openai --model gpt-6.1-sol`
 and forwards additional arguments. Pi 0.99.2 lists this model under `openai`.
 Reload existing Fish shells with `source ~/.config/fish/conf.d/shared-aliases.fish`.
 
-Fish automatically routes a Herdr terminal after changing directories into a Git
-checkout. The checkout root's basename selects the Space; subdirectories use the
-same Space. A missing Space is created by moving the running terminal. Split tabs
+Fish automatically routes a Herdr terminal after changing directories anywhere.
+Inside a Git checkout, the checkout root's basename selects the Space;
+subdirectories use the same Space. Outside Git (or when Git is unavailable), the
+current directory's basename selects the Space. A missing Space is created by
+moving the running terminal. Split tabs
 and duplicate Space labels are skipped. Moving the last pane out of a Space may
 close the empty source Space, and the destination gets a new tab label.
 The hook in `dotfiles/.config/fish/conf.d/herdr-auto-space.fish` needs no plugin
-or watcher. It silently does nothing outside Herdr, when Herdr, Git, or jq is
+or watcher. It silently does nothing outside Herdr, when Herdr or jq is
 unavailable, or when an API call fails. Set `HERDR_AUTO_SPACE_DISABLE=1` to opt out.
 After applying dotfiles, reload existing Fish shells with
 `source ~/.config/fish/conf.d/herdr-auto-space.fish`. Stop any previously enabled
