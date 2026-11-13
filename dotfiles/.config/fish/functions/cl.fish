@@ -1,3 +1,3 @@
 function cl
-    __claude-run sonnet $argv
+    __claude-run sonnet high $argv
 end

@@ -1,3 +1,3 @@
 function clo
-    __claude-run opus $argv
+    __claude-run opus medium $argv
 end

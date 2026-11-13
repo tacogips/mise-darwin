@@ -410,6 +410,10 @@ changing this binding.
 
 ## AI agent user scope and Riela
 
+The Fish command `clo` starts Claude Opus with medium effort; `cl` starts
+Claude Sonnet with high effort. Both set `CLAUDE_CODE_EFFORT_LEVEL` for the
+launched process.
+
 Bootstrap merges `dotfiles/.codex/config.toml` into `~/.codex/config.toml`
 using mise's declarative TOML merge (mise 2026.10.5 or newer). This sets the
 default Codex model to `gpt-6-luna` while preserving unrelated settings,
