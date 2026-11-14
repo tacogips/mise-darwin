@@ -1,0 +1,7 @@
+{
+  "include": ["scripts/mise_darwin", "tests"],
+  "pythonVersion": "3.13",
+  "typeCheckingMode": "strict",
+  "reportImplicitStringConcatenation": "none",
+  "reportUnusedCallResult": "none"
+}

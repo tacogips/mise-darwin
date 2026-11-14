@@ -1,0 +1,4 @@
+cask "font-jetbrains-mono"
+cask "font-jetbrains-mono-nerd-font"
+cask "font-hasklig"
+cask "font-noto-sans-cjk"

@@ -1,0 +1,62 @@
+---
+name: riela
+description: Use when the user invokes `/riela "{instruction}"` or explicitly asks Codex to handle an instruction through Riela, Riela-related skills, or Riela workflows. This skill routes the instruction to the most appropriate installed Riela skill or workflow instead of treating it as ordinary local work.
+metadata:
+  short-description: Route instructions through Riela workflows
+argument-hint: "{instruction}"
+user-invocable: true
+---
+
+# Riela
+
+Use this skill as a dispatcher for `/riela "{instruction}"`.
+
+## Contract
+
+1. Extract the quoted instruction exactly. If the user provided no instruction,
+   ask for one concise clarification.
+2. Choose the narrowest relevant installed Riela skill or workflow for that
+   instruction.
+3. Use that selected skill or workflow according to its own instructions.
+4. Preserve the user's instruction as the task input when invoking another
+   skill or workflow.
+5. Report which Riela path was selected and the outcome.
+
+Do not satisfy a `/riela` request as normal local Codex work unless no relevant
+Riela skill, workflow, or `riela` CLI path is available. If fallback is needed,
+state that explicitly.
+
+## Routing
+
+Prefer an installed skill when one clearly matches:
+
+- package search/install/update/remove/list: use `riela-package`
+- workflow run/status/resume/rerun/inspect/validate: use
+  `riela-workflow-run`
+- failed, paused, stalled, or surprising workflow sessions: use
+  `riela-troubleshooting`
+- workflow authoring or modification: use `riela-workflow`
+- temporary inline or JSON workflow execution: use `riela-temporary-workflow`
+- workflow tests, mock scenarios, or expected results: use
+  `riela-workflow-test`
+- packaged workflow skill creation or updates: use
+  `riela-workflow-use-skill`
+- source security checks: use the `codex-source-security-check-loop` workflow
+- implementation work with design/review loop: use the
+  `codex-design-and-implement-review-loop` workflow
+- small scoped code or documentation changes: use
+  the `codex-simple-work-package` workflow
+- deep design/implementation/security work: use the `codex-deep-creation`
+  workflow
+- generic goal-driven work: use the `codex-goal` workflow
+
+If multiple routes seem plausible, prefer the most specific Riela skill over a
+generic goal workflow. For implementation requests, prefer a Riela/Codex
+implementation workflow over direct local edits.
+
+## CLI Fallback
+
+If no matching skill is available but the `riela` CLI is available, inspect the
+CLI help for the relevant command and run the smallest safe command needed.
+Avoid destructive package or workflow changes unless the instruction explicitly
+requires them.

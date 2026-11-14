@@ -1,0 +1,4 @@
+interface:
+  display_name: "Product Hunt Release"
+  short_description: "Prepare, draft, and schedule Product Hunt launches"
+  default_prompt: "Use $product-hunt-release to prepare and manage a Product Hunt launch for this product."
