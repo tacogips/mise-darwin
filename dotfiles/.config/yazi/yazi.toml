@@ -1,0 +1,34 @@
+[mgr]
+show_hidden = true
+sort_by = "mtime"
+sort_dir_first = true
+sort_reverse = true
+
+[plugin]
+prepend_fetchers = [
+  { url = "*", run = "git", group = "git" },
+  { url = "*/", run = "git", group = "git" },
+]
+
+[opener]
+# Yazi 26.9+ expands %s placeholders; literal shell percent signs need %%.
+edit = [{ run = '''set -- %s1; mime_info="$(file -bL --mime -- "$1" 2>/dev/null || true)"; mime_type="${mime_info%%%%;*}"; if [ "$mime_type" != "inode/x-empty" ] && printf '%%s' "$mime_info" | grep -q 'charset=binary'; then open "$1"; else target_dir="$(dirname -- "$1")"; target_name="$(basename -- "$1")"; cd -- "$target_dir" && "${EDITOR:-nvim}" -- "$target_name"; fi''', block = true, desc = "Neovim" }]
+open = [{ run = 'open %s', orphan = true, desc = "Open" }]
+chilla = [{ run = 'chilla %s', orphan = true, desc = "Open in Chilla" }]
+terminal = [{ run = 'open -na Ghostty.app --args --working-directory=%s1', orphan = true, desc = "Open terminal here" }]
+
+[[open.prepend_rules]]
+mime = "inode/directory"
+use = "terminal"
+[[open.prepend_rules]]
+mime = "application/pdf"
+use = "chilla"
+[[open.prepend_rules]]
+mime = "image/*"
+use = "chilla"
+[[open.prepend_rules]]
+mime = "video/*"
+use = "chilla"
+[[open.append_rules]]
+url = "*"
+use = "edit"

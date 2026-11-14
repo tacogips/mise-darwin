@@ -1,0 +1,42 @@
+#!/bin/sh
+set -eu
+
+usage() {
+  cat <<'EOF'
+usage: ./bootstrap [mise bootstrap options]
+
+Profiles:
+  desktop      load -E macos-arm64 -E desktop (default)
+
+Options:
+  -h, --help       show this help
+  --list-profiles  print supported profile names
+
+All arguments are forwarded to `mise bootstrap` for the development desktop.
+
+Examples:
+  ./bootstrap
+  ./bootstrap --dry-run
+EOF
+}
+
+case "${1:-}" in
+  -h|--help|help)
+    usage
+    exit 0
+    ;;
+  --list-profiles)
+    printf '%s\n' desktop
+    exit 0
+    ;;
+esac
+
+repo_dir=$(cd -- "$(dirname -- "$0")" && pwd)
+cd "$repo_dir"
+
+if ! command -v mise >/dev/null 2>&1; then
+  echo "mise is required. Install it with: brew install mise" >&2
+  exit 127
+fi
+
+exec mise -E macos-arm64 -E desktop bootstrap --yes "$@"

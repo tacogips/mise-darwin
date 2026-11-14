@@ -1,0 +1,33 @@
+# Migration status
+
+Source: `tacogips/nix/nixos/darwin` and its shared Home Manager modules.
+
+## Migrated
+
+- Versioned Go, Rust, Python, Node, Bun, and Zig toolchains
+- Common CLI packages and Neovim LSP/formatter dependencies
+- Desktop Homebrew formulae, casks, private taps, and Mac App Store apps
+- Fish activation, environment variables, common aliases/functions, and Kinko shared-secret import
+- Git identity, GitHub HTTPS URL conversion, token credential helper, and Delta integration
+- Ghostty, Herdr, AeroSpace, full ANSI/Kana Karabiner mapping, LazyGit, LazyDocker, Jujutsu/Delta, and Yazi configuration
+- Git-managed Sora sea wallpaper with desktop-wide macOS convergence
+- macOS keyboard, trackpad, Finder, Dock, Safari, and control-center defaults
+- Xcode selection and host toolchain environment
+- Docker CLI plugin paths, Podman helper, Chilla signing workaround, and retired Codex/tmux links
+- Hierarchical Neovim Lua configuration with lazy.nvim, LSP, completion, formatting, Telescope, Yazi, and filetype modules
+- Pinned Yazi Git plugin, Sora theme, git-diff tree, enter-directory behavior, and custom keymap
+- Apple Gateway, Calendar, Clock, Mail, Notes, Notifications, Reminders, and Schedule user skills
+- Claude user commands, Claude/Codex shared user skills, Cursor CLI/MCP settings, and the Peekaboo Cursor skill
+- Riela desktop CLI/App and all declared user-scope development workflow/skill packages
+- GitHub token lifecycle Fish functions and the commit/push credential safety skill
+- Profile dry-runs, verification task, lockfile, and guarded Nix uninstall task
+- Determinate and official legacy macOS multi-user Nix uninstall paths with APFS and symlink preflight checks
+- Standard-library Python provisioning and verification, leaving shell only at the pre-Python bootstrap boundary
+
+## Follow-up before deleting `tacogips/nix`
+
+- Run Neovim once, review the generated `lazy-lock.json`, and commit it.
+- Apply and verify both physical hosts. Only then run `mise run nix:uninstall -- --confirm` on each host.
+
+The old Nix garbage-collector LaunchDaemon is intentionally not recreated. It
+is removed with Nix and has no purpose after migration.

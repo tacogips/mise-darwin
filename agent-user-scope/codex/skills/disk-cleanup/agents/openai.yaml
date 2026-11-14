@@ -1,0 +1,7 @@
+interface:
+  display_name: "Disk Cleanup"
+  short_description: "Reclaim development cache and build disk space"
+  default_prompt: "Use $disk-cleanup to inspect disk usage and remove disposable development build outputs."
+
+policy:
+  allow_implicit_invocation: false
