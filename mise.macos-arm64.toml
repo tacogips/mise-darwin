@@ -23,6 +23,7 @@
 "brew:gawk" = "latest"
 "brew:mas" = "latest"
 "brew:tacogips/tap/google-calendar-gateway" = "latest"
+"brew:tacogips/tap/runwayml-cli" = "latest"
 "brew:bat" = "latest"
 "brew:bottom" = "latest"
 "brew:eza" = "latest"

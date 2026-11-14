@@ -580,3 +580,7 @@ a migration reference until this repository passes verification.
 The shared tool configuration pins Go 1.27.3 for CVE-2026-111943.
 Run the normal mise tool installation to select this compiler consistently.
 Existing compiled tools need to be rebuilt separately to incorporate its verifier.
+
+## Runway CLI
+
+The Apple Silicon bootstrap installs `tacogips/tap/runwayml-cli` from the managed Homebrew tap. Use `runwayml-cli auth login` for browser OAuth, then `runwayml-cli mcp call whoami` to verify access. The standalone Go binary needs no Python runtime. Developer API keys are optional and used for REST API testing.
