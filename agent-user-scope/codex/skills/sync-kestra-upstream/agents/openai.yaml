@@ -1,0 +1,7 @@
+interface:
+  display_name: "Sync Kestra Upstream"
+  short_description: "Safely merge Kestra upstream into a fork main"
+  default_prompt: "Use $sync-kestra-upstream to refresh the upsteam branch and merge it into main."
+
+policy:
+  allow_implicit_invocation: false
