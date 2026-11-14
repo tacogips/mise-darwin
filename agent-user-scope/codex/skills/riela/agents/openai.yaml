@@ -1,0 +1,7 @@
+interface:
+  display_name: "Riela"
+  short_description: "Route instructions through Riela workflows"
+  default_prompt: "Use $riela to route an instruction through the appropriate Riela skill or workflow."
+
+policy:
+  allow_implicit_invocation: true

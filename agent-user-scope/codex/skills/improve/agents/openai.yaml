@@ -1,0 +1,7 @@
+interface:
+  display_name: "Improve"
+  short_description: "Self-review recent work and fix concrete issues"
+  default_prompt: "Use $improve to do self review about your work and improve it."
+
+policy:
+  allow_implicit_invocation: true

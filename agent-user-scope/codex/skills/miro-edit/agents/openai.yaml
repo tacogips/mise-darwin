@@ -1,0 +1,7 @@
+interface:
+  display_name: "Miro Edit"
+  short_description: "Edit Miro boards through API-backed workflows"
+  default_prompt: "Use $miro-edit to update the saved Miro board topology."
+
+policy:
+  allow_implicit_invocation: false

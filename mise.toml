@@ -1,0 +1,129 @@
+min_version = "2026.8.3"
+
+[settings]
+experimental = true
+lockfile = true
+dotfiles.root = "~/gits/tacogips/mise-darwin/dotfiles"
+
+[env]
+EDITOR = "nvim"
+BAT_THEME = "Sora"
+FZF_DEFAULT_OPTS = "--color=bg+:#1e2430 --color=bg:#0e1018 --color=border:#222838 --color=fg:#c8d0e0 --color=fg+:#dce4f0 --color=gutter:#0e1018 --color=header:#80c8e0 --color=hl:#80c8e0 --color=hl+:#98d8f0 --color=info:#586478 --color=marker:#90c8a0 --color=pointer:#80c8e0 --color=prompt:#b0a0d8 --color=query:#c8d0e0 --color=scrollbar:#222838 --color=separator:#222838 --color=spinner:#80c8e0"
+EZA_COLORS = "di=38;2;128;200;224;1:ex=38;2;144;200;160:fi=38;2;200;208;224:ln=38;2;176;160;216:or=38;2;184;96;104:pi=38;2;120;184;176:so=38;2;176;160;216:bd=38;2;212;184;120:cd=38;2;208;168;136:ur=38;2;212;184;120:uw=38;2;208;144;156:ux=38;2;144;200;160:ue=38;2;144;200;160:gr=38;2;212;184;120:gw=38;2;208;144;156:gx=38;2;144;200;160:tr=38;2;212;184;120:tw=38;2;208;144;156:tx=38;2;144;200;160:su=38;2;208;168;136:sf=38;2;208;168;136:xa=38;2;136;152;184:sn=38;2;200;208;224:sb=38;2;154;164;184:uu=38;2;212;184;120:un=38;2;154;164;184:gu=38;2;208;168;136:gn=38;2;154;164;184:da=38;2;136;152;184:in=38;2;88;100;120:lc=38;2;136;152;184:lp=38;2;176;160;216:ga=38;2;104;176;128:gm=38;2;104;152;184:gd=38;2;184;96;104:gv=38;2;176;160;216:gt=38;2;212;184;120:gi=38;2;88;100;120:gc=38;2;208;144;156:xx=38;2;88;100;120:hd=38;2;220;228;240;1"
+LANG = "en_US.UTF-8"
+LC_ALL = "en_US.UTF-8"
+XDG_CACHE_HOME = "{{ env.HOME }}/.cache"
+XDG_CONFIG_HOME = "{{ env.HOME }}/.config"
+XDG_DATA_HOME = "{{ env.HOME }}/.local/share"
+XDG_BIN_HOME = "{{ env.HOME }}/.local/bin"
+DEVELOPER_DIR = "/Applications/Xcode.app/Contents/Developer"
+SDKROOT = "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk"
+TOOLCHAINS = "com.apple.dt.toolchain.XcodeDefault"
+_.path = [
+  "{{ env.HOME }}/.local/bin",
+  "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin",
+  "/opt/homebrew/bin",
+  "/usr/local/bin",
+]
+
+[tools]
+go = "latest"
+rust = "latest"
+python = "3.13"
+node = "24"
+bun = "latest"
+zig = "latest"
+gitleaks = "latest"
+gcloud = "latest"
+pre-commit = "latest"
+pi = "latest"
+
+[tasks.bootstrap]
+description = "Run idempotent post-bootstrap configuration"
+run = "python -m scripts.mise_darwin bootstrap"
+
+[tasks.verify]
+description = "Verify config, dotfiles, tools, and macOS integration"
+run = "python -m scripts.mise_darwin verify"
+
+[tasks.test]
+description = "Run the Python provisioning unit tests"
+run = "python -m unittest discover -s tests -v"
+
+[tasks.temp-install]
+description = "Install and run a checksum-pinned HTTP tool from /tmp"
+run = "python -m scripts.mise_darwin temp-install"
+
+[tasks.shell]
+description = "Resolve and run a temporary mise or Homebrew Cask package"
+run = "python -m scripts.mise_darwin shell"
+
+[tasks.upgrade-tools]
+description = "Update tools managed by mise without pruning globally tracked versions"
+run = "mise upgrade --local --yes --no-prune"
+
+[tasks.upgrade-packages]
+description = "Update Desktop Homebrew formulae and Mac App Store packages"
+run = "mise bootstrap packages upgrade --yes"
+
+[tasks.upgrade-brew-common]
+description = "Install or update dependencies from Brewfile.common"
+env.HOMEBREW_NO_ASK = "1"
+run = "brew bundle install --file Brewfile.common"
+
+[tasks.upgrade-brew-desktop]
+description = "Install or update dependencies from Brewfile.desktop"
+env.HOMEBREW_NO_ASK = "1"
+run = "brew bundle install --file Brewfile.desktop"
+
+[tasks.upgrade-tacogips]
+description = "Update installed tacogips Homebrew formulae and casks"
+run = "python -m scripts.mise_darwin upgrade-tacogips"
+
+[tasks.upgrade-apple-gateway]
+description = "Update only the apple-gateway Homebrew formula"
+run = "brew upgrade --formula --no-ask tacogips/tap/apple-gateway"
+
+[tasks.upgrade-taco]
+description = "Update all managed Desktop dependencies"
+alias = "upgrade-all"
+run = [
+  { task = "upgrade-tools" },
+  { task = "upgrade-packages" },
+  { task = "upgrade-brew-common" },
+  { task = "upgrade-brew-desktop" },
+  { task = "upgrade-tacogips" },
+]
+
+[tasks."nvim:update"]
+description = "Update Neovim plugins and Tree-sitter parsers"
+run = '''
+nvim --headless "+Lazy! update" "+TSUpdateSync" +qa
+'''
+
+[tasks."nix:uninstall"]
+description = "Remove Nix after migration verification (requires explicit confirmation)"
+run = "python -m scripts.mise_darwin nix-uninstall"
+
+[tasks."brew:cleanup"]
+description = "Uninstall Homebrew formulae and casks not declared in this repository"
+run = "python -m scripts.mise_darwin brew-cleanup"
+
+[tasks.install-git-hooks]
+description = "Install mise tools and the repository pre-commit hook"
+run = '''
+mise install
+
+hooks_path=$(git config --local --get core.hooksPath || true)
+if [ "$hooks_path" = ".git/hooks" ]; then
+  git config --local --unset-all core.hooksPath
+  hooks_path=""
+fi
+
+if [ -z "$hooks_path" ]; then
+  mise exec -- pre-commit install
+else
+  mise exec -- pre-commit validate-config .pre-commit-config.yaml
+  echo "Using existing custom Git hooks path: $hooks_path"
+fi
+'''

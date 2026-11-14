@@ -1,0 +1,7 @@
+interface:
+  display_name: "Apply for TikTok Business API"
+  short_description: "Apply, authorize, and verify TikTok Business APIs"
+  default_prompt: "Use $apply-tiktok-business-api to prepare and complete a TikTok API for Business application safely."
+
+policy:
+  allow_implicit_invocation: false
