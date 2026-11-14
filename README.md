@@ -1,0 +1,552 @@
+# mise-darwin
+
+This repository rebuilds an Apple Silicon macOS development desktop formerly
+managed in `tacogips/nix`, with mise as the entry point. It is intentionally
+desktop-only: it is not a home-server or general-purpose host configuration.
+It does not depend on the Nix Store or nix-darwin generations.
+
+## New machine setup
+
+On a new Apple Silicon Mac, install Homebrew if it is not already available,
+then install mise, check out this repository under the standard workspace path,
+and run the desktop bootstrap:
+
+```sh
+brew install mise
+mkdir -p ~/gits/tacogips
+git clone https://github.com/tacogips/mise-darwin.git ~/gits/tacogips/mise-darwin
+cd ~/gits/tacogips/mise-darwin
+mise trust
+./bootstrap
+```
+
+The bootstrap configures this Mac as the development desktop. Sign in to the
+Mac App Store first if App Store applications should be installed.
+
+## Repository layout
+
+```text
+.miserc.toml                 Default platform and desktop environments
+mise.toml                    Shared tools, environment variables, and tasks
+mise.macos-arm64.toml        Apple Silicon packages, defaults, and dotfiles
+mise.desktop.toml            Desktop GUI and Mac App Store applications
+dotfiles/.config/nvim/       Lua and lazy.nvim configuration
+assets/wallpapers/           Git-managed desktop wallpaper
+agent-user-scope/claude/     Claude Code commands, skills, and Riela package list
+agent-user-scope/codex/      Codex skills (including Apple Gateway) and Riela package list
+agent-user-scope/cursor/     Cursor CLI configuration and skill
+scripts/mise_darwin/         Standard-library Python provisioning commands
+tests/                       Python provisioning unit tests
+Brewfile.*                   Casks and third-party tap packages
+```
+
+`.miserc.toml` enables mise's platform environment detection and selects the
+`desktop` environment by default. This repository targets development desktop
+Macs only.
+
+The Google Cloud CLI (`gcloud`) is managed by mise in `mise.toml`. Run
+`mise install gcloud` to install it, then `mise exec -- gcloud version` to verify
+the installation. Authenticate with `gcloud auth login` when needed.
+
+The `pi` coding agent harness is managed by mise in `mise.toml` through the
+registry's checksum-verified `aqua:earendil-works/pi` backend. Run
+`mise install pi` to install it, then `mise exec -- pi --version` to verify the
+installation. Update it with `mise run upgrade-tools`.
+
+Pi keybindings are managed through `dotfiles/.pi/agent/keybindings.json`, linked
+by mise to `~/.pi/agent/keybindings.json`. Both Backspace and Ctrl-H delete the
+previous character. Apply the link with `mise bootstrap dotfiles apply`, then run
+`/reload` in an existing Pi session (or restart Pi). Only the keybindings file
+is linked; credentials, settings, and sessions remain user-owned. This uses Pi's
+default agent directory; a custom `PI_CODING_AGENT_DIR` needs its own keybindings
+configuration.
+
+## mise environments (`-E`)
+
+`-E NAME` tells mise to additionally load `mise.NAME.toml`. This repository
+defines the following environments:
+
+| `-E` value | Configuration file | Purpose |
+| --- | --- | --- |
+| `macos-arm64` | `mise.macos-arm64.toml` | Shared Apple Silicon packages, dotfiles, macOS defaults, and login shell |
+| `desktop` | `mise.desktop.toml` | Development desktop packages, GUI applications, and Mac App Store apps |
+
+To use Command-Space for Raycast, open Raycast Settings → General, click
+Raycast Hotkey, and press Command-Space. Disable Spotlight's Command-Space
+shortcut in System Settings → Keyboard → Keyboard Shortcuts → Spotlight first.
+Raycast's shortcut must be changed in the app; writing its preference with
+`defaults` does not update its active shortcut reliably.
+
+Desktop commands use the defaults directly:
+
+```sh
+mise bootstrap status --missing
+
+```
+
+The early `.miserc.toml` setting is required because platform and desktop
+environments must be selected before `mise.toml` is discovered.
+
+Prefer the wrapper for applying the development desktop:
+
+```text
+./bootstrap              -> mise -E macos-arm64 -E desktop bootstrap --yes
+```
+
+List profiles or display the mapping at any time:
+
+```sh
+./bootstrap --list-profiles
+./bootstrap --help
+```
+
+From Fish, update everything managed for the Desktop profile with one
+command: mise tools, Homebrew formulae and casks, Mac App Store applications,
+and installed packages from `tacogips/tap`:
+
+```sh
+mupgrade-taco
+```
+
+The same non-interactive operation is available directly as a mise task.
+`upgrade-all` (and the `mupgrade-all` alias) is kept as an alias of the same
+task:
+
+```sh
+mise run upgrade-taco
+mise run upgrade-all
+```
+
+Run an individual update group when needed:
+
+```sh
+mise run upgrade-tools
+mise run upgrade-packages
+mise run upgrade-brew-common
+mise run upgrade-brew-desktop
+mise run upgrade-tacogips
+```
+
+`upgrade-tools` skips mise's global tracked-config pruning so that source
+templates containing unrendered tool-version variables cannot block upgrades.
+
+`upgrade-tacogips` updates only installed formulae and casks from
+`tacogips/tap` without a confirmation prompt.
+
+`Brewfile.desktop` declares the `nodetto` diagram/ERD editor cask from
+`tacogips/tap`, which also links the `nodetto-cli` command for DDL export and
+checks, formatting, and validation of Nodetto JSONL documents. Install it alone,
+without applying the rest of the Brewfile, with
+`brew install --cask tacogips/tap/nodetto`; `upgrade-tacogips` keeps it current.
+
+The desktop profile also declares `apple-gateway` as a latest-version bootstrap
+package. Update it alone without touching other packages with
+`mise run upgrade-apple-gateway`. This uses Homebrew directly because mise's
+bootstrap updater does not upgrade this unbottled Formula on the current host.
+
+Google gateways use the latest releases from `tacogips/tap`. The common profile
+installs `google-calendar-gateway`, which provides separate reader and writer
+commands; the retired `calendar-gateway` package is no longer declared. The
+desktop Brewfile includes all five Gmail roles, Docs/Sheets/Drive, Analytics,
+Marketing, Document OCR, and Service gateways.
+The desktop Brewfile installs the standalone Tailscale.app through the
+`tailscale-app` cask. It provides a menu-bar icon and the `tailscale` CLI for
+outbound SSH connections; this Mac does not host Tailscale SSH.
+
+Desktop bootstrap configures the documented standalone-app policies at
+`~/Library/Preferences/io.tailscale.ipn.macsys.plist`:
+
+- `TailscaleStartOnLogin = true`: start the app at user login.
+- `AllowIncomingConnections = "never"`: block incoming tailnet connections
+  while allowing outgoing connections.
+
+Bootstrap preserves unrelated preferences, opens the app if it is not running,
+and installs a managed Python CLI launcher at `~/.local/bin/tailscale`, which
+forwards arguments to the app's binary. It preserves unrelated files at that
+path and reports conflicts instead of overwriting them. Bootstrap also
+retires the known Homebrew/mise CLI-only daemons before installing the GUI
+app. It validates each daemon's label and executable, backs up its plist next
+to the original as `*.plist.mise-darwin-backup-<timestamp>`, unregisters the
+service, and uninstalls only the `tailscale` formula. Customized or symlinked
+service definitions are rejected; authentication data is preserved.
+If starting the old service with sudo changed formula ownership, setup restores
+ownership only inside its Tailscale keg and its validated `opt/tailscale` link
+before asking Homebrew to uninstall it.
+
+Apply just the Tailscale setup, or preview it without changing the host:
+
+```sh
+mise -E macos-arm64 -E desktop run tailscale:setup -- --dry-run
+mise -E macos-arm64 -E desktop run tailscale:setup
+```
+
+The same setup runs during the normal desktop bootstrap. Package installation
+and removal of root daemons can require sudo. On a new Mac, approve the system
+extension and VPN configuration and sign in when the app prompts; bootstrap
+does not bypass these macOS approvals or store authentication credentials.
+The app's first launch registers its login helper. Use `tailscale ssh user@host`
+after sign-in; the destination must support Tailscale SSH and its tailnet policy
+must permit your connection. `mise run verify` checks the app, CLI, and both
+configured policies. See [system policies](https://tailscale.com/docs/features/tailscale-system-policies),
+[standalone preferences](https://tailscale.com/docs/integrations/mdm/mac),
+and [macOS variants](https://tailscale.com/docs/concepts/macos-variants).
+
+Use `$google-service-gateway-oauth-setup` in Codex for Google gateway authentication
+setup. It uses Service gateway for projects, API enablement, and local client
+import, with Google Auth Platform Console registration for Desktop/Web clients.
+
+Homebrew formulae and casks that are not declared in this repository stay
+installed until you clean them up. Preview extras first, then uninstall only
+after reviewing the exact list. Other projects' `mise.toml` `brew:` packages
+are not kept; re-enter those projects to reinstall them. Mac App Store apps
+and mise `[tools]` versions are not removed.
+
+```sh
+mise run brew:cleanup -- --dry-run
+mise run brew:cleanup -- --confirm
+```
+
+The keep-set is the union of `brew:` packages in `mise.macos-arm64.toml` and
+`mise.desktop.toml` with `Brewfile.common` and `Brewfile.desktop`. Homebrew
+dependencies of those packages are retained. Extra taps are listed after
+packages. The command refuses to run unless `--dry-run` or `--confirm` is
+passed. Mac App Store apps are left installed.
+
+## Temporary packages
+
+Run the latest official qFlipper release without copying it into
+`/Applications`:
+
+```sh
+mise run shell -- qflipper
+```
+
+The task first searches mise's registry. When the name is not present there, it
+queries the Homebrew Cask API and verifies the Cask's published SHA-256. DMGs
+are stored under mise's cache root and extracted with macOS system tool
+`/usr/bin/hdiutil`; its presence and executable permission are checked before
+use. Ordinary mise tools are installed with `mise install-into`.
+The extracted application is reused from `/tmp/qflipper-<sha256-prefix>` while
+that directory exists. The temporary HTTP download cache is pruned after 30
+days without reuse. No Fish alias is installed for qFlipper.
+
+Unprefixed names search mise first and Homebrew Cask second. Prefix a name to
+select one resolver explicitly:
+
+```sh
+mise run shell -- brew-cask:qflipper
+mise run shell -- mise:ripgrep
+```
+
+For a Cask app, `shell` launches the temporary `.app`. For a mise CLI tool it
+starts `$SHELL` with the tool's executable directories prepended to `PATH`.
+Pass a command after another `--` to run it directly instead:
+
+```sh
+mise run shell -- mise:ripgrep -- rg --version
+```
+
+The same temporary installer can run another checksum-pinned HTTPS artifact:
+
+```sh
+mise run temp-install -- \
+  --name example \
+  --version 1.2.3 \
+  --url https://example.com/example-1.2.3.tar.gz \
+  --sha256 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef \
+  --executable bin/example \
+  --bin-path bin \
+  --format auto \
+  -- --help
+```
+
+The managed destination is `/tmp/<name>-<sha256-prefix>`. Existing paths are
+reused only when their ownership marker and artifact identity (name, URL, and
+SHA-256) match; an unrelated path is never overwritten. Add `--dry-run` before
+the final `--` to inspect the destination and command without installing or
+launching the tool. Use `--install-only` to install and print the executable
+path without launching it.
+Fish aliases for mise itself and the upgrade tasks are kept separately in
+`dotfiles/.config/fish/conf.d/mise-aliases.fish`. mise's generated completions
+are loaded lazily from `dotfiles/.config/fish/completions/mise.fish`, so
+subcommands and configured tasks are suggested for commands such as
+`mise run` without adding work to shell startup.
+The `co` Fish function starts Codex with GPT-6.1 Sol and medium reasoning.
+The `pic` Fish function starts Pi with `--provider openai --model gpt-6.1-sol`
+and forwards additional arguments. Pi 0.99.2 lists this model under `openai`.
+Reload existing Fish shells with `source ~/.config/fish/conf.d/shared-aliases.fish`.
+
+## Set up a clean Mac
+
+This repository targets Apple Silicon Macs with Homebrew installed under
+`/opt/homebrew`.
+
+First install the Xcode Command Line Tools. Wait for the installation dialog to
+finish before continuing.
+
+```sh
+xcode-select --install
+```
+
+Run the [official Homebrew installer](https://docs.brew.sh/Installation), then
+make Homebrew available in the current zsh session and future login sessions.
+
+```sh
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
+eval "$(/opt/homebrew/bin/brew shellenv)"
+```
+
+Install Git and mise. Homebrew is the
+[recommended mise installation method on macOS](https://mise.jdx.dev/installing-mise.html).
+
+```sh
+brew install git mise
+git --version
+mise --version
+```
+
+Clone this public repository and apply the desktop configuration. Bootstrap may ask
+for the macOS password when changing system settings or the login shell. Sign in
+to the App Store first if Mac App Store applications should be installed.
+
+```sh
+mkdir -p ~/gits/tacogips
+git clone https://github.com/tacogips/mise-darwin.git ~/gits/tacogips/mise-darwin
+cd ~/gits/tacogips/mise-darwin
+mise trust
+./bootstrap
+```
+
+When bootstrap finishes, open a new Terminal window so the Homebrew Fish login
+shell is active, then verify the complete configuration.
+
+```sh
+cd ~/gits/tacogips/mise-darwin
+mise -E macos-arm64 -E desktop run verify
+```
+
+## Bootstrap an existing Mac
+
+If Homebrew and mise are already installed, run:
+
+```sh
+mkdir -p ~/gits/tacogips
+git clone https://github.com/tacogips/mise-darwin.git ~/gits/tacogips/mise-darwin
+cd ~/gits/tacogips/mise-darwin
+mise trust
+./bootstrap
+```
+
+Preview changes or inspect missing resources without applying them:
+
+```sh
+mise -E macos-arm64 -E desktop bootstrap --dry-run
+mise -E macos-arm64 -E desktop bootstrap status --missing
+```
+
+Bootstrap stops instead of overwriting conflicting Home Manager links or local
+files. Inspect and back up those paths before explicitly allowing replacement:
+
+```sh
+mise -E macos-arm64 -E desktop bootstrap --yes --force-dotfiles
+```
+
+## Neovim
+
+The Neovim configuration translates the previous NVF setup into the layered
+layout used by `dotfile_nvim`:
+
+```text
+dotfiles/.config/nvim/
+├── init.lua
+├── ftplugin/
+└── lua/taco/
+    ├── core/       Options, keymaps, and autocommands
+    └── plugins/    Editor, UI, LSP, and completion plugins
+```
+
+The first Neovim launch installs `lazy.nvim`. mise tools and bootstrap Homebrew
+packages provide language servers, formatters, and supporting CLI tools. Commit
+`lazy-lock.json` after reviewing the generated plugin lock.
+
+Update Neovim plugins and Tree-sitter parsers through the shared mise entry
+point, then review and commit the resulting `lazy-lock.json` changes:
+
+```sh
+mise run nvim:update
+```
+
+Yazi openers use the Yazi 26.9+ `%s` file placeholders. Text files open in
+Neovim with the file’s parent directory as its working directory; binary files
+use the macOS default application.
+
+Yazi Git plugins are pinned in `package.toml`, and their pinned contents are
+checked into the managed dotfiles. Sora colors are shared by Neovim, Ghostty,
+Herdr, LazyGit, Yazi, bat/Delta, fzf, and eza. The Karabiner config
+includes the migrated ANSI/Kana symbol mappings. Desktop bootstrap applies the
+Git-managed Sora sea image to every macOS desktop.
+
+Ghostty forwards Cmd+W to Herdr using the Kitty keyboard protocol
+(`csi:119;9u`). Herdr maps it to `close_tab` and asks for confirmation before
+closing the active tab. Reload Ghostty's configuration with Cmd+Shift+, after
+changing this binding.
+
+## AI agent user scope and Riela
+
+Bootstrap merges `dotfiles/.codex/config.toml` into `~/.codex/config.toml`
+using mise's declarative TOML merge (mise 2026.10.5 or newer). This sets the
+default Codex model to `gpt-6-luna` while preserving unrelated settings,
+including MCP servers, reasoning effort, profiles, and comments. To apply
+only this setting, run:
+
+```sh
+mise -E macos-arm64 -E desktop dot apply '~/.codex/config.toml/model'
+```
+
+Bootstrap merges `agent-user-scope/claude/settings.json` into
+`~/.claude/settings.json`, preserving unrelated preferences. Claude Code's
+commit and PR attribution and session links are disabled through the
+`attribution` JSON setting. Invalid existing JSON is reported without overwriting it.
+
+User-scope skills are managed only by this repository and are kept separate
+per agent. `agent-user-scope/claude/skills/` becomes `~/.claude/skills/` and
+`agent-user-scope/codex/skills/` becomes `~/.codex/skills/`; a skill both agents
+need (for example `wrike-via-gateway`) has a copy in each tree. No skill is
+placed in `~/.agents/skills/`. Riela packages are listed per agent in
+`agent-user-scope/claude/riela-packages.txt` and
+`agent-user-scope/codex/riela-packages.txt`, and only the matching
+`skills/claude/` or `skills/codex/` directory of each listed package is
+installed for that agent. When two listed packages ship the same skill, the
+later entry wins; a package may never shadow a skill defined in this repository.
+
+Every bootstrap refreshes skills by clearing `~/.claude/skills/` and
+`~/.codex/skills/` (agent-owned entries are kept: dot-prefixed ones such as
+Codex's bundled `.system` skills, and Claude Code's account-synced `synced`
+store), deleting `~/.agents/skills/`, and recreating only the skills
+defined above. Skills installed by hand or by other tools do not survive a
+refresh; add them to `agent-user-scope/` instead. `agent-user-scope/` also holds
+the Claude commands, Cursor CLI configuration, Peekaboo MCP configuration, and
+Cursor skill.
+
+The `disk-cleanup` skill covers Rust targets, SwiftPM/Xcode compilation outputs,
+package caches, and container build storage. It preserves source, active builds,
+release archives, and persistent volumes, and verifies reclaimed host space.
+
+The `cursor-agent` CLI is owned by the `cursor-cli` Homebrew cask in
+`Brewfile.desktop`, so `mise run upgrade-brew-desktop` updates it. Cursor's own
+`install.sh` installs a self-updating copy under `~/.local/share/cursor-agent`
+and links it into `~/.local/bin`, which shadows the cask because `~/.local/bin`
+precedes `/opt/homebrew/bin` on `PATH`. Do not run that installer; `verify`
+fails the `cursor-agent (Homebrew-managed)` check when a shadowing copy
+reappears, and the fix is to delete `~/.local/bin/cursor-agent`,
+`~/.local/bin/agent`, `~/.local/bin/cursor`, and `~/.local/share/cursor-agent`.
+
+Codex keeps only `user-skill-router` implicitly visible. Detailed user skills
+remain explicitly invocable and are loaded lazily through the router, avoiding
+the 2% skill-metadata context limit without removing functionality. Bootstrap
+derives the Codex, Claude Code, and Cursor roots from one home-directory
+path model instead of maintaining repeated absolute paths.
+
+On desktop hosts, bootstrap installs the Riela application and all user-scope
+workflow packages listed in either agent's `riela-packages.txt`. If
+the public `tacogips/riela-packages` checkout is absent, the installer clones it
+under the standard checkout root. Later runs fast-forward that checkout once
+(regular Git checkouts and worktrees are supported),
+then use `riela package update --source` for installed packages and
+`riela package install --overwrite --source` for missing ones; the skill refresh
+then rebuilds the agent skill roots from the installed packages. Set `RIELA_PACKAGES_CHECKOUT`
+to use a locally managed checkout without pulling it, and set
+`RIELA_GIT_EXECUTABLE` when Git is not on `PATH`. No default Riela registry or
+`package registry sync` command is needed. The `fable-astra-design-plan-review-loop`
+package installs its Fable 5 / GPT-6 Astra design and implementation-plan
+review workflow with skills for both Claude Code and Codex (medium effort).
+Claude Code uses the
+`opus-luna-design-and-implement-review-loop` skill: Opus 5.5 designs, writes
+Luna-ready implementation plans, runs every review gate (repairing findings
+through Sonnet subagents before re-reviewing) and the final integration review,
+while Codex GPT-6 Luna (high effort, fast tier) implements every
+dependency-ready plan in unbounded fanout. It replaces the former
+`fable-and-improve`, `fable-and-improve-codex` and `fable-and-improve-opus`
+user packages; bootstrap uninstalls those packages and their lock entries, and
+the skill refresh drops their skills. Codex uses
+`codex-design-and-implement-review-loop`, with GPT-6 Astra handling design,
+design review, implementation-plan creation, and implementation-plan review;
+GPT-6 Sol handling implementation; and GPT-6 Astra handling test-integrity,
+independent, and adversarial review. The compact 18-step graph integrates
+author self-checks into design, planning, and implementation, and combines
+implementation-plan completion verification with commit preparation while
+retaining the independent review gates.
+Before invoking the
+Riela CLI installed by the desktop cask, bootstrap removes its quarantine
+attribute only when present; this prevents a signed CLI update from stalling in
+the macOS loader.
+
+GitHub HTTPS authentication uses the `GITHUB_TOKEN` credential helper. Fish
+provides `gh-token-export`, `gh-token-save-shared`, `gh-token-refresh`,
+`gh-token-reset`, and `gh-clone`. Bootstrap installs or updates Herdr's
+built-in Claude and Codex hooks
+under each agent's home configuration while preserving their other settings.
+
+For tracked changes, the Fish prompt shows added line totals in green and
+deleted line totals in red next to the branch.
+
+## Provisioning implementation
+
+mise owns declarative packages, tools, dotfiles, defaults, and desktop
+composition. Custom convergence is implemented as a standard-library Python
+package under `scripts/mise_darwin/`; it covers agent assets, Herdr and Riela
+integration, Docker configuration, AeroSpace display-topology workspace
+assignment, verification, guarded Nix removal, and guarded Homebrew cleanup. On
+the desktop profile, workspaces 1 and 2 follow the first two external displays
+while workspace 9 follows the built-in display; a single external display owns
+both workspaces 1 and 2. Run its unit tests with:
+
+```sh
+mise run test
+```
+
+Only the clean-machine `bootstrap` wrapper and the pre-package Homebrew conflict
+hook remain as POSIX shell because both can run before mise installs Python.
+
+## Verification and Nix removal
+
+Verify the migrated setup from a new shell:
+
+```sh
+mise -E macos-arm64 -E desktop run verify
+```
+
+Only remove Nix after verification succeeds. Preview the destructive operation
+first:
+
+```sh
+mise run nix:uninstall -- --confirm --dry-run
+```
+
+Then run the uninstall task:
+
+```sh
+mise run nix:uninstall -- --confirm
+```
+
+The task first removes nix-darwin. It uses the Determinate uninstaller when
+available and otherwise follows the
+[official legacy macOS multi-user uninstall procedure](https://nix.dev/manual/nix/stable/installation/uninstall#macos).
+The legacy path verifies the APFS `/nix` volume, login shell, and user-scope
+links before making changes. Modified system files are backed up under
+`/var/backups/mise-darwin-nix-uninstall-*`.
+
+Nix removal is irreversible. Keep the former configuration repository only as
+a migration reference until this repository passes verification.
+
+## Current boundaries
+
+- mise bootstrap converges sequentially and does not provide nix-darwin atomic
+  switches or generation rollback.
+- mise manages formulae directly. Homebrew Bundle handles casks and third-party
+  taps without API metadata, avoiding conflicts with existing cask receipts.
+- Mac App Store installation may require an Apple Account. Xcode may require a
+  first launch and license acceptance.
+- Add a dedicated, reviewable task and plist when a system LaunchDaemon becomes
+  necessary.

@@ -1,0 +1,7 @@
+interface:
+  display_name: "User Skill Router"
+  short_description: "Load detailed user skills only when needed"
+  default_prompt: "Use $user-skill-router to route this request to the appropriate installed user skill."
+
+policy:
+  allow_implicit_invocation: true

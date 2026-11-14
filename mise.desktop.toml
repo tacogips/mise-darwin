@@ -1,0 +1,22 @@
+[bootstrap.packages]
+"brew:tacogips/tap/apple-gateway" = "latest"
+"brew:ccusage" = "latest"
+"brew:cline" = "latest"
+"brew:colima" = "latest"
+"brew:container" = "latest"
+"brew:podman" = "latest"
+"brew:podman-compose" = "latest"
+"brew:docker" = "latest"
+"brew:docker-compose" = "latest"
+"brew:herdr" = "latest"
+"mas:1440147259" = "latest" # AdGuard for Safari
+"mas:937984704" = "latest"  # Amphetamine
+"mas:640199958" = "latest"  # Apple Developer
+"mas:1352778147" = "latest" # Bitwarden
+"mas:1033342465" = "latest" # Just Press Record
+"mas:302584613" = "latest"  # Amazon Kindle
+"mas:497799835" = "latest"  # Xcode
+
+[tasks."tailscale:setup"]
+description = "Converge the Tailscale menu-bar app, login startup, and outbound-only policy"
+run = "python -m scripts.mise_darwin tailscale-setup"
