@@ -1,0 +1,6 @@
+[ui]
+diff-formatter = ":git"
+pager = "delta"
+
+[merge-tools.delta]
+diff-expected-exit-codes = [0, 1]

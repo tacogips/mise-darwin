@@ -1,0 +1,7 @@
+interface:
+  display_name: "Konjac Product Website"
+  short_description: "Maintain Konjac’s localized Vite product site."
+  default_prompt: "Use $konjac-product-website to update the Konjac product website and verify its production build."
+
+policy:
+  allow_implicit_invocation: false
