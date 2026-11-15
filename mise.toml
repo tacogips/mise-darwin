@@ -37,6 +37,7 @@ gitleaks = "latest"
 gcloud = "latest"
 pre-commit = "latest"
 pi = "latest"
+uv = "latest"
 
 [tasks.bootstrap]
 description = "Run idempotent post-bootstrap configuration"
@@ -49,6 +50,17 @@ run = "python -m scripts.mise_darwin verify"
 [tasks.test]
 description = "Run the Python provisioning unit tests"
 run = "python -m unittest discover -s tests -v"
+
+[tasks."runway:setup"]
+description = "Install the global Runway API CLI and uv runtime"
+run = [
+  "mise dot apply '~/.local/bin/runway-api' '~/.config/mise/config.toml/runway-tools'",
+  "mise install uv",
+]
+
+[tasks."runway:status"]
+description = "Inspect Runway CLI configuration without making network requests"
+run = "runway-api doctor"
 
 [tasks.temp-install]
 description = "Install and run a checksum-pinned HTTP tool from /tmp"

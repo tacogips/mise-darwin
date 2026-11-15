@@ -426,6 +426,11 @@ only this setting, run:
 mise -E macos-arm64 -E desktop dot apply '~/.codex/config.toml/model'
 ```
 
+Bootstrap installs the `runway-api` CLI in `~/.local/bin`, a user-scope `uv`
+runtime, and FFmpeg for media finishing. The CLI calls Runway's Developer API
+directly from any directory; it does not use MCP. See [Runway CLI setup](docs/runway.md)
+for API credentials, generation requests, task polling, and downloads.
+
 Bootstrap merges `agent-user-scope/claude/settings.json` into
 `~/.claude/settings.json`, preserving unrelated preferences. Claude Code's
 commit and PR attribution and session links are disabled through the

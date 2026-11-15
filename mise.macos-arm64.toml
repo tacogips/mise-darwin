@@ -12,6 +12,7 @@
 "brew:curl" = "latest"
 "brew:wget" = "latest"
 "brew:jq" = "latest"
+"brew:ffmpeg" = "latest"
 "brew:yq" = "latest"
 "brew:ripgrep" = "latest"
 "brew:fd" = "latest"
@@ -23,6 +24,7 @@
 "brew:gawk" = "latest"
 "brew:mas" = "latest"
 "brew:tacogips/tap/google-calendar-gateway" = "latest"
+"brew:tacogips/tap/runwayml-cli" = "latest"
 "brew:bat" = "latest"
 "brew:bottom" = "latest"
 "brew:eza" = "latest"
@@ -79,7 +81,9 @@ run = "./scripts/pre-packages.sh"
 run = "killall Dock Finder 2>/dev/null || true"
 
 [dotfiles]
+"~/.local/bin/runway-api" = { mode = "symlink", source = "scripts/mise_darwin/runway_api.py" }
 "~/.codex/config.toml/model" = { merge = true }
+"~/.config/mise/config.toml/runway-tools" = { merge = true, source = "dotfiles/.config/mise/runway-tools.toml" }
 "~/.pi/agent/keybindings.json" = { mode = "symlink" }
 "~/.config/fish/config.fish" = { mode = "symlink" }
 "~/.config/fish/conf.d/mise-aliases.fish" = { mode = "symlink" }
