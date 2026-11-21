@@ -11,9 +11,10 @@ import unittest
 
 FISH = shutil.which("fish")
 HOOK = Path(__file__).resolve().parents[1] / "dotfiles/.config/fish/conf.d/herdr-auto-space.fish"
+MACOS_JQ = shutil.which("/usr/bin/jq") or shutil.which("/opt/homebrew/bin/jq")
 
 
-@unittest.skipUnless(FISH and shutil.which("git") and shutil.which("jq"), "requires Fish, Git, and jq")
+@unittest.skipUnless(FISH and shutil.which("git") and (MACOS_JQ or shutil.which("jq")), "requires Fish, Git, and jq")
 class HerdrFishTests(unittest.TestCase):
     def setUp(self):
         self.temporary = tempfile.TemporaryDirectory()
@@ -88,7 +89,7 @@ else:
     def test_without_git_uses_current_directory(self):
         binary_dir = self.root / "bin"
         binary_dir.mkdir()
-        (binary_dir / "jq").symlink_to(str(shutil.which("jq")))
+        (binary_dir / "jq").symlink_to(str(MACOS_JQ or shutil.which("jq")))
         self.env["PATH"] = str(binary_dir)
         self.assertEqual(self.run_hook()[-1], ["pane", "move", "w1:p2", "--new-workspace",
             "--label", "nested", "--focus"])
@@ -101,9 +102,21 @@ else:
         self.env["HERDR_AUTO_SPACE_DISABLE"] = "1"
         self.assertEqual(self.run_hook(), [])
 
-    def test_missing_dependencies_are_silent(self):
+    @unittest.skipIf(MACOS_JQ, "fixed-path jq is available")
+    def test_missing_jq_is_silent(self):
         self.env["PATH"] = str(self.root)
         self.assertEqual(self.run_hook(), [])
+
+    @unittest.skipUnless(MACOS_JQ, "requires fixed-path jq")
+    def test_cd_routes_when_mise_jq_shim_fails(self):
+        shims = self.root / "mise" / "shims"
+        shims.mkdir(parents=True)
+        shim = shims / "jq"
+        shim.write_text("#!/bin/sh\nprintf '%s\\n' 'mise config is not trusted' >&2\nexit 1\n")
+        shim.chmod(0o755)
+        self.env["PATH"] = os.pathsep.join((str(shims), self.env["PATH"]))
+        self.assertEqual(self.run_hook()[-1], ["pane", "move", "w1:p2", "--new-tab",
+            "--workspace", "w2", "--focus"])
 
     def test_failure_and_invalid_json_preserve_cd(self):
         for mode in ("failure", "malformed"):

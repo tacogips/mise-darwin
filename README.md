@@ -288,7 +288,8 @@ moving the running terminal. Split tabs
 and duplicate Space labels are skipped. Moving the last pane out of a Space may
 close the empty source Space, and the destination gets a new tab label.
 The hook in `dotfiles/.config/fish/conf.d/herdr-auto-space.fish` needs no plugin
-or watcher. It silently does nothing outside Herdr, when Herdr or jq is
+or watcher. It prefers the system or Homebrew jq so untrusted mise projects
+can still route tabs. It silently does nothing outside Herdr, when Herdr or jq is
 unavailable, or when an API call fails. Set `HERDR_AUTO_SPACE_DISABLE=1` to opt out.
 After applying dotfiles, reload existing Fish shells with
 `source ~/.config/fish/conf.d/herdr-auto-space.fish`. Stop any previously enabled
