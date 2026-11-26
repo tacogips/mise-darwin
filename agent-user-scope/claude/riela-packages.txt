@@ -12,6 +12,7 @@ claude-code-task-watchdog
 claude-code-website-builder
 fable-astra-design-plan-review-loop
 opus-terra-design-and-implement-review-loop
+gemini-neon-terra-design-and-implement-review-loop
 riela-package-manager-skill
 riela-package-release-skill
 riela-temporary-workflow-skill

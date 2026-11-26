@@ -32,6 +32,7 @@ RIELA_CLI = Path("/opt/homebrew/bin/riela")
 REQUIRED_USER_SKILLS = (
     ("codex", "codex-design-and-implement-review-loop"),
     ("claude", "opus-terra-design-and-implement-review-loop"),
+    ("claude", "gemini-neon-terra-design-and-implement-review-loop"),
 )
 
 

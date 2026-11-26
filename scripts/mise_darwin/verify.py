@@ -204,6 +204,14 @@ def _checks(profile: str, home: Path) -> list[tuple[str, Check]]:
                         kind="file",
                     ),
                 ),
+                (
+                    "Riela Claude gemini-neon-terra user skill",
+                    path_check(
+                        agent_paths.claude_skills
+                        / "gemini-neon-terra-design-and-implement-review-loop/SKILL.md",
+                        kind="file",
+                    ),
+                ),
                 ("cursor-agent (Homebrew-managed)", homebrew_owned("cursor-agent")),
                 (
                     "Cursor Peekaboo skill",
